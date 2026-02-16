@@ -94,6 +94,17 @@ def main():
     conn_p.add_argument("name", nargs="?", help="Name/title for the action")
     conn_p.add_argument("extra", nargs="?", help="Additional parameter (type, etc.)")
 
+    # charter verify
+    verify_p = sub.add_parser("verify", help="Verify identity via Persona or ID.me")
+    verify_p.add_argument(
+        "action",
+        choices=["configure", "start", "check", "status"],
+        help="Verification action",
+    )
+    verify_p.add_argument("provider", nargs="?", help="Provider name (persona, id_me) or inquiry ID")
+    verify_p.add_argument("name", nargs="?", help="Inquiry ID for check command")
+    verify_p.add_argument("--provider", dest="provider_flag", help="Provider for start command")
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -121,6 +132,9 @@ def main():
     elif args.command == "connect":
         from charter.network import run_connect
         run_connect(args)
+    elif args.command == "verify":
+        from charter.verify import run_verify
+        run_verify(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)

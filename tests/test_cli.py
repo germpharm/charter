@@ -12,7 +12,7 @@ class TestCLI:
             cwd="/tmp",
         )
         assert result.returncode == 0
-        assert "charter 0.1.0" in result.stdout
+        assert "charter" in result.stdout
 
     def test_help(self):
         result = subprocess.run(

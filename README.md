@@ -62,6 +62,19 @@ charter context revoke <bridge_id>      # Either party can revoke
 
 Knowledge does not flow between contexts by default. Bridging requires explicit consent from both sides.
 
+## Identity Verification
+
+Upgrade your pseudonymous identity with government ID verification via Persona or ID.me.
+
+```bash
+charter verify configure persona    # Set up Persona API credentials
+charter verify start                # Open browser for ID verification
+charter verify check <inquiry_id>   # Check verification status
+charter verify status               # See configured providers
+```
+
+Free tier: 500 verifications per month via Persona. No credit card required.
+
 ## Network
 
 Connect to the network. Register your expertise. Record contributions.

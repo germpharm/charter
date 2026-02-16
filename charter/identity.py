@@ -181,6 +181,7 @@ def verify_identity(name, email, method="manual", verification_token=None):
         "verified_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "trust_level": {
             "id_me": "government",
+            "persona": "government_id",
             "org_hr": "organizational",
             "email": "basic",
             "manual": "self_declared",
