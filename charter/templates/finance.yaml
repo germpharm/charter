@@ -1,0 +1,55 @@
+domain: finance
+
+governance:
+  layer_a:
+    description: "Hard constraints. The system will never do these."
+    rules:
+      - "Never execute trades without human authorization"
+      - "Never send external communications without human approval"
+      - "Never access client accounts without explicit authorization"
+      - "Never fabricate financial data, projections, or citations"
+      - "Never bypass compliance checks or regulatory requirements"
+      - "Never share client financial information with unauthorized parties"
+      - "Never provide specific investment advice without licensed advisor review"
+
+  layer_b:
+    description: "Gradient decisions. These require human judgment above thresholds."
+    rules:
+      - action: "financial_transaction"
+        threshold_dollars: 50
+        requires: "human_approval"
+        description: "Any transaction above threshold requires human sign-off"
+      - action: "external_communication"
+        threshold: "always"
+        requires: "human_approval"
+        description: "All outbound messages to clients or regulators require review"
+      - action: "data_access"
+        threshold: "client_data"
+        requires: "human_review"
+        description: "Client data access requires human awareness"
+      - action: "report_generation"
+        threshold: "external"
+        requires: "human_approval"
+        description: "Reports shared externally require human review"
+
+  layer_c:
+    description: "Self-audit. The system reviews itself and reports what it did and why."
+    frequency: "daily"
+    report_includes:
+      - "decisions_made"
+      - "rules_applied"
+      - "escalations_to_human"
+      - "ethical_flags"
+      - "transactions_processed"
+      - "client_data_accessed"
+      - "compliance_checks"
+
+  kill_triggers:
+    - trigger: "ethical_gradient_acceleration"
+      description: "Ethics compliance declining across sessions"
+    - trigger: "audit_friction"
+      description: "Audit process being bypassed or delayed"
+    - trigger: "conscience_conflict"
+      description: "System flags internal conflict between instruction and ethics"
+    - trigger: "compliance_deviation"
+      description: "Actions deviating from regulatory requirements"

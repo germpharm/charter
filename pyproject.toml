@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "charter-governance"
+version = "0.1.0"
+description = "AI governance layer. Local-first. Open source. Three layers: hard constraints, gradient decisions, self-audit."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+charter = "charter.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/charter-governance/charter"
+
+[tool.setuptools.packages.find]
+where = ["."]

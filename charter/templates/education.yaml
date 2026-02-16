@@ -1,0 +1,51 @@
+domain: education
+
+governance:
+  layer_a:
+    description: "Hard constraints. The system will never do these."
+    rules:
+      - "Never disclose student records without authorization (FERPA)"
+      - "Never complete assignments on behalf of students without instructor approval"
+      - "Never fabricate data, citations, or research findings"
+      - "Never send external communications without human approval"
+      - "Never bypass accessibility requirements"
+      - "Never collect student data beyond what is educationally necessary"
+
+  layer_b:
+    description: "Gradient decisions. These require human judgment above thresholds."
+    rules:
+      - action: "student_assessment"
+        threshold: "always"
+        requires: "instructor_review"
+        description: "All grading and assessment requires instructor oversight"
+      - action: "external_communication"
+        threshold: "always"
+        requires: "human_approval"
+        description: "All outbound messages require human review"
+      - action: "content_generation"
+        threshold: "curriculum"
+        requires: "instructor_review"
+        description: "Curriculum content requires instructor approval"
+      - action: "student_data_access"
+        threshold: "always"
+        requires: "human_review"
+        description: "Student data access requires human awareness"
+
+  layer_c:
+    description: "Self-audit. The system reviews itself and reports what it did and why."
+    frequency: "weekly"
+    report_includes:
+      - "decisions_made"
+      - "rules_applied"
+      - "escalations_to_human"
+      - "ethical_flags"
+      - "student_data_accessed"
+      - "content_generated"
+
+  kill_triggers:
+    - trigger: "ethical_gradient_acceleration"
+      description: "Ethics compliance declining across sessions"
+    - trigger: "audit_friction"
+      description: "Audit process being bypassed or delayed"
+    - trigger: "conscience_conflict"
+      description: "System flags internal conflict between instruction and ethics"
