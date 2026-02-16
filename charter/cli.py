@@ -140,6 +140,46 @@ def main():
         help="Path to charter.yaml",
     )
 
+    # charter stamp
+    stamp_p = sub.add_parser("stamp", help="Create an attribution stamp for a work product")
+    stamp_p.add_argument(
+        "--format", "-f",
+        choices=["trailer", "json", "header"],
+        default="trailer",
+        help="Output format (default: trailer)",
+    )
+    stamp_p.add_argument(
+        "--language", "-l",
+        default="python",
+        help="Language for header format (default: python)",
+    )
+    stamp_p.add_argument(
+        "--description", "-d",
+        help="Description of the work product",
+    )
+
+    # charter attest
+    attest_p = sub.add_parser("attest", help="Attest an ungoverned work product for institutional use")
+    attest_p.add_argument(
+        "file",
+        help="Path to the file to attest",
+    )
+    attest_p.add_argument(
+        "--reason", "-r",
+        help="Why this work product is acceptable (required for audit trail)",
+    )
+    attest_p.add_argument(
+        "--reviewer",
+        help="Reviewer name (defaults to identity alias)",
+    )
+
+    # charter check (verify a stamp file)
+    check_p = sub.add_parser("check", help="Verify an attribution stamp file")
+    check_p.add_argument(
+        "stamp_file",
+        help="Path to a stamp JSON file",
+    )
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -187,6 +227,15 @@ def main():
             print(f"Governance injected: {result}")
         else:
             print("No charter.yaml found. Run 'charter init' first.")
+    elif args.command == "stamp":
+        from charter.stamp import run_stamp
+        run_stamp(args)
+    elif args.command == "attest":
+        from charter.stamp import run_attest
+        run_attest(args)
+    elif args.command == "check":
+        from charter.stamp import run_verify
+        run_verify(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
