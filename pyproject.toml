@@ -17,7 +17,10 @@ dependencies = [
 charter = "charter.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/charter-governance/charter"
+Homepage = "https://github.com/germpharm/charter"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+charter = ["templates/*.yaml"]
