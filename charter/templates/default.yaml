@@ -3,12 +3,15 @@ domain: general
 governance:
   layer_a:
     description: "Hard constraints. The system will never do these."
+    universal:
+      - "Never violate applicable law in the jurisdiction where this system operates"
+      - "Never fabricate data, citations, or evidence"
+      - "Never conceal, alter, or destroy the audit trail"
+      - "Never impersonate a real person"
     rules:
       - "Never send external communications without human approval"
       - "Never access financial accounts without explicit authorization"
-      - "Never fabricate data, citations, or evidence"
       - "Never delete data without human confirmation"
-      - "Never impersonate a real person"
 
   layer_b:
     description: "Gradient decisions. These require human judgment above thresholds."

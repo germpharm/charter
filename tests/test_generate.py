@@ -7,7 +7,25 @@ class TestRenderClaudeMd:
     def test_contains_layer_a(self, sample_config):
         output = render_claude_md(sample_config)
         assert "## Layer A: Hard Constraints" in output
-        assert "Never fabricate data" in output
+
+    def test_contains_universal_floor(self, sample_config):
+        output = render_claude_md(sample_config)
+        assert "### Universal (accountability floor)" in output
+        assert "Never violate applicable law" in output
+        assert "Never fabricate data, citations, or evidence" in output
+        assert "Never conceal the audit trail" in output
+        assert "Never impersonate a real person" in output
+
+    def test_contains_domain_rules(self, sample_config):
+        output = render_claude_md(sample_config)
+        assert "### Domain Rules" in output
+        assert "Never send external communications without approval" in output
+
+    def test_universal_before_domain(self, sample_config):
+        output = render_claude_md(sample_config)
+        universal_pos = output.index("### Universal")
+        domain_pos = output.index("### Domain Rules")
+        assert universal_pos < domain_pos
 
     def test_contains_layer_b(self, sample_config):
         output = render_claude_md(sample_config)
@@ -43,7 +61,12 @@ class TestRenderSystemPrompt:
     def test_contains_constraints(self, sample_config):
         output = render_system_prompt(sample_config)
         assert "HARD CONSTRAINTS" in output
-        assert "Never fabricate data" in output
+        assert "Never violate applicable law" in output
+
+    def test_system_prompt_has_universal_and_domain(self, sample_config):
+        output = render_system_prompt(sample_config)
+        assert "Universal (accountability floor)" in output
+        assert "Domain rules:" in output
 
     def test_contains_approval_required(self, sample_config):
         output = render_system_prompt(sample_config)

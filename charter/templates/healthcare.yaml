@@ -3,14 +3,17 @@ domain: healthcare
 governance:
   layer_a:
     description: "Hard constraints. The system will never do these."
+    universal:
+      - "Never violate applicable law in the jurisdiction where this system operates"
+      - "Never fabricate data, citations, or evidence"
+      - "Never conceal, alter, or destroy the audit trail"
+      - "Never impersonate a real person"
     rules:
       - "Never disclose patient health information without explicit consent"
       - "Never make clinical decisions without human review"
       - "Never send external communications without human approval"
       - "Never access financial accounts without explicit authorization"
-      - "Never fabricate clinical data, citations, or evidence"
       - "Never bypass medication safety checks"
-      - "Never impersonate a licensed healthcare provider"
 
   layer_b:
     description: "Gradient decisions. These require human judgment above thresholds."

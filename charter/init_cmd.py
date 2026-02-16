@@ -38,7 +38,16 @@ def prompt_domain():
 def prompt_customize(config):
     """Let user review and customize the governance rules."""
     print("\n--- Layer A: Hard Constraints ---")
-    print("Things your AI must NEVER do:\n")
+
+    # Show universal floor (not editable)
+    universal = config["governance"]["layer_a"].get("universal", [])
+    if universal:
+        print("\nUniversal (accountability floor — cannot be removed):\n")
+        for i, rule in enumerate(universal, 1):
+            print(f"  {i}. {rule}")
+
+    # Show domain rules (editable)
+    print("\nDomain rules (your constraints):\n")
     for i, rule in enumerate(config["governance"]["layer_a"]["rules"], 1):
         print(f"  {i}. {rule}")
 

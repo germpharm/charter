@@ -62,9 +62,15 @@ def sample_config():
         "governance": {
             "layer_a": {
                 "description": "Hard constraints.",
+                "universal": [
+                    "Never violate applicable law",
+                    "Never fabricate data, citations, or evidence",
+                    "Never conceal the audit trail",
+                    "Never impersonate a real person",
+                ],
                 "rules": [
-                    "Never fabricate data",
-                    "Never impersonate a person",
+                    "Never send external communications without approval",
+                    "Never access financial accounts without authorization",
                 ],
             },
             "layer_b": {

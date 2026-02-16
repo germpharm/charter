@@ -32,6 +32,32 @@ class TestLoadTemplate:
             assert "kill_triggers" in template["governance"]
             assert len(template["governance"]["kill_triggers"]) > 0
 
+    def test_all_templates_have_universal_floor(self):
+        for domain in DOMAINS:
+            template = load_template(domain)
+            universal = template["governance"]["layer_a"].get("universal", [])
+            assert len(universal) == 4, f"{domain} should have 4 universal constraints"
+
+    def test_universal_floor_is_identical_across_domains(self):
+        universal_sets = []
+        for domain in DOMAINS:
+            template = load_template(domain)
+            universal_sets.append(template["governance"]["layer_a"]["universal"])
+        for u in universal_sets[1:]:
+            assert u == universal_sets[0], "Universal floor must be identical across all domains"
+
+    def test_universal_contains_law_constraint(self):
+        template = load_template("general")
+        universal = template["governance"]["layer_a"]["universal"]
+        law_rules = [r for r in universal if "law" in r.lower()]
+        assert len(law_rules) > 0
+
+    def test_universal_contains_audit_trail_constraint(self):
+        template = load_template("general")
+        universal = template["governance"]["layer_a"]["universal"]
+        audit_rules = [r for r in universal if "audit trail" in r.lower()]
+        assert len(audit_rules) > 0
+
     def test_layer_a_rules_are_strings(self):
         for domain in DOMAINS:
             template = load_template(domain)

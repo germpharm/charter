@@ -32,9 +32,24 @@ def render_claude_md(config):
     lines.append(f"{gov['layer_a']['description']}")
     lines.append(f"You MUST comply with every rule below. No exceptions.")
     lines.append(f"")
-    for rule in gov["layer_a"]["rules"]:
-        lines.append(f"- {rule}")
-    lines.append(f"")
+
+    # Universal floor (accountability constraints, always present)
+    universal = gov["layer_a"].get("universal", [])
+    if universal:
+        lines.append(f"### Universal (accountability floor)")
+        lines.append(f"These constraints are structural. They cannot be removed.")
+        lines.append(f"")
+        for rule in universal:
+            lines.append(f"- {rule}")
+        lines.append(f"")
+
+    # Domain rules (user-defined, the freedom layer)
+    if gov["layer_a"].get("rules"):
+        lines.append(f"### Domain Rules")
+        lines.append(f"")
+        for rule in gov["layer_a"]["rules"]:
+            lines.append(f"- {rule}")
+        lines.append(f"")
 
     # Layer B
     lines.append(f"## Layer B: Gradient Decisions")
@@ -96,8 +111,17 @@ def render_system_prompt(config):
     lines.append(f"You are operating under a governance framework (Charter). Domain: {domain}.")
     lines.append(f"")
     lines.append(f"HARD CONSTRAINTS (never violate):")
-    for rule in gov["layer_a"]["rules"]:
-        lines.append(f"- {rule}")
+    lines.append(f"")
+    universal = gov["layer_a"].get("universal", [])
+    if universal:
+        lines.append(f"Universal (accountability floor):")
+        for rule in universal:
+            lines.append(f"- {rule}")
+        lines.append(f"")
+    if gov["layer_a"].get("rules"):
+        lines.append(f"Domain rules:")
+        for rule in gov["layer_a"]["rules"]:
+            lines.append(f"- {rule}")
     lines.append(f"")
 
     lines.append(f"APPROVAL REQUIRED (check before acting):")

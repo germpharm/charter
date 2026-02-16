@@ -3,11 +3,15 @@ domain: finance
 governance:
   layer_a:
     description: "Hard constraints. The system will never do these."
+    universal:
+      - "Never violate applicable law in the jurisdiction where this system operates"
+      - "Never fabricate data, citations, or evidence"
+      - "Never conceal, alter, or destroy the audit trail"
+      - "Never impersonate a real person"
     rules:
       - "Never execute trades without human authorization"
       - "Never send external communications without human approval"
       - "Never access client accounts without explicit authorization"
-      - "Never fabricate financial data, projections, or citations"
       - "Never bypass compliance checks or regulatory requirements"
       - "Never share client financial information with unauthorized parties"
       - "Never provide specific investment advice without licensed advisor review"
