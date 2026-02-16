@@ -145,9 +145,32 @@ def create_persona_inquiry(reference_id=None):
         raise RuntimeError(f"Persona API error ({e.code}): {error_body}")
 
     inquiry_id = result.get("data", {}).get("id")
-    meta = result.get("meta", {})
-    one_time_link = meta.get("oneTimeLink") or meta.get("one-time-link")
-    one_time_link_short = meta.get("oneTimeLinkShort") or meta.get("one-time-link-short")
+
+    # Generate one-time link (separate API call)
+    one_time_link = None
+    one_time_link_short = None
+    if inquiry_id:
+        link_body = json.dumps({"meta": {"auto-create-account": True}}).encode()
+        link_req = urllib.request.Request(
+            f"https://withpersona.com/api/v1/inquiries/{inquiry_id}/generate-one-time-link",
+            data=link_body,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Persona-Version": "2023-01-05",
+                "Key-Inflection": "camel",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(link_req, context=SSL_CONTEXT) as link_resp:
+                link_result = json.loads(link_resp.read().decode())
+                link_meta = link_result.get("meta", {})
+                one_time_link = link_meta.get("oneTimeLink")
+                one_time_link_short = link_meta.get("oneTimeLinkShort")
+        except urllib.error.HTTPError:
+            pass  # Link generation failed but inquiry was created
 
     return {
         "inquiry_id": inquiry_id,
