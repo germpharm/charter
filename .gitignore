@@ -6,3 +6,5 @@ build/
 *.egg
 .eggs/
 *.whl
+.pytest_cache/
+charter_audits/

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charter — AI Governance Layer</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --fg: #e6edf3;
+            --accent: #58a6ff;
+            --muted: #8b949e;
+            --surface: #161b22;
+            --border: #30363d;
+            --green: #3fb950;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+        header {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .install {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 24px;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-bottom: 48px;
+        }
+        .install .prompt { color: var(--muted); }
+        .install .cmd { color: var(--green); }
+
+        .layers {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 64px;
+        }
+        .layer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+        }
+        .layer h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+        .layer p { color: var(--muted); }
+
+        .quickstart {
+            margin-bottom: 64px;
+        }
+        .quickstart h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+        .terminal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+            overflow-x: auto;
+        }
+        .terminal .comment { color: var(--muted); }
+        .terminal .cmd { color: var(--fg); }
+
+        .features {
+            margin-bottom: 64px;
+        }
+        .features h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .feature {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .feature h4 {
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+        .feature p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .philosophy {
+            border-top: 1px solid var(--border);
+            padding: 48px 0;
+            margin-bottom: 48px;
+        }
+        .philosophy h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+        .philosophy p {
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .links {
+            text-align: center;
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+        }
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
+            margin: 0 16px;
+            font-size: 1rem;
+        }
+        .links a:hover { text-decoration: underline; }
+
+        footer {
+            text-align: center;
+            padding: 24px 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            header { padding: 48px 0 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Charter</h1>
+            <p class="tagline">AI governance layer. Local-first. Open source. Three layers: hard constraints, gradient decisions, self-audit.</p>
+            <div class="install">
+                <span class="prompt">$</span> <span class="cmd">pip install charter-governance</span>
+            </div>
+        </header>
+
+        <div class="layers">
+            <div class="layer">
+                <h3>Layer A: Hard Constraints</h3>
+                <p>Things your AI must never do. No exceptions. You define the rules. The system enforces them.</p>
+            </div>
+            <div class="layer">
+                <h3>Layer B: Gradient Decisions</h3>
+                <p>Actions that require human judgment above certain thresholds. Financial transactions, external communications, sensitive data access.</p>
+            </div>
+            <div class="layer">
+                <h3>Layer C: Self-Audit</h3>
+                <p>The system reviews what it did and reports honestly. Accountability, not perfection.</p>
+            </div>
+        </div>
+
+        <div class="quickstart">
+            <h2>Quick Start</h2>
+            <div class="terminal">
+                <div><span class="comment"># Create a governance config</span></div>
+                <div class="cmd">$ charter init</div>
+                <div>&nbsp;</div>
+                <div><span class="comment"># Generate enforceable AI instructions</span></div>
+                <div class="cmd">$ charter generate</div>
+                <div>&nbsp;</div>
+                <div><span class="comment"># Run a governance audit</span></div>
+                <div class="cmd">$ charter audit</div>
+                <div>&nbsp;</div>
+                <div><span class="comment"># See your identity</span></div>
+                <div class="cmd">$ charter identity</div>
+                <div>&nbsp;</div>
+                <div><span class="comment"># Check everything at a glance</span></div>
+                <div class="cmd">$ charter status</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h4>Domain Templates</h4>
+                    <p>Healthcare (HIPAA), Finance (SOX), Education (FERPA), General. Governance presets for regulated industries.</p>
+                </div>
+                <div class="feature">
+                    <h4>Pseudonymous Identity</h4>
+                    <p>SHA-256 hash chain. Every action signed. When you verify your identity, all prior work transfers to you.</p>
+                </div>
+                <div class="feature">
+                    <h4>Context Isolation</h4>
+                    <p>Separate work and personal knowledge. No cross-context flow by default. Governed bridging with both-party consent.</p>
+                </div>
+                <div class="feature">
+                    <h4>Network Layer</h4>
+                    <p>Register expertise, connect data sources, recognize who shaped you. Local-first, shareable when ready.</p>
+                </div>
+                <div class="feature">
+                    <h4>Works With Any AI</h4>
+                    <p>Generate a CLAUDE.md, a system prompt, or raw YAML. Charter governs the AI, not the other way around.</p>
+                </div>
+                <div class="feature">
+                    <h4>Kill Triggers</h4>
+                    <p>Conditions that immediately stop all AI activity. Ethics declining? Audit bypassed? The system shuts itself down.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="philosophy">
+            <h2>Philosophy</h2>
+            <p>The value of AI is not in the tokens. Tokens are going to zero. The value is in the humans who provide judgment, context, and ethics.</p>
+            <p>Charter is the governance layer that makes human judgment enforceable on AI systems.</p>
+            <p>Open source because we don't need more rent seekers. We need human creativity to thrive while being accountable for what it creates.</p>
+        </div>
+
+        <div class="links">
+            <a href="https://github.com/germpharm/charter">GitHub</a>
+            <a href="https://pypi.org/project/charter-governance/">PyPI</a>
+            <a href="https://github.com/germpharm/charter/blob/main/CONTRIBUTING.md">Contribute</a>
+        </div>
+
+        <footer>
+            <p>Apache 2.0 &middot; GermPharm LLC &middot; 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
