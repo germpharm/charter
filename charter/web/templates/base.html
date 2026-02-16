@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Charter{% endblock %} — Governance Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topnav">
+        <div class="nav-brand">
+            &#9672; Charter
+        </div>
+        <div class="nav-links">
+            <a href="/" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+            <a href="/identity" class="{% if active == 'identity' %}active{% endif %}">Identity</a>
+            <a href="/audit" class="{% if active == 'audit' %}active{% endif %}">Audit Trail</a>
+            <a href="/governance" class="{% if active == 'governance' %}active{% endif %}">Governance</a>
+            <a href="/network" class="{% if active == 'network' %}active{% endif %}">Network</a>
+        </div>
+        <div class="nav-status">
+            {% if daemon_running %}
+            <span class="badge badge-green">Daemon Active</span>
+            {% else %}
+            <span class="badge badge-gray">Dashboard Only</span>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <span>Charter v{{ version }} — AI Governance Layer</span>
+        <span>Local-first. Open source. Apache 2.0.</span>
+    </footer>
+</body>
+</html>

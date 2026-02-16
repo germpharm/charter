@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Trail{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Audit Trail</h1>
+<p class="page-subtitle">Complete hash chain of all governance events</p>
+
+<div class="cards">
+    <div class="card">
+        <div class="card-label">Total Events</div>
+        <div class="card-value">{{ chain_length }}</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Chain Integrity</div>
+        <div class="card-value">
+            {% if chain_intact %}
+                <span class="badge badge-green">Verified</span>
+            {% else %}
+                <span class="badge badge-red">Broken</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-label">Event Types</div>
+        <div class="card-value">{{ event_counts|length }}</div>
+    </div>
+</div>
+
+{% if event_counts %}
+<div class="section">
+    <div class="section-header">Event Summary</div>
+    <div class="section-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>Event Type</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event, count in event_counts %}
+                <tr>
+                    <td>{{ event }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if entries %}
+<div class="section">
+    <div class="section-header">Full Event Log</div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Timestamp</th>
+                    <th>Event</th>
+                    <th>Data</th>
+                    <th>Hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.index }}</td>
+                    <td class="mono">{{ entry.timestamp }}</td>
+                    <td>
+                        {% if 'identity' in entry.event %}
+                            <span class="event-identity">{{ entry.event }}</span>
+                        {% elif 'governance' in entry.event or 'audit' in entry.event %}
+                            <span class="event-governance">{{ entry.event }}</span>
+                        {% elif 'detected' in entry.event or 'daemon' in entry.event %}
+                            <span class="event-detection">{{ entry.event }}</span>
+                        {% elif 'node' in entry.event or 'connection' in entry.event or 'formation' in entry.event %}
+                            <span class="event-network">{{ entry.event }}</span>
+                        {% else %}
+                            {{ entry.event }}
+                        {% endif %}
+                    </td>
+                    <td class="mono" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        {% if entry.data %}
+                            {% for key, val in entry.data.items() %}
+                                {{ key }}: {{ val }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td class="mono">{{ entry.get('hash', '')[:12] }}...</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="section">
+    <div class="section-body">
+        <div class="empty">
+            <p>No events recorded yet.</p>
+            <p>Run <code>charter init</code> to create your identity and start the chain.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

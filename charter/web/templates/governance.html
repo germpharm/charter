@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Governance{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Governance Configuration</h1>
+<p class="page-subtitle">Three layers: hard constraints, gradient decisions, self-audit</p>
+
+{% if config %}
+
+{% set gov = config.governance %}
+
+<div class="cards">
+    <div class="card">
+        <div class="card-label">Domain</div>
+        <div class="card-value" style="font-size: 20px;">{{ config.get('domain', 'general') }}</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Layer A Rules</div>
+        <div class="card-value">
+            {{ (gov.layer_a.get('universal', [])|length) + (gov.layer_a.get('rules', [])|length) }}
+        </div>
+        <div class="card-detail">hard constraints</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Layer B Rules</div>
+        <div class="card-value">{{ gov.layer_b.rules|length }}</div>
+        <div class="card-detail">gradient thresholds</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Kill Triggers</div>
+        <div class="card-value">{{ config.get('kill_triggers', [])|length }}</div>
+        <div class="card-detail">emergency stops</div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header">Layer A: Hard Constraints</div>
+    <div class="section-body">
+        <p style="font-size: 14px; color: var(--gray-500); margin-bottom: 16px;">
+            {{ gov.layer_a.description }}
+        </p>
+
+        {% if gov.layer_a.get('universal') %}
+        <h3 style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-500); margin-bottom: 8px;">
+            Universal Accountability Floor
+        </h3>
+        <ul class="rule-list">
+            {% for rule in gov.layer_a.universal %}
+            <li>
+                <span class="rule-tag rule-tag-universal">Floor</span>
+                <span>{{ rule }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if gov.layer_a.get('rules') %}
+        <h3 style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-500); margin-top: 20px; margin-bottom: 8px;">
+            Domain Rules
+        </h3>
+        <ul class="rule-list">
+            {% for rule in gov.layer_a.rules %}
+            <li>
+                <span class="rule-tag rule-tag-domain">Domain</span>
+                <span>{{ rule }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header">Layer B: Gradient Decisions</div>
+    <div class="section-body">
+        <p style="font-size: 14px; color: var(--gray-500); margin-bottom: 16px;">
+            {{ gov.layer_b.description }}
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Threshold</th>
+                    <th>Requires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rule in gov.layer_b.rules %}
+                <tr>
+                    <td>{{ rule.action }}</td>
+                    <td>
+                        {% if rule.threshold_dollars is defined %}
+                            ${{ rule.threshold_dollars }}
+                        {% elif rule.threshold is defined %}
+                            {{ rule.threshold }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td><span class="badge badge-yellow">{{ rule.requires }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header">Layer C: Self-Audit</div>
+    <div class="section-body">
+        <p style="font-size: 14px; color: var(--gray-500); margin-bottom: 16px;">
+            {{ gov.layer_c.description }}
+        </p>
+        <div class="identity-grid">
+            <div class="identity-field">
+                <div class="identity-label">Frequency</div>
+                <div class="identity-value">{{ gov.layer_c.frequency }}</div>
+            </div>
+            <div class="identity-field">
+                <div class="identity-label">Checks</div>
+                <div class="identity-value">
+                    {% for check in gov.layer_c.get('checks', []) %}
+                        {{ check }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if config.get('kill_triggers') %}
+<div class="section">
+    <div class="section-header">Kill Triggers</div>
+    <div class="section-body">
+        {% for trigger in config.kill_triggers %}
+        <div class="kill-trigger">
+            {% if trigger is mapping %}
+                <strong>{{ trigger.trigger }}</strong>
+                {% if trigger.action %} — {{ trigger.action }}{% endif %}
+            {% else %}
+                {{ trigger }}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="section">
+    <div class="section-body">
+        <div class="empty">
+            <p>No governance configuration found.</p>
+            <p>Run <code>charter init</code> to create charter.yaml for this project.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

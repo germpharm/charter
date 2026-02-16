@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Identity{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Identity</h1>
+<p class="page-subtitle">Pseudonymous identity with cryptographic proof of authorship</p>
+
+{% if identity %}
+<div class="two-col">
+    <div class="section">
+        <div class="section-header">Identity Details</div>
+        <div class="section-body">
+            <div class="identity-grid">
+                <div class="identity-field">
+                    <div class="identity-label">Alias</div>
+                    <div class="identity-value">{{ identity.alias }}</div>
+                </div>
+                <div class="identity-field">
+                    <div class="identity-label">Created</div>
+                    <div class="identity-value">{{ identity.created_at }}</div>
+                </div>
+                <div class="identity-field">
+                    <div class="identity-label">Public ID</div>
+                    <div class="identity-value mono">{{ identity.public_id }}</div>
+                </div>
+                <div class="identity-field">
+                    <div class="identity-label">Contributions</div>
+                    <div class="identity-value">{{ identity.contributions }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">Verification Status</div>
+        <div class="section-body">
+            {% if identity.real_identity %}
+                <div class="identity-grid">
+                    <div class="identity-field">
+                        <div class="identity-label">Verified Name</div>
+                        <div class="identity-value">{{ identity.real_identity.name }}</div>
+                    </div>
+                    <div class="identity-field">
+                        <div class="identity-label">Method</div>
+                        <div class="identity-value">
+                            {{ identity.real_identity.method }}
+                            <span class="badge badge-green">{{ identity.real_identity.trust_level }}</span>
+                        </div>
+                    </div>
+                    <div class="identity-field">
+                        <div class="identity-label">Verified Email</div>
+                        <div class="identity-value">{{ identity.real_identity.email }}</div>
+                    </div>
+                    <div class="identity-field">
+                        <div class="identity-label">Verified At</div>
+                        <div class="identity-value">{{ identity.real_identity.verified_at }}</div>
+                    </div>
+                </div>
+                <p style="margin-top: 16px; font-size: 14px; color: var(--gray-500);">
+                    All {{ chain_length }} chain entries are attributed to this verified identity.
+                    The unbroken hash chain proves continuous authorship.
+                </p>
+            {% else %}
+                <div class="empty">
+                    <p><span class="badge badge-yellow">Not Yet Verified</span></p>
+                    <p style="margin-top: 12px;">Your identity is pseudonymous. All work is signed by your public ID.</p>
+                    <p>Verify with: <code>charter verify start</code></p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-header">Hash Chain Summary</div>
+    <div class="section-body">
+        <div class="cards" style="margin-bottom: 0;">
+            <div class="card">
+                <div class="card-label">Chain Length</div>
+                <div class="card-value">{{ chain_length }}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Integrity</div>
+                <div class="card-value">
+                    {% if chain_intact %}
+                        <span class="badge badge-green">Verified</span>
+                    {% else %}
+                        <span class="badge badge-red">Broken</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-label">Signing</div>
+                <div class="card-value">
+                    <span class="badge badge-blue">HMAC-SHA256</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="section">
+    <div class="section-body">
+        <div class="empty">
+            <p>No identity created yet.</p>
+            <p>Run <code>charter init</code> to create your governance identity.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

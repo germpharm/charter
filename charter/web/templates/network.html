@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Network{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Network</h1>
+<p class="page-subtitle">Node identity, connections, and contribution tracking</p>
+
+{% if node %}
+<div class="section">
+    <div class="section-header">Node Information</div>
+    <div class="section-body">
+        <div class="identity-grid">
+            <div class="identity-field">
+                <div class="identity-label">Alias</div>
+                <div class="identity-value">{{ node.alias }}</div>
+            </div>
+            <div class="identity-field">
+                <div class="identity-label">Created</div>
+                <div class="identity-value">{{ node.created_at }}</div>
+            </div>
+            <div class="identity-field">
+                <div class="identity-label">Public ID</div>
+                <div class="identity-value mono">{{ node.public_id }}</div>
+            </div>
+            <div class="identity-field">
+                <div class="identity-label">Version</div>
+                <div class="identity-value">{{ node.version }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="two-col">
+    {% if node.get('expertise') %}
+    <div class="section">
+        <div class="section-header">Expertise ({{ node.expertise|length }})</div>
+        <div class="section-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exp in node.expertise %}
+                    <tr>
+                        <td><span class="badge badge-blue">{{ exp.domain }}</span></td>
+                        <td>{{ exp.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if node.get('data_sources') %}
+    <div class="section">
+        <div class="section-header">Data Sources ({{ node.data_sources|length }})</div>
+        <div class="section-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for src in node.data_sources %}
+                    <tr>
+                        <td>{{ src.name }}</td>
+                        <td>{{ src.type }}</td>
+                        <td>
+                            {% if src.status == 'active' %}
+                                <span class="badge badge-green">{{ src.status }}</span>
+                            {% elif src.status == 'syncing' %}
+                                <span class="badge badge-blue">{{ src.status }}</span>
+                            {% else %}
+                                <span class="badge badge-gray">{{ src.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if node.get('formation_contributors') %}
+<div class="section">
+    <div class="section-header">Formation Attribution ({{ node.formation_contributors|length }})</div>
+    <div class="section-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Recognized</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contrib in node.formation_contributors %}
+                <tr>
+                    <td><strong>{{ contrib.name }}</strong></td>
+                    <td><span class="badge badge-blue">{{ contrib.contribution_type }}</span></td>
+                    <td>{{ contrib.description }}</td>
+                    <td class="mono">{{ contrib.recognized_at[:10] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if connections %}
+<div class="section">
+    <div class="section-header">Connections ({{ connections|length }})</div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Peer</th>
+                    <th>Relationship</th>
+                    <th>Connected</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conn in connections %}
+                <tr>
+                    <td>{{ conn.get('peer_alias', conn.get('peer_public_id', '')[:16]) }}</td>
+                    <td>{{ conn.get('relationship', '') }}</td>
+                    <td class="mono">{{ conn.get('connected_at', '')[:10] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if contributions %}
+<div class="section">
+    <div class="section-header">Contributions ({{ contributions|length }})</div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in contributions %}
+                <tr>
+                    <td>{{ c.get('title', '') }}</td>
+                    <td><span class="badge badge-blue">{{ c.get('type', '') }}</span></td>
+                    <td>{{ c.get('value', '') }}</td>
+                    <td class="mono">{{ c.get('recorded_at', '')[:10] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="section">
+    <div class="section-body">
+        <div class="empty">
+            <p>No network node configured.</p>
+            <p>Run <code>charter connect init</code> to create your network node.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

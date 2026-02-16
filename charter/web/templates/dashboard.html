@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Governance Dashboard</h1>
+
+<div class="cards">
+    <div class="card">
+        <div class="card-label">Identity</div>
+        <div class="card-value">
+            {% if identity %}
+                {% if identity.real_identity %}
+                    <span class="badge badge-green">Verified</span>
+                {% else %}
+                    <span class="badge badge-yellow">Pseudonymous</span>
+                {% endif %}
+            {% else %}
+                <span class="badge badge-red">Not Created</span>
+            {% endif %}
+        </div>
+        <div class="card-detail">
+            {% if identity %}{{ identity.alias }}{% else %}Run 'charter init'{% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">Hash Chain</div>
+        <div class="card-value">{{ chain_length }}</div>
+        <div class="card-detail">
+            {% if chain_intact %}
+                <span class="badge badge-green">Intact</span>
+            {% else %}
+                <span class="badge badge-red">Broken</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">AI Tools</div>
+        <div class="card-value">{{ tools|length }}</div>
+        <div class="card-detail">detected on this machine</div>
+    </div>
+
+    <div class="card">
+        <div class="card-label">Governance</div>
+        <div class="card-value">
+            {% if config %}
+                <span class="badge badge-green">Active</span>
+            {% else %}
+                <span class="badge badge-gray">Not Configured</span>
+            {% endif %}
+        </div>
+        <div class="card-detail">
+            {% if config %}{{ config.get('domain', 'general') }} domain{% else %}Run 'charter init'{% endif %}
+        </div>
+    </div>
+</div>
+
+{% if tools %}
+<div class="section">
+    <div class="section-header">Detected AI Tools</div>
+    <div class="section-body">
+        {% for tool in tools %}
+        <div class="tool-item">
+            <span class="tool-name">{{ tool.name }}</span>
+            <span class="tool-vendor">{{ tool.vendor }}</span>
+            <span class="tool-status">
+                {% if tool.governable %}
+                    <span class="badge badge-green">Governable</span>
+                {% else %}
+                    <span class="badge badge-yellow">Detected</span>
+                {% endif %}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="section">
+    <div class="section-header">Detected AI Tools</div>
+    <div class="section-body">
+        <div class="empty">
+            <p>No AI tools currently detected.</p>
+            <p>The daemon scans for Claude Code, ChatGPT, VS Code, Cursor, and Windsurf.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if recent_events %}
+<div class="section">
+    <div class="section-header">Recent Events</div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Timestamp</th>
+                    <th>Event</th>
+                    <th>Signer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in recent_events %}
+                <tr>
+                    <td>{{ entry.index }}</td>
+                    <td class="mono">{{ entry.timestamp }}</td>
+                    <td>
+                        {% if 'identity' in entry.event %}
+                            <span class="event-identity">{{ entry.event }}</span>
+                        {% elif 'governance' in entry.event or 'audit' in entry.event %}
+                            <span class="event-governance">{{ entry.event }}</span>
+                        {% elif 'detected' in entry.event or 'daemon' in entry.event %}
+                            <span class="event-detection">{{ entry.event }}</span>
+                        {% elif 'node' in entry.event or 'connection' in entry.event or 'formation' in entry.event %}
+                            <span class="event-network">{{ entry.event }}</span>
+                        {% else %}
+                            {{ entry.event }}
+                        {% endif %}
+                    </td>
+                    <td class="mono">{{ entry.get('signer', '')[:16] }}...</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

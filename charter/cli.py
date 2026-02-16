@@ -105,6 +105,41 @@ def main():
     verify_p.add_argument("name", nargs="?", help="Inquiry ID for check command")
     verify_p.add_argument("--provider", dest="provider_flag", help="Provider for start command")
 
+    # charter serve
+    serve_p = sub.add_parser("serve", help="Start the governance daemon and web dashboard")
+    serve_p.add_argument(
+        "--port", "-p",
+        type=int,
+        default=8374,
+        help="Port for the web dashboard (default: 8374)",
+    )
+    serve_p.add_argument(
+        "--interval",
+        type=int,
+        default=60,
+        help="AI tool scan interval in seconds (default: 60)",
+    )
+
+    # charter detect
+    sub.add_parser("detect", help="One-shot scan for AI tools on this machine")
+
+    # charter install
+    sub.add_parser("install", help="Install the daemon as a system service")
+
+    # charter inject
+    inject_p = sub.add_parser("inject", help="Inject governance rules into a project")
+    inject_p.add_argument(
+        "path",
+        nargs="?",
+        default=".",
+        help="Project directory path (default: current directory)",
+    )
+    inject_p.add_argument(
+        "--config", "-c",
+        default="charter.yaml",
+        help="Path to charter.yaml",
+    )
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -135,6 +170,23 @@ def main():
     elif args.command == "verify":
         from charter.verify import run_verify
         run_verify(args)
+    elif args.command == "serve":
+        from charter.daemon.service import run_serve
+        run_serve(args)
+    elif args.command == "detect":
+        from charter.daemon.service import run_detect
+        run_detect(args)
+    elif args.command == "install":
+        from charter.daemon.service import run_install
+        run_install(args)
+    elif args.command == "inject":
+        from charter.daemon.injector import inject_claude_md
+        import os
+        result = inject_claude_md(os.path.abspath(args.path), config_path=args.config)
+        if result:
+            print(f"Governance injected: {result}")
+        else:
+            print("No charter.yaml found. Run 'charter init' first.")
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
