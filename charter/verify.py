@@ -18,8 +18,15 @@ and triggers authorship transfer for all prior hash chain entries.
 
 import json
 import os
+import ssl
 import time
 import webbrowser
+
+try:
+    import certifi
+    SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+except ImportError:
+    SSL_CONTEXT = ssl.create_default_context()
 
 VERIFY_CONFIG_FILE = "verify_config.json"
 
@@ -131,7 +138,7 @@ def create_persona_inquiry(reference_id=None):
     )
 
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, context=SSL_CONTEXT) as resp:
             result = json.loads(resp.read().decode())
     except urllib.error.HTTPError as e:
         error_body = e.read().decode() if e.fp else str(e)
@@ -175,7 +182,7 @@ def check_persona_inquiry(inquiry_id):
     )
 
     try:
-        with urllib.request.urlopen(req) as resp:
+        with urllib.request.urlopen(req, context=SSL_CONTEXT) as resp:
             result = json.loads(resp.read().decode())
     except urllib.error.HTTPError as e:
         error_body = e.read().decode() if e.fp else str(e)
