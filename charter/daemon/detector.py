@@ -1,7 +1,9 @@
 """AI tool detection on the local machine.
 
-Scans running processes to identify AI tools and reports their
-governance status. Works cross-platform (macOS, Windows, Linux).
+Scans running processes and browser tabs to identify AI tools
+and reports their governance status. Works cross-platform
+(macOS, Windows, Linux). Browser tab detection uses AppleScript
+on macOS.
 
 Uses psutil if available, falls back to ps/tasklist.
 """
@@ -10,6 +12,67 @@ import os
 import platform
 import subprocess
 import time
+
+
+# Known AI domains in browser tabs
+BROWSER_AI_DOMAINS = {
+    "chatgpt": {
+        "name": "ChatGPT",
+        "vendor": "OpenAI",
+        "domains": ["chat.openai.com", "chatgpt.com"],
+        "governable": False,
+        "method": None,
+    },
+    "grok": {
+        "name": "Grok",
+        "vendor": "xAI",
+        "domains": ["grok.com", "grok.x.ai", "x.com/i/grok"],
+        "governable": False,
+        "method": None,
+    },
+    "claude_web": {
+        "name": "Claude (web)",
+        "vendor": "Anthropic",
+        "domains": ["claude.ai"],
+        "governable": False,
+        "method": None,
+    },
+    "gemini": {
+        "name": "Gemini",
+        "vendor": "Google",
+        "domains": ["gemini.google.com"],
+        "governable": False,
+        "method": None,
+    },
+    "copilot_web": {
+        "name": "Microsoft Copilot",
+        "vendor": "Microsoft",
+        "domains": ["copilot.microsoft.com"],
+        "governable": False,
+        "method": None,
+    },
+    "perplexity": {
+        "name": "Perplexity",
+        "vendor": "Perplexity AI",
+        "domains": ["perplexity.ai"],
+        "governable": False,
+        "method": None,
+    },
+    "poe": {
+        "name": "Poe",
+        "vendor": "Quora",
+        "domains": ["poe.com"],
+        "governable": False,
+        "method": None,
+    },
+    "deepseek": {
+        "name": "DeepSeek",
+        "vendor": "DeepSeek",
+        "domains": ["chat.deepseek.com"],
+        "governable": False,
+        "method": None,
+    },
+}
 
 
 # Known AI tools and their process signatures
@@ -137,12 +200,89 @@ def _detect_subprocess():
     return processes
 
 
+def detect_browser_ai():
+    """Detect AI tools open in browser tabs (macOS only).
+
+    Uses AppleScript to query Safari and Chrome for open tab URLs.
+    Matches URLs against known AI domains.
+    Returns list of detected browser AI tools.
+    """
+    if platform.system() != "Darwin":
+        return []
+
+    urls = []
+
+    # Query Safari
+    try:
+        result = subprocess.run(
+            ["osascript", "-e",
+             'tell application "System Events" to get name of every process whose name is "Safari"'],
+            capture_output=True, text=True, timeout=3,
+        )
+        if "Safari" in result.stdout:
+            result = subprocess.run(
+                ["osascript", "-e",
+                 'tell application "Safari" to get URL of every tab of every window'],
+            capture_output=True, text=True, timeout=5,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                urls.extend(result.stdout.strip().split(", "))
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+
+    # Query Chrome
+    try:
+        result = subprocess.run(
+            ["osascript", "-e",
+             'tell application "System Events" to get name of every process whose name is "Google Chrome"'],
+            capture_output=True, text=True, timeout=3,
+        )
+        if "Google Chrome" in result.stdout:
+            result = subprocess.run(
+                ["osascript", "-e",
+                 'tell application "Google Chrome" to get URL of every tab of every window'],
+                capture_output=True, text=True, timeout=5,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                urls.extend(result.stdout.strip().split(", "))
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+
+    detected = []
+    seen = set()
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    for url in urls:
+        url_lower = url.lower().strip()
+        for tool_id, info in BROWSER_AI_DOMAINS.items():
+            if tool_id in seen:
+                continue
+            for domain in info["domains"]:
+                if domain in url_lower:
+                    detected.append({
+                        "tool_id": f"browser_{tool_id}",
+                        "name": info["name"],
+                        "vendor": info["vendor"],
+                        "pid": 0,
+                        "process_name": "browser",
+                        "governable": info["governable"],
+                        "method": info["method"],
+                        "detected_at": now,
+                        "source": "browser_tab",
+                        "url_match": domain,
+                    })
+                    seen.add(tool_id)
+                    break
+
+    return detected
+
+
 def detect_ai_tools():
-    """Scan running processes for known AI tools.
+    """Scan running processes and browser tabs for AI tools.
 
     Returns list of detected tools with governance status.
     Each tool appears at most once regardless of how many
-    matching processes are found.
+    matching processes or tabs are found.
     """
     processes = detect_processes()
     detected = []
@@ -171,6 +311,13 @@ def detect_ai_tools():
                     })
                     seen.add(tool_id)
                     break
+
+    # Also check browser tabs
+    browser_tools = detect_browser_ai()
+    for tool in browser_tools:
+        if tool["tool_id"] not in seen:
+            detected.append(tool)
+            seen.add(tool["tool_id"])
 
     return detected
 

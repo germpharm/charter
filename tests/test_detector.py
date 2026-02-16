@@ -5,7 +5,9 @@ from unittest.mock import patch
 
 from charter.daemon.detector import (
     AI_TOOLS,
+    BROWSER_AI_DOMAINS,
     detect_ai_tools,
+    detect_browser_ai,
     detect_processes,
     get_summary,
 )
@@ -56,35 +58,45 @@ class TestDetectProcesses:
 class TestDetectAITools:
     """Tests for AI tool detection with mocked processes."""
 
+    def _patch_browser(self):
+        """Mock browser detection to isolate from real browser state."""
+        return patch(
+            "charter.daemon.detector.detect_browser_ai",
+            return_value=[],
+        )
+
     def test_detects_claude_code(self):
         mock_procs = [
             {"pid": 1234, "name": "claude", "cmdline": "claude --help"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 1
-            assert tools[0]["tool_id"] == "claude_code"
-            assert tools[0]["name"] == "Claude Code"
-            assert tools[0]["governable"] is True
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 1
+                assert tools[0]["tool_id"] == "claude_code"
+                assert tools[0]["name"] == "Claude Code"
+                assert tools[0]["governable"] is True
 
     def test_detects_chatgpt(self):
         mock_procs = [
             {"pid": 5678, "name": "ChatGPT", "cmdline": "ChatGPT"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 1
-            assert tools[0]["tool_id"] == "chatgpt_desktop"
-            assert tools[0]["governable"] is False
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 1
+                assert tools[0]["tool_id"] == "chatgpt_desktop"
+                assert tools[0]["governable"] is False
 
     def test_detects_vscode(self):
         mock_procs = [
             {"pid": 9999, "name": "Code Helper", "cmdline": "Code Helper (Renderer)"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 1
-            assert tools[0]["tool_id"] == "vscode"
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 1
+                assert tools[0]["tool_id"] == "vscode"
 
     def test_detects_multiple_tools(self):
         mock_procs = [
@@ -93,12 +105,13 @@ class TestDetectAITools:
             {"pid": 3, "name": "Code Helper", "cmdline": "Code Helper"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 3
-            tool_ids = {t["tool_id"] for t in tools}
-            assert "claude_code" in tool_ids
-            assert "chatgpt_desktop" in tool_ids
-            assert "vscode" in tool_ids
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 3
+                tool_ids = {t["tool_id"] for t in tools}
+                assert "claude_code" in tool_ids
+                assert "chatgpt_desktop" in tool_ids
+                assert "vscode" in tool_ids
 
     def test_no_duplicates(self):
         mock_procs = [
@@ -106,8 +119,9 @@ class TestDetectAITools:
             {"pid": 2, "name": "claude", "cmdline": "claude --version"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 1
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 1
 
     def test_no_false_positives(self):
         mock_procs = [
@@ -116,21 +130,49 @@ class TestDetectAITools:
             {"pid": 3, "name": "Safari", "cmdline": "Safari"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert len(tools) == 0
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert len(tools) == 0
 
     def test_detection_has_timestamp(self):
         mock_procs = [
             {"pid": 1, "name": "claude", "cmdline": "claude"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            tools = detect_ai_tools()
-            assert "detected_at" in tools[0]
-            assert "T" in tools[0]["detected_at"]
+            with self._patch_browser():
+                tools = detect_ai_tools()
+                assert "detected_at" in tools[0]
+                assert "T" in tools[0]["detected_at"]
+
+
+class TestBrowserAIDomains:
+    """Tests for browser AI domain registry."""
+
+    def test_known_domains_exist(self):
+        assert "chatgpt" in BROWSER_AI_DOMAINS
+        assert "grok" in BROWSER_AI_DOMAINS
+        assert "claude_web" in BROWSER_AI_DOMAINS
+        assert "gemini" in BROWSER_AI_DOMAINS
+
+    def test_grok_includes_grok_com(self):
+        assert "grok.com" in BROWSER_AI_DOMAINS["grok"]["domains"]
+
+    def test_all_browser_tools_have_required_fields(self):
+        for tool_id, info in BROWSER_AI_DOMAINS.items():
+            assert "name" in info, f"{tool_id} missing name"
+            assert "vendor" in info, f"{tool_id} missing vendor"
+            assert "domains" in info, f"{tool_id} missing domains"
+            assert "governable" in info, f"{tool_id} missing governable"
 
 
 class TestGetSummary:
     """Tests for the summary function."""
+
+    def _patch_browser(self):
+        return patch(
+            "charter.daemon.detector.detect_browser_ai",
+            return_value=[],
+        )
 
     def test_summary_structure(self):
         mock_procs = [
@@ -138,16 +180,18 @@ class TestGetSummary:
             {"pid": 2, "name": "ChatGPT", "cmdline": "ChatGPT"},
         ]
         with patch("charter.daemon.detector.detect_processes", return_value=mock_procs):
-            summary = get_summary()
-            assert summary["total"] == 2
-            assert summary["governed"] == 1
-            assert summary["ungoverned"] == 1
-            assert "scanned_at" in summary
-            assert len(summary["tools"]) == 2
+            with self._patch_browser():
+                summary = get_summary()
+                assert summary["total"] == 2
+                assert summary["governed"] == 1
+                assert summary["ungoverned"] == 1
+                assert "scanned_at" in summary
+                assert len(summary["tools"]) == 2
 
     def test_empty_summary(self):
         with patch("charter.daemon.detector.detect_processes", return_value=[]):
-            summary = get_summary()
-            assert summary["total"] == 0
-            assert summary["governed"] == 0
-            assert summary["ungoverned"] == 0
+            with self._patch_browser():
+                summary = get_summary()
+                assert summary["total"] == 0
+                assert summary["governed"] == 0
+                assert summary["ungoverned"] == 0

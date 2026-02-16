@@ -52,11 +52,16 @@ def prompt_customize(config):
         print(f"  {i}. {rule}")
 
     print()
-    edit = input("Add a constraint? (enter text, or press Enter to continue): ").strip()
+    print("These rules are yours. Press Enter to keep them as-is.")
+    print("To add a new rule, type the full rule text.\n")
+    edit = input("New rule (or Enter to continue): ").strip()
     while edit:
-        config["governance"]["layer_a"]["rules"].append(edit)
-        print(f"  Added: {edit}")
-        edit = input("Add another? (enter text, or press Enter to continue): ").strip()
+        if edit.isdigit():
+            print(f"  (That looks like a number. Type the full rule text, or press Enter to continue.)")
+        else:
+            config["governance"]["layer_a"]["rules"].append(edit)
+            print(f"  Added: {edit}")
+        edit = input("New rule (or Enter to continue): ").strip()
 
     print("\n--- Layer B: Gradient Decisions ---")
     print("Actions that require human judgment:\n")
