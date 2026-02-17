@@ -50,7 +50,8 @@ class TestInjectClaudeMd:
         assert "Existing Project Rules" in content
         assert "Do good things." in content
 
-    def test_returns_none_without_config(self, tmp_path):
+    def test_returns_none_without_config(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
         result = inject_claude_md(str(tmp_path), config=None)
         assert result is None
 

@@ -1,0 +1,56 @@
+{
+  "name": "charter-governance",
+  "displayName": "Charter Governance",
+  "description": "Shows Charter governance status in the VS Code status bar. Detects charter.yaml in the workspace and monitors the Charter daemon.",
+  "version": "1.0.0",
+  "publisher": "germpharm",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "charterGovernance.showStatus",
+        "title": "Charter: Show Governance Status"
+      },
+      {
+        "command": "charterGovernance.refresh",
+        "title": "Charter: Refresh Governance Status"
+      }
+    ],
+    "configuration": {
+      "title": "Charter Governance",
+      "properties": {
+        "charterGovernance.daemonPort": {
+          "type": "number",
+          "default": 8374,
+          "description": "Port number for the Charter daemon."
+        },
+        "charterGovernance.daemonPollInterval": {
+          "type": "number",
+          "default": 30000,
+          "description": "How often (in ms) to check if the Charter daemon is running."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  }
+}

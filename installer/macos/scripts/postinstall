@@ -1,0 +1,74 @@
+#!/bin/bash
+# Charter Governance — Post-install script
+# Runs after the macOS .pkg installer copies files.
+
+LOG="/tmp/charter_install.log"
+echo "Charter install started at $(date)" > "$LOG"
+
+# Find Python 3
+PYTHON=""
+for cmd in python3 /usr/local/bin/python3 /opt/homebrew/bin/python3; do
+    if command -v "$cmd" &>/dev/null; then
+        version=$("$cmd" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null)
+        major=$(echo "$version" | cut -d. -f1)
+        minor=$(echo "$version" | cut -d. -f2)
+        if [ "$major" -ge 3 ] && [ "$minor" -ge 9 ]; then
+            PYTHON="$cmd"
+            echo "Found Python: $PYTHON ($version)" >> "$LOG"
+            break
+        fi
+    fi
+done
+
+if [ -z "$PYTHON" ]; then
+    echo "ERROR: Python 3.9+ not found" >> "$LOG"
+    osascript -e 'display dialog "Charter needs Python 3.9 or later to run.\n\nPlease install Python from python.org/downloads and then run this installer again." with title "Charter — Python Required" buttons {"OK"} default button "OK" with icon caution'
+    exit 1
+fi
+
+# Install charter-governance from PyPI
+echo "Installing charter-governance..." >> "$LOG"
+"$PYTHON" -m pip install --upgrade charter-governance >> "$LOG" 2>&1
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: pip install failed" >> "$LOG"
+    # Try with --user flag as fallback
+    echo "Retrying with --user flag..." >> "$LOG"
+    "$PYTHON" -m pip install --user --upgrade charter-governance >> "$LOG" 2>&1
+    if [ $? -ne 0 ]; then
+        osascript -e 'display dialog "Charter installation failed. Check /tmp/charter_install.log for details." with title "Charter — Install Error" buttons {"OK"} default button "OK" with icon caution'
+        exit 1
+    fi
+fi
+
+# Find charter CLI (might be in different locations)
+CHARTER=""
+for cmd in charter "$HOME/.local/bin/charter" /usr/local/bin/charter /opt/homebrew/bin/charter; do
+    if command -v "$cmd" &>/dev/null || [ -x "$cmd" ]; then
+        CHARTER="$cmd"
+        break
+    fi
+done
+
+if [ -z "$CHARTER" ]; then
+    # Try via python module
+    CHARTER="$PYTHON -m charter"
+fi
+
+echo "Charter CLI: $CHARTER" >> "$LOG"
+
+# Run charter init if not already initialized
+if [ ! -f "$HOME/.charter/identity.json" ]; then
+    echo "Running charter init..." >> "$LOG"
+    $CHARTER init --domain general --non-interactive >> "$LOG" 2>&1
+fi
+
+echo "Charter install completed at $(date)" >> "$LOG"
+
+# Show success
+osascript -e 'display dialog "Charter is installed and ready.\n\nYour governance identity has been created at ~/.charter/\n\nTo see your status, open Terminal and type:\n  charter status" with title "Charter — Installed" buttons {"Open Dashboard", "Done"} default button "Done"' 2>/dev/null
+
+# If user clicked "Open Dashboard", try to open it
+# (The dialog returns button name but we can't easily capture it in postinstall)
+
+exit 0

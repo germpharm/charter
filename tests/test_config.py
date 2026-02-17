@@ -33,7 +33,8 @@ class TestLoadConfig:
         assert config["domain"] == "general"
         assert "governance" in config
 
-    def test_returns_none_for_missing(self, tmp_path):
+    def test_returns_none_for_missing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
         result = load_config(str(tmp_path / "nonexistent.yaml"))
         assert result is None
 

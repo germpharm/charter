@@ -4,6 +4,7 @@ import json
 import os
 import sys
 
+from charter import __version__
 from charter.config import load_config, find_config
 from charter.identity import load_identity, get_chain_path
 
@@ -13,7 +14,7 @@ def run_status(args):
     config_path = find_config()
     identity = load_identity()
 
-    print("Charter Governance Status")
+    print(f"Charter v{__version__} — Governance Status")
     print("=" * 40)
 
     # Config
@@ -67,3 +68,15 @@ def run_status(args):
             print(f"  Integrity:   {'VERIFIED' if intact else 'BROKEN'}")
     else:
         print(f"  Chain:       not initialized")
+
+    # Update check
+    print()
+    try:
+        from charter.update import format_update_notice
+        notice = format_update_notice()
+        if notice:
+            print(notice)
+        else:
+            print(f"  Version:     v{__version__} (up to date)")
+    except Exception:
+        print(f"  Version:     v{__version__}")

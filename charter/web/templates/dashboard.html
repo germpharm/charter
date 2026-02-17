@@ -2,95 +2,188 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block head_extra %}
+{# Determine governance state for meta theme-color #}
+{% set governable_count = tools|selectattr('governable')|list|length %}
+{% set total_tools = tools|length %}
+{% if total_tools == 0 %}
+    {% set gov_state = 'none' %}
+    <meta name="theme-color" content="#2c5282">
+{% elif governable_count == total_tools and config %}
+    {% set gov_state = 'governed' %}
+    <meta name="theme-color" content="#276749">
+{% elif governable_count > 0 %}
+    {% set gov_state = 'partial' %}
+    <meta name="theme-color" content="#975a16">
+{% else %}
+    {% set gov_state = 'ungoverned' %}
+    <meta name="theme-color" content="#9b2c2c">
+{% endif %}
+{% endblock %}
+
 {% block content %}
-<h1 class="page-title">Governance Dashboard</h1>
+{# Recalculate governance state in content block #}
+{% set governable_count = tools|selectattr('governable')|list|length %}
+{% set total_tools = tools|length %}
+{% if total_tools == 0 %}
+    {% set gov_state = 'none' %}
+{% elif governable_count == total_tools and config %}
+    {% set gov_state = 'governed' %}
+{% elif governable_count > 0 %}
+    {% set gov_state = 'partial' %}
+{% else %}
+    {% set gov_state = 'ungoverned' %}
+{% endif %}
 
-<div class="cards">
-    <div class="card">
-        <div class="card-label">Identity</div>
-        <div class="card-value">
-            {% if identity %}
-                {% if identity.real_identity %}
-                    <span class="badge badge-green">Verified</span>
+{# ===== GOVERNANCE BANNER — The padlock ===== #}
+<div class="gov-banner gov-banner--{{ gov_state }}">
+    <div class="gov-banner-inner">
+        <div class="gov-banner-icon">
+            {% if gov_state == 'governed' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                </svg>
+            {% elif gov_state == 'partial' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            {% elif gov_state == 'ungoverned' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            {% else %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+            {% endif %}
+        </div>
+        <div class="gov-banner-text">
+            <div class="gov-banner-state">
+                {% if gov_state == 'governed' %}GOVERNED{% endif %}
+                {% if gov_state == 'partial' %}PARTIALLY GOVERNED{% endif %}
+                {% if gov_state == 'ungoverned' %}UNGOVERNED{% endif %}
+                {% if gov_state == 'none' %}NO AI DETECTED{% endif %}
+            </div>
+            <div class="gov-banner-detail">
+                {% if gov_state == 'governed' %}
+                    All {{ total_tools }} detected AI tool{{ 's' if total_tools != 1 }} operating under charter governance.
+                {% elif gov_state == 'partial' %}
+                    {{ governable_count }} of {{ total_tools }} AI tool{{ 's' if total_tools != 1 }} governed. {{ total_tools - governable_count }} running without charter.
+                {% elif gov_state == 'ungoverned' %}
+                    {{ total_tools }} AI tool{{ 's' if total_tools != 1 }} detected with no charter governance.
                 {% else %}
-                    <span class="badge badge-yellow">Pseudonymous</span>
+                    No AI tools currently running on this machine. Daemon is scanning.
                 {% endif %}
-            {% else %}
-                <span class="badge badge-red">Not Created</span>
-            {% endif %}
+            </div>
         </div>
-        <div class="card-detail">
-            {% if identity %}{{ identity.alias }}{% else %}Run 'charter init'{% endif %}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">Hash Chain</div>
-        <div class="card-value">{{ chain_length }}</div>
-        <div class="card-detail">
-            {% if chain_intact %}
-                <span class="badge badge-green">Intact</span>
-            {% else %}
-                <span class="badge badge-red">Broken</span>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">AI Tools</div>
-        <div class="card-value">{{ tools|length }}</div>
-        <div class="card-detail">detected on this machine</div>
-    </div>
-
-    <div class="card">
-        <div class="card-label">Governance</div>
-        <div class="card-value">
-            {% if config %}
-                <span class="badge badge-green">Active</span>
-            {% else %}
-                <span class="badge badge-gray">Not Configured</span>
-            {% endif %}
-        </div>
-        <div class="card-detail">
-            {% if config %}{{ config.get('domain', 'general') }} domain{% else %}Run 'charter init'{% endif %}
-        </div>
+        <div class="gov-banner-pulse"></div>
     </div>
 </div>
 
+{# ===== CHARTER IDENTITY BAR ===== #}
+<div class="charter-bar-wrap">
+<div class="charter-bar">
+    <div class="charter-bar-item">
+        <span class="charter-bar-label">Charter</span>
+        <span class="charter-bar-value">
+            {% if config %}
+                {{ config.get('domain', 'general') | upper }} domain
+            {% else %}
+                Not configured
+            {% endif %}
+        </span>
+    </div>
+    <div class="charter-bar-divider"></div>
+    <div class="charter-bar-item">
+        <span class="charter-bar-label">Identity</span>
+        <span class="charter-bar-value">
+            {% if identity %}
+                {{ identity.alias }}
+                {% if identity.real_identity %}
+                    <span class="badge badge-green badge-sm">Verified</span>
+                {% else %}
+                    <span class="badge badge-yellow badge-sm">Pseudonymous</span>
+                {% endif %}
+            {% else %}
+                <span class="charter-bar-missing">Run 'charter init'</span>
+            {% endif %}
+        </span>
+    </div>
+    <div class="charter-bar-divider"></div>
+    <div class="charter-bar-item">
+        <span class="charter-bar-label">Hash Chain</span>
+        <span class="charter-bar-value">
+            {{ chain_length }} entries
+            {% if chain_intact %}
+                <span class="badge badge-green badge-sm">Intact</span>
+            {% else %}
+                <span class="badge badge-red badge-sm">Broken</span>
+            {% endif %}
+        </span>
+    </div>
+    <div class="charter-bar-divider"></div>
+    <div class="charter-bar-item">
+        <span class="charter-bar-label">Tools</span>
+        <span class="charter-bar-value">{{ total_tools }} detected</span>
+    </div>
+</div>
+</div>
+
+{# ===== TOOL DETECTION LIST ===== #}
 {% if tools %}
 <div class="section">
-    <div class="section-header">Detected AI Tools</div>
+    <div class="section-header">
+        <span>Detected AI Tools</span>
+        <span class="section-header-badge">{{ total_tools }}</span>
+    </div>
     <div class="section-body">
         {% for tool in tools %}
-        <div class="tool-item">
-            <span class="tool-name">{{ tool.name }}</span>
-            <span class="tool-vendor">{{ tool.vendor }}</span>
-            <span class="tool-status">
+        <div class="tool-row">
+            <div class="tool-indicator tool-indicator--{{ 'governed' if tool.governable else 'ungoverned' }}"></div>
+            <div class="tool-info">
+                <span class="tool-name">{{ tool.name }}</span>
+                <span class="tool-vendor">{{ tool.vendor }}</span>
+            </div>
+            <div class="tool-status">
                 {% if tool.governable %}
-                    <span class="badge badge-green">Governable</span>
+                    <span class="badge badge-green">Governed</span>
                 {% else %}
-                    <span class="badge badge-yellow">Detected</span>
+                    <span class="badge badge-red">Ungoverned</span>
                 {% endif %}
-            </span>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
 {% else %}
 <div class="section">
-    <div class="section-header">Detected AI Tools</div>
+    <div class="section-header">
+        <span>Detected AI Tools</span>
+        <span class="section-header-badge">0</span>
+    </div>
     <div class="section-body">
         <div class="empty">
             <p>No AI tools currently detected.</p>
-            <p>The daemon scans for Claude Code, ChatGPT, VS Code, Cursor, and Windsurf.</p>
+            <p class="empty-sub">The daemon scans for Claude Code, ChatGPT, VS Code, Cursor, and Windsurf.</p>
         </div>
     </div>
 </div>
 {% endif %}
 
+{# ===== RECENT EVENTS ===== #}
 {% if recent_events %}
 <div class="section">
-    <div class="section-header">Recent Events</div>
+    <div class="section-header">
+        <span>Recent Events</span>
+        <span class="section-header-badge">{{ recent_events|length }}</span>
+    </div>
     <div class="section-body scrollable">
         <table>
             <thead>

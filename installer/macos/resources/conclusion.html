@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        font-size: 13px;
+        color: #1d1d1f;
+        line-height: 1.6;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #34c759;
+        margin-bottom: 8px;
+    }
+    .next-step {
+        margin-bottom: 16px;
+        padding: 12px 12px 12px 16px;
+        background: #f5f5f7;
+        border-radius: 8px;
+        border-left: 3px solid #34c759;
+    }
+    .next-step strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+    .next-step code {
+        background: #e8e8ed;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+    .info {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #6e6e73;
+    }
+</style>
+</head>
+<body>
+    <h1>Charter is ready.</h1>
+
+    <p>Your governance identity has been created. Here's what to do next:</p>
+
+    <div class="next-step">
+        <strong>If you use VS Code</strong>
+        Search for "Charter Governance" in the Extensions panel and install it.
+        You'll see a governance indicator in your status bar.
+    </div>
+
+    <div class="next-step">
+        <strong>Check your status</strong>
+        Open Terminal and type: <code>charter status</code>
+    </div>
+
+    <div class="next-step">
+        <strong>View your dashboard</strong>
+        Open Terminal and type: <code>charter serve</code>
+        Then open the link in your browser.
+    </div>
+
+    <div class="info">
+        Your governance data is stored locally at ~/.charter/<br>
+        Configuration lives in charter.yaml in your project directory.<br>
+        Updates: <code>charter update</code>
+    </div>
+</body>
+</html>

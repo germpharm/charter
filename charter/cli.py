@@ -183,6 +183,9 @@ def main():
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
+    # charter update
+    sub.add_parser("update", help="Check for and install newer versions")
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -239,3 +242,6 @@ def main():
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
+    elif args.command == "update":
+        from charter.update import run_update
+        run_update(args)
