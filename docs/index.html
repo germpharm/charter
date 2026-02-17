@@ -48,10 +48,49 @@
             font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
             font-size: 1.1rem;
             display: inline-block;
-            margin-bottom: 48px;
+            margin-bottom: 32px;
         }
         .install .prompt { color: var(--muted); }
         .install .cmd { color: var(--green); }
+
+        .download-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .download-btn:hover { opacity: 0.85; }
+        .download-btn-mac {
+            background: #3fb950;
+            color: #0d1117;
+        }
+        .download-btn-win {
+            background: #58a6ff;
+            color: #0d1117;
+        }
+        .download-btn-vscode {
+            background: #9b6dff;
+            color: #fff;
+        }
+        .download-sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: -40px;
+            margin-bottom: 48px;
+        }
 
         .layers {
             display: grid;
@@ -168,6 +207,12 @@
             <div class="install">
                 <span class="prompt">$</span> <span class="cmd">pip install charter-governance</span>
             </div>
+            <div class="download-row">
+                <a href="https://github.com/germpharm/charter/releases/download/v0.7.0/Charter-0.7.0.pkg" class="download-btn download-btn-mac">&#63743; Download for Mac</a>
+                <a href="https://github.com/germpharm/charter/releases/latest" class="download-btn download-btn-win">&#8862; Download for Windows</a>
+                <a href="https://marketplace.visualstudio.com/items?itemName=germpharm.charter-governance" class="download-btn download-btn-vscode">&#9670; VS Code Extension</a>
+            </div>
+            <p class="download-sub">v0.7.0 &middot; macOS and Windows installers require Python 3.9+</p>
         </header>
 
         <div class="layers">
