@@ -180,6 +180,21 @@ def main():
         help="Path to a stamp JSON file",
     )
 
+    # charter mcp-serve
+    mcp_p = sub.add_parser("mcp-serve", help="Start Charter as an MCP server")
+    mcp_p.add_argument(
+        "--transport", "-t",
+        choices=["stdio", "sse"],
+        default="stdio",
+        help="Transport mode (default: stdio for Claude Code)",
+    )
+    mcp_p.add_argument(
+        "--port", "-p",
+        type=int,
+        default=8375,
+        help="Port for SSE transport (default: 8375)",
+    )
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -239,6 +254,9 @@ def main():
     elif args.command == "check":
         from charter.stamp import run_verify
         run_verify(args)
+    elif args.command == "mcp-serve":
+        from charter.mcp_server import run_mcp_serve
+        run_mcp_serve(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)

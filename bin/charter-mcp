@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+"""Wrapper to launch Charter MCP server over stdio."""
+import asyncio
+import os
+import sys
+
+# Ensure we can find charter.yaml by setting cwd to the project
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from charter.mcp_server import run_stdio
+
+asyncio.run(run_stdio())

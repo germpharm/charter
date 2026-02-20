@@ -86,6 +86,24 @@ charter connect contribute "Title" governance # Record contributions
 charter connect formation "Name"              # Recognize who shaped you
 ```
 
+## MCP Server
+
+Charter runs as an MCP (Model Context Protocol) server. Any AI model that supports MCP gets Charter governance.
+
+```bash
+pip install charter-governance[mcp]
+
+# Local (Claude Code via .mcp.json)
+charter mcp-serve --transport stdio
+
+# Remote (Mac Mini, Grok via remote MCP)
+charter mcp-serve --transport sse --port 8375
+```
+
+10 tools exposed: `charter_status`, `charter_stamp`, `charter_verify_stamp`, `charter_append_chain`, `charter_read_chain`, `charter_check_integrity`, `charter_get_config`, `charter_identity`, `charter_audit`, `charter_local_inference`.
+
+Every action logged to an immutable hash chain. Same governance, any model.
+
 ## Philosophy
 
 The value of AI is not in the tokens. Tokens are going to zero. The value is in the humans who provide judgment, context, and ethics. Charter is the governance layer that makes human judgment enforceable on AI systems.
