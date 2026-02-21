@@ -78,9 +78,9 @@ def sample_config():
                 "rules": [
                     {
                         "action": "financial_transaction",
-                        "threshold_dollars": 100,
+                        "threshold": "always",
                         "requires": "human_approval",
-                        "description": "Transactions over threshold need approval",
+                        "description": "All spending requires human approval",
                     },
                 ],
             },

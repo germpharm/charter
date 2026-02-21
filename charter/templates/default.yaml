@@ -17,9 +17,9 @@ governance:
     description: "Gradient decisions. These require human judgment above thresholds."
     rules:
       - action: "financial_transaction"
-        threshold_dollars: 100
+        threshold: "always"
         requires: "human_approval"
-        description: "Any transaction above threshold requires human sign-off"
+        description: "All spending requires human approval"
       - action: "external_communication"
         threshold: "always"
         requires: "human_approval"

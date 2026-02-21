@@ -31,7 +31,7 @@ class TestRenderClaudeMd:
         output = render_claude_md(sample_config)
         assert "## Layer B: Gradient Decisions" in output
         assert "financial_transaction" in output
-        assert "$100" in output
+        assert "always" in output.lower()
 
     def test_contains_layer_c(self, sample_config):
         output = render_claude_md(sample_config)
