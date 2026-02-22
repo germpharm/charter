@@ -15,6 +15,30 @@ def main():
 
     sub = parser.add_subparsers(dest="command")
 
+    # charter bootstrap
+    boot_p = sub.add_parser("bootstrap", help="One command: init + generate + audit. Use this.")
+    boot_p.add_argument(
+        "path",
+        nargs="?",
+        default=".",
+        help="Project directory (default: current directory)",
+    )
+    boot_p.add_argument(
+        "--domain",
+        choices=["healthcare", "finance", "education", "general"],
+        help="Domain preset (auto-detected if omitted)",
+    )
+    boot_p.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite existing charter.yaml",
+    )
+    boot_p.add_argument(
+        "--quiet", "-q",
+        action="store_true",
+        help="Minimal output (for automated use)",
+    )
+
     # charter init
     init_p = sub.add_parser("init", help="Create a governance config for your project")
     init_p.add_argument(
@@ -26,6 +50,11 @@ def main():
         "--non-interactive",
         action="store_true",
         help="Use defaults without prompting",
+    )
+    init_p.add_argument(
+        "--full",
+        action="store_true",
+        help="Also generate CLAUDE.md, system-prompt.txt, and first audit",
     )
 
     # charter generate
@@ -207,9 +236,18 @@ def main():
         parser.print_help()
         sys.exit(0)
 
-    if args.command == "init":
+    if args.command == "bootstrap":
+        from charter.bootstrap import run_bootstrap
+        run_bootstrap(args)
+    elif args.command == "init":
         from charter.init_cmd import run_init
         run_init(args)
+        if args.full:
+            # Run bootstrap after init to generate all files
+            import argparse as _ap
+            boot_args = _ap.Namespace(path=".", domain=args.domain, force=False, quiet=False)
+            from charter.bootstrap import run_bootstrap
+            run_bootstrap(boot_args)
     elif args.command == "generate":
         from charter.generate import run_generate
         run_generate(args)

@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import * as http from "http";
+import { exec } from "child_process";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -10,6 +11,22 @@ import * as http from "http";
 const CHARTER_FILENAME = "charter.yaml";
 const STATUS_BAR_PRIORITY = 100; // higher = further left
 const STATUS_BAR_ALIGNMENT = vscode.StatusBarAlignment.Left;
+
+// Common paths where pip installs binaries — VS Code extension host
+// does NOT inherit the user's shell PATH.
+const EXTRA_PATH_DIRS = [
+  "/Library/Frameworks/Python.framework/Versions/Current/bin",
+  "/Library/Frameworks/Python.framework/Versions/3.13/bin",
+  "/Library/Frameworks/Python.framework/Versions/3.12/bin",
+  "/Library/Frameworks/Python.framework/Versions/3.11/bin",
+  "/opt/homebrew/bin",
+  "/usr/local/bin",
+  "/usr/bin",
+  `${process.env.HOME}/.local/bin`,
+  `${process.env.HOME}/Library/Python/3.13/bin`,
+  `${process.env.HOME}/Library/Python/3.12/bin`,
+  `${process.env.HOME}/Library/Python/3.11/bin`,
+];
 
 // ---------------------------------------------------------------------------
 // Types
@@ -66,6 +83,17 @@ function getWorkspaceRoot(): string | null {
   return null;
 }
 
+/**
+ * Build a PATH that includes common Python/pip install locations.
+ * The VS Code extension host often has a minimal PATH that excludes
+ * where `charter` is installed.
+ */
+function getExtendedPath(): string {
+  const current = process.env.PATH || "";
+  const extra = EXTRA_PATH_DIRS.filter((d) => !current.includes(d));
+  return extra.length > 0 ? `${current}:${extra.join(":")}` : current;
+}
+
 // ---------------------------------------------------------------------------
 // Daemon health check — plain HTTP GET to localhost
 // ---------------------------------------------------------------------------
@@ -86,12 +114,49 @@ function pingDaemon(port: number): Promise<boolean> {
 }
 
 // ---------------------------------------------------------------------------
+// Auto-bootstrap — run `charter bootstrap --quiet` when ungoverned
+// ---------------------------------------------------------------------------
+
+function runBootstrap(workspaceRoot: string, outputChannel: vscode.OutputChannel): Promise<boolean> {
+  return new Promise((resolve) => {
+    const cmd = `charter bootstrap "${workspaceRoot}" --quiet`;
+    outputChannel.appendLine(`[${new Date().toISOString()}] Auto-bootstrapping: ${cmd}`);
+
+    const extendedPath = getExtendedPath();
+    outputChannel.appendLine(`[${new Date().toISOString()}] PATH: ${extendedPath}`);
+
+    exec(cmd, {
+      timeout: 15000,
+      env: { ...process.env, PATH: extendedPath },
+    }, (err, stdout, stderr) => {
+      if (err) {
+        outputChannel.appendLine(`[${new Date().toISOString()}] Bootstrap failed: ${err.message}`);
+        if (stderr) { outputChannel.appendLine(stderr); }
+        resolve(false);
+      } else {
+        outputChannel.appendLine(`[${new Date().toISOString()}] Bootstrap succeeded.`);
+        if (stdout.trim()) { outputChannel.appendLine(stdout); }
+        resolve(true);
+      }
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Extension core
 // ---------------------------------------------------------------------------
 
 export function activate(context: vscode.ExtensionContext): void {
   const outputChannel = vscode.window.createOutputChannel("Charter Governance");
   outputChannel.appendLine("Charter Governance extension activated.");
+
+  // Log workspace info immediately for debugging
+  const folders = vscode.workspace.workspaceFolders;
+  if (folders) {
+    outputChannel.appendLine(`Workspace folders: ${folders.map((f) => f.uri.fsPath).join(", ")}`);
+  } else {
+    outputChannel.appendLine("No workspace folders detected at activation.");
+  }
 
   // ---- Status bar item ----
   const statusBarItem = vscode.window.createStatusBarItem(
@@ -124,17 +189,24 @@ export function activate(context: vscode.ExtensionContext): void {
     return {
       daemonPort: cfg.get<number>("daemonPort", 8374),
       daemonPollInterval: cfg.get<number>("daemonPollInterval", 30000),
+      autoBootstrap: cfg.get<boolean>("autoBootstrap", true),
     };
   }
 
   // ---- Render the status bar based on current state ----
   function render(): void {
+    // No folder open — hide the status bar entirely. Nothing to govern.
+    if (!getWorkspaceRoot()) {
+      statusBarItem.hide();
+      daemonBarItem.hide();
+      return;
+    }
+
     if (state.governed) {
       statusBarItem.text = "$(shield) GOVERNED";
       statusBarItem.tooltip = state.charterPath
         ? `Charter governance active\n${state.charterPath}`
         : "Charter governance active";
-      // Green prominent background so it's visible without looking
       statusBarItem.backgroundColor = new vscode.ThemeColor(
         "statusBarItem.prominentBackground"
       );
@@ -160,24 +232,62 @@ export function activate(context: vscode.ExtensionContext): void {
     }
   }
 
-  // ---- Check charter.yaml presence ----
-  function refreshCharterFile(): void {
+  // ---- Track whether we've already attempted bootstrap this session ----
+  let bootstrapAttempted = false;
+
+  // ---- Check charter.yaml presence (auto-bootstrap if missing) ----
+  async function refreshCharterFile(): Promise<void> {
     const root = getWorkspaceRoot();
+    outputChannel.appendLine(
+      `[${new Date().toISOString()}] refreshCharterFile: root=${root ?? "null"}`
+    );
+
     if (root) {
       const found = findCharterYaml(root);
       state.governed = found !== null;
       state.charterPath = found;
+      outputChannel.appendLine(
+        `[${new Date().toISOString()}] findCharterYaml result: ${found ?? "null"}`
+      );
     } else {
       state.governed = false;
       state.charterPath = null;
     }
-    outputChannel.appendLine(
-      `[${new Date().toISOString()}] Charter file check: ${state.governed ? state.charterPath : "not found"}`
-    );
+
     render();
+
+    // Auto-bootstrap: if ungoverned, enabled, and we haven't tried yet this session
+    const { autoBootstrap } = getConfig();
+    if (!state.governed && !bootstrapAttempted && autoBootstrap && root) {
+      bootstrapAttempted = true;
+      outputChannel.appendLine(`[${new Date().toISOString()}] Ungoverned workspace detected. Auto-bootstrapping...`);
+      const ok = await runBootstrap(root, outputChannel);
+      if (ok) {
+        // Re-check — charter.yaml should now exist
+        const found = findCharterYaml(root);
+        state.governed = found !== null;
+        state.charterPath = found;
+        outputChannel.appendLine(
+          `[${new Date().toISOString()}] Post-bootstrap check: governed=${state.governed}`
+        );
+        render();
+        vscode.window.showInformationMessage("Charter: Governance auto-initialized for this workspace.");
+      } else {
+        vscode.window.showWarningMessage(
+          "Charter: Could not auto-initialize governance. Run `charter bootstrap` manually.",
+          "Open Terminal"
+        ).then((choice) => {
+          if (choice === "Open Terminal") {
+            const term = vscode.window.createTerminal("Charter");
+            term.show();
+            term.sendText(`charter bootstrap "${root}"`);
+          }
+        });
+      }
+    }
   }
 
-  // ---- Check daemon ----
+  // ---- Check daemon (does NOT call render — only updates daemon state) ----
   async function refreshDaemon(): Promise<void> {
     const { daemonPort } = getConfig();
     const active = await pingDaemon(daemonPort);
@@ -187,13 +297,13 @@ export function activate(context: vscode.ExtensionContext): void {
         `[${new Date().toISOString()}] Daemon status: ${active ? "active" : "inactive"} (port ${daemonPort})`
       );
     }
-    render();
   }
 
   // ---- Full refresh ----
   async function fullRefresh(): Promise<void> {
-    refreshCharterFile();
+    await refreshCharterFile();
     await refreshDaemon();
+    render(); // Single render after both checks complete
   }
 
   // ---- Commands ----
@@ -235,17 +345,17 @@ export function activate(context: vscode.ExtensionContext): void {
     `**/${CHARTER_FILENAME}`
   );
 
-  charterWatcher.onDidCreate(() => {
+  charterWatcher.onDidCreate(async () => {
     outputChannel.appendLine("charter.yaml created.");
-    refreshCharterFile();
+    await refreshCharterFile();
   });
-  charterWatcher.onDidDelete(() => {
+  charterWatcher.onDidDelete(async () => {
     outputChannel.appendLine("charter.yaml deleted.");
-    refreshCharterFile();
+    await refreshCharterFile();
   });
-  charterWatcher.onDidChange(() => {
+  charterWatcher.onDidChange(async () => {
     outputChannel.appendLine("charter.yaml changed.");
-    refreshCharterFile();
+    await refreshCharterFile();
   });
 
   context.subscriptions.push(charterWatcher);
@@ -275,7 +385,7 @@ export function activate(context: vscode.ExtensionContext): void {
     stopDaemonPolling();
     const { daemonPollInterval } = getConfig();
     daemonTimer = setInterval(() => {
-      refreshDaemon();
+      refreshDaemon().then(() => render());
     }, daemonPollInterval);
   }
 
@@ -288,11 +398,29 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push({ dispose: stopDaemonPolling });
 
-  // ---- Initial run ----
-  fullRefresh();
-  startDaemonPolling();
+  // ---- Initial run (with retry if workspace not ready) ----
+  fullRefresh().then(() => {
+    outputChannel.appendLine("Charter Governance extension ready.");
 
-  outputChannel.appendLine("Charter Governance extension ready.");
+    // VS Code sometimes activates extensions before workspace folders
+    // are available (restored windows, slow workspace loading).
+    // If we got no workspace root on the first try, retry a few times.
+    if (!getWorkspaceRoot()) {
+      const retryDelays = [1000, 3000, 6000]; // 1s, 3s, 6s
+      for (const delay of retryDelays) {
+        setTimeout(async () => {
+          const root = getWorkspaceRoot();
+          if (root && !state.governed) {
+            outputChannel.appendLine(
+              `[${new Date().toISOString()}] Retry: workspace root now available: ${root}`
+            );
+            await fullRefresh();
+          }
+        }, delay);
+      }
+    }
+  });
+  startDaemonPolling();
 }
 
 export function deactivate(): void {

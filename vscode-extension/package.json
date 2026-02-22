@@ -1,15 +1,62 @@
 {
   "name": "charter-governance",
-  "displayName": "Charter Governance",
-  "description": "Shows Charter governance status in the VS Code status bar. Detects charter.yaml in the workspace and monitors the Charter daemon.",
-  "version": "1.0.0",
+  "displayName": "Charter — AI Governance & Safety for Claude, GPT, Copilot",
+  "description": "AI governance for every project. Auto-enforces hard constraints, compliance rules, and self-audit on AI agents (Claude, GPT, Copilot, Gemini). HIPAA, SOX, FERPA templates. Open source.",
+  "version": "1.5.0",
   "publisher": "germpharm",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#1a1a2e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/germpharm/charter"
+  },
+  "homepage": "https://github.com/germpharm/charter",
+  "bugs": {
+    "url": "https://github.com/germpharm/charter/issues"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Linters",
+    "Machine Learning",
     "Other"
+  ],
+  "keywords": [
+    "charter",
+    "governance",
+    "ai governance",
+    "ai safety",
+    "ai ethics",
+    "compliance",
+    "audit",
+    "security",
+    "responsible ai",
+    "mcp",
+    "claude",
+    "gpt",
+    "copilot",
+    "gemini",
+    "llm",
+    "hipaa",
+    "sox",
+    "ferpa",
+    "ai compliance",
+    "ai audit",
+    "ai policy",
+    "guardrails",
+    "ai guardrails",
+    "ai rules",
+    "ai constraints",
+    "ethical ai",
+    "ai accountability",
+    "ai agent",
+    "ai assistant",
+    "ai control"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -38,6 +85,11 @@
           "type": "number",
           "default": 30000,
           "description": "How often (in ms) to check if the Charter daemon is running."
+        },
+        "charterGovernance.autoBootstrap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically run 'charter bootstrap' when opening an ungoverned workspace."
         }
       }
     }

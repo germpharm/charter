@@ -1,10 +1,25 @@
 # Charter
 
-AI governance layer. Local-first. Open source.
+[![VS Code Extension](https://img.shields.io/badge/VS%20Code-Install%20Charter-007ACC?logo=visual-studio-code&logoColor=white&style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=germpharm.charter-governance)
+[![PyPI](https://img.shields.io/pypi/v/charter-governance?style=for-the-badge&logo=python&logoColor=white&label=PyPI)](https://pypi.org/project/charter-governance/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/FTPczq4ngF)
 
-Three layers: hard constraints, gradient decisions, self-audit.
+**AI governance layer. Local-first. Open source.**
+
+Three layers: hard constraints, gradient decisions, self-audit. Works with Claude, GPT, Copilot, Gemini, and any MCP-compatible AI.
+
+> Every AI agent writing code in your project right now has zero rules. No audit trail. No compliance. No kill switch. Charter fixes this in 3 seconds.
 
 ## Install
+
+### VS Code Extension (recommended — zero config)
+
+Search **"Charter"** in VS Code Extensions, or [click here to install](https://marketplace.visualstudio.com/items?itemName=germpharm.charter-governance).
+
+Open a folder. Governance is automatic.
+
+### CLI
 
 ```
 pip install charter-governance
@@ -104,6 +119,14 @@ charter mcp-serve --transport sse --port 8375
 
 Every action logged to an immutable hash chain. Same governance, any model.
 
+## The Network
+
+By installing Charter, you join a network of people who believe AI should be governed by the humans who use it. Every governed project strengthens the standard. Every audit builds accountability.
+
+- [Discord Community](https://discord.gg/FTPczq4ngF)
+- [Report Issues](https://github.com/germpharm/charter/issues)
+- [Contribute](CONTRIBUTING.md)
+
 ## Philosophy
 
 The value of AI is not in the tokens. Tokens are going to zero. The value is in the humans who provide judgment, context, and ethics. Charter is the governance layer that makes human judgment enforceable on AI systems.
@@ -112,4 +135,4 @@ Open source because we don't need more rent seekers. We need human creativity to
 
 ## License
 
-Apache 2.0
+Apache 2.0 — [GermPharm LLC](https://germpharm.org) — 2026

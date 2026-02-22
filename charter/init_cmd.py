@@ -89,12 +89,19 @@ def prompt_alias():
 
 def run_init(args):
     """Execute charter init."""
+    # Auto-detect non-TTY environments (CI, Claude Code, scripts)
+    if not sys.stdin.isatty():
+        args.non_interactive = True
+
     # Check if config already exists
     if os.path.isfile(CONFIG_NAME):
-        overwrite = input(f"{CONFIG_NAME} already exists. Overwrite? (y/N): ").strip().lower()
-        if overwrite != "y":
-            print("Aborted.")
-            return
+        if args.non_interactive:
+            pass  # In non-interactive mode, silently overwrite
+        else:
+            overwrite = input(f"{CONFIG_NAME} already exists. Overwrite? (y/N): ").strip().lower()
+            if overwrite != "y":
+                print("Aborted.")
+                return
 
     print("Charter — AI Governance Layer")
     print("=" * 40)
