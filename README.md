@@ -33,6 +33,7 @@ charter generate                # Generate a CLAUDE.md with your rules
 charter generate --format system-prompt  # Or a system prompt for any AI
 charter audit                   # Run a governance audit
 charter status                  # See everything at a glance
+charter join <token>            # Join a governed team with one command
 ```
 
 ## What It Does
@@ -62,6 +63,29 @@ charter identity              # View your identity
 charter identity verify       # Link real identity (authorship transfer)
 charter identity proof        # Generate a signed transfer proof
 ```
+
+## Teams
+
+Create governed teams with cryptographic identity. No sign-up page. No onboarding funnel. One command.
+
+```bash
+charter team create "My Team"                          # Create a team
+charter team invite user@example.com --name "Alice"    # Generate an invite token
+charter team status                                    # View your teams
+charter team list <team_hash>                          # List team members
+```
+
+### Joining a Team
+
+Got an invite token? One command to create your identity, join the team chain, and scaffold a network node:
+
+```bash
+charter join <token>
+```
+
+That's it. No account creation. No OAuth. No email verification. The token contains everything: team hash, your role, and a cryptographic signature from the person who invited you.
+
+If you already have an identity, it reuses it. If you're already a member, it tells you. Fully idempotent.
 
 ## Contexts
 

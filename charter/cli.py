@@ -224,6 +224,21 @@ def main():
         help="Port for SSE transport (default: 8375)",
     )
 
+    # charter join
+    join_p = sub.add_parser("join", help="One command: decode invite token, create identity, join team")
+    join_p.add_argument("token", help="Invite token from charter team invite")
+
+    # charter team
+    team_p = sub.add_parser("team", help="Create and manage governed teams")
+    team_p.add_argument(
+        "action",
+        choices=["create", "invite", "accept", "leave", "revoke", "status", "list"],
+        help="Team action",
+    )
+    team_p.add_argument("value", nargs="?", help="Team name, email, or team hash")
+    team_p.add_argument("--role", help="Member role (for invite)")
+    team_p.add_argument("--name", help="Member display name (for invite)")
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -295,6 +310,12 @@ def main():
     elif args.command == "mcp-serve":
         from charter.mcp_server import run_mcp_serve
         run_mcp_serve(args)
+    elif args.command == "join":
+        from charter.join import run_join
+        run_join(args.token)
+    elif args.command == "team":
+        from charter.team import run_team
+        run_team(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
