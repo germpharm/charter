@@ -2,7 +2,7 @@
   "name": "charter-governance",
   "displayName": "Charter — AI Governance & Safety for Claude, GPT, Copilot",
   "description": "AI governance for every project. Auto-enforces hard constraints, compliance rules, and self-audit on AI agents (Claude, GPT, Copilot, Gemini). HIPAA, SOX, FERPA templates. Open source.",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "publisher": "germpharm",
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -71,6 +71,14 @@
       {
         "command": "charterGovernance.refresh",
         "title": "Charter: Refresh Governance Status"
+      },
+      {
+        "command": "charterGovernance.bootstrap",
+        "title": "Charter: Bootstrap Governance"
+      },
+      {
+        "command": "charterGovernance.selectDomain",
+        "title": "Charter: Select Domain & Bootstrap"
       }
     ],
     "configuration": {

@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import * as http from "http";
-import { exec } from "child_process";
+import { bootstrap, bootstrapWithDomain } from "./bootstrap";
+import { ALL_DOMAINS, Domain } from "./types";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -11,22 +12,6 @@ import { exec } from "child_process";
 const CHARTER_FILENAME = "charter.yaml";
 const STATUS_BAR_PRIORITY = 100; // higher = further left
 const STATUS_BAR_ALIGNMENT = vscode.StatusBarAlignment.Left;
-
-// Common paths where pip installs binaries — VS Code extension host
-// does NOT inherit the user's shell PATH.
-const EXTRA_PATH_DIRS = [
-  "/Library/Frameworks/Python.framework/Versions/Current/bin",
-  "/Library/Frameworks/Python.framework/Versions/3.13/bin",
-  "/Library/Frameworks/Python.framework/Versions/3.12/bin",
-  "/Library/Frameworks/Python.framework/Versions/3.11/bin",
-  "/opt/homebrew/bin",
-  "/usr/local/bin",
-  "/usr/bin",
-  `${process.env.HOME}/.local/bin`,
-  `${process.env.HOME}/Library/Python/3.13/bin`,
-  `${process.env.HOME}/Library/Python/3.12/bin`,
-  `${process.env.HOME}/Library/Python/3.11/bin`,
-];
 
 // ---------------------------------------------------------------------------
 // Types
@@ -83,17 +68,6 @@ function getWorkspaceRoot(): string | null {
   return null;
 }
 
-/**
- * Build a PATH that includes common Python/pip install locations.
- * The VS Code extension host often has a minimal PATH that excludes
- * where `charter` is installed.
- */
-function getExtendedPath(): string {
-  const current = process.env.PATH || "";
-  const extra = EXTRA_PATH_DIRS.filter((d) => !current.includes(d));
-  return extra.length > 0 ? `${current}:${extra.join(":")}` : current;
-}
-
 // ---------------------------------------------------------------------------
 // Daemon health check — plain HTTP GET to localhost
 // ---------------------------------------------------------------------------
@@ -114,32 +88,64 @@ function pingDaemon(port: number): Promise<boolean> {
 }
 
 // ---------------------------------------------------------------------------
-// Auto-bootstrap — run `charter bootstrap --quiet` when ungoverned
+// Bootstrap with progress notification
 // ---------------------------------------------------------------------------
 
-function runBootstrap(workspaceRoot: string, outputChannel: vscode.OutputChannel): Promise<boolean> {
-  return new Promise((resolve) => {
-    const cmd = `charter bootstrap "${workspaceRoot}" --quiet`;
-    outputChannel.appendLine(`[${new Date().toISOString()}] Auto-bootstrapping: ${cmd}`);
+/**
+ * Run bootstrap with a VS Code progress notification.
+ * Tries the Python CLI first, falls back to TypeScript native.
+ */
+async function runBootstrapWithProgress(
+  workspaceRoot: string,
+  outputChannel: vscode.OutputChannel,
+  domain?: Domain
+): Promise<boolean> {
+  return vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: "Charter",
+      cancellable: false,
+    },
+    async (progress) => {
+      progress.report({ message: "Initializing governance..." });
+      outputChannel.appendLine(
+        `[${new Date().toISOString()}] Bootstrap starting: root=${workspaceRoot}, domain=${domain ?? "auto-detect"}`
+      );
 
-    const extendedPath = getExtendedPath();
-    outputChannel.appendLine(`[${new Date().toISOString()}] PATH: ${extendedPath}`);
+      const result = domain
+        ? await bootstrapWithDomain(workspaceRoot, domain)
+        : await bootstrap(workspaceRoot);
 
-    exec(cmd, {
-      timeout: 15000,
-      env: { ...process.env, PATH: extendedPath },
-    }, (err, stdout, stderr) => {
-      if (err) {
-        outputChannel.appendLine(`[${new Date().toISOString()}] Bootstrap failed: ${err.message}`);
-        if (stderr) { outputChannel.appendLine(stderr); }
-        resolve(false);
-      } else {
-        outputChannel.appendLine(`[${new Date().toISOString()}] Bootstrap succeeded.`);
-        if (stdout.trim()) { outputChannel.appendLine(stdout); }
-        resolve(true);
+      outputChannel.appendLine(
+        `[${new Date().toISOString()}] Bootstrap result: success=${result.success}, method=${result.method}, domain=${result.domain}, files=[${result.filesCreated.join(", ")}]`
+      );
+
+      if (result.error) {
+        outputChannel.appendLine(
+          `[${new Date().toISOString()}] Bootstrap note: ${result.error}`
+        );
       }
-    });
-  });
+
+      if (result.success && result.filesCreated.length > 0) {
+        progress.report({ message: `Governed (${result.domain}) via ${result.method}` });
+
+        // Brief pause so the user sees the success message
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        return true;
+      } else if (result.success && result.filesCreated.length === 0) {
+        // Already governed or error with existing file
+        if (result.error) {
+          progress.report({ message: result.error });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+        return true;
+      } else {
+        progress.report({ message: "Bootstrap failed. Check output channel." });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return false;
+      }
+    }
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -148,7 +154,7 @@ function runBootstrap(workspaceRoot: string, outputChannel: vscode.OutputChannel
 
 export function activate(context: vscode.ExtensionContext): void {
   const outputChannel = vscode.window.createOutputChannel("Charter Governance");
-  outputChannel.appendLine("Charter Governance extension activated.");
+  outputChannel.appendLine("Charter Governance extension activated (v2.0.0).");
 
   // Log workspace info immediately for debugging
   const folders = vscode.workspace.workspaceFolders;
@@ -260,8 +266,12 @@ export function activate(context: vscode.ExtensionContext): void {
     const { autoBootstrap } = getConfig();
     if (!state.governed && !bootstrapAttempted && autoBootstrap && root) {
       bootstrapAttempted = true;
-      outputChannel.appendLine(`[${new Date().toISOString()}] Ungoverned workspace detected. Auto-bootstrapping...`);
-      const ok = await runBootstrap(root, outputChannel);
+      outputChannel.appendLine(
+        `[${new Date().toISOString()}] Ungoverned workspace detected. Auto-bootstrapping...`
+      );
+
+      const ok = await runBootstrapWithProgress(root, outputChannel);
+
       if (ok) {
         // Re-check — charter.yaml should now exist
         const found = findCharterYaml(root);
@@ -271,18 +281,41 @@ export function activate(context: vscode.ExtensionContext): void {
           `[${new Date().toISOString()}] Post-bootstrap check: governed=${state.governed}`
         );
         render();
-        vscode.window.showInformationMessage("Charter: Governance auto-initialized for this workspace.");
-      } else {
-        vscode.window.showWarningMessage(
-          "Charter: Could not auto-initialize governance. Run `charter bootstrap` manually.",
-          "Open Terminal"
-        ).then((choice) => {
-          if (choice === "Open Terminal") {
-            const term = vscode.window.createTerminal("Charter");
-            term.show();
-            term.sendText(`charter bootstrap "${root}"`);
+
+        if (state.governed) {
+          const action = await vscode.window.showInformationMessage(
+            "Charter: Governance initialized for this workspace.",
+            "View charter.yaml",
+            "View CLAUDE.md"
+          );
+          if (action === "View charter.yaml" && state.charterPath) {
+            const doc = await vscode.workspace.openTextDocument(state.charterPath);
+            await vscode.window.showTextDocument(doc);
+          } else if (action === "View CLAUDE.md") {
+            const claudePath = path.join(root, "CLAUDE.md");
+            if (fs.existsSync(claudePath)) {
+              const doc = await vscode.workspace.openTextDocument(claudePath);
+              await vscode.window.showTextDocument(doc);
+            }
           }
-        });
+        }
+      } else {
+        const choice = await vscode.window.showWarningMessage(
+          "Charter: Could not auto-initialize governance.",
+          "Try Again",
+          "Select Domain",
+          "Open Terminal"
+        );
+        if (choice === "Try Again") {
+          bootstrapAttempted = false;
+          await refreshCharterFile();
+        } else if (choice === "Select Domain") {
+          await vscode.commands.executeCommand("charterGovernance.selectDomain");
+        } else if (choice === "Open Terminal") {
+          const term = vscode.window.createTerminal("Charter");
+          term.show();
+          term.sendText(`charter bootstrap "${root}"`);
+        }
       }
     }
   }
@@ -307,6 +340,8 @@ export function activate(context: vscode.ExtensionContext): void {
   }
 
   // ---- Commands ----
+
+  // Show status (existing)
   context.subscriptions.push(
     vscode.commands.registerCommand("charterGovernance.showStatus", () => {
       const lines: string[] = [];
@@ -331,10 +366,178 @@ export function activate(context: vscode.ExtensionContext): void {
     })
   );
 
+  // Refresh (existing)
   context.subscriptions.push(
     vscode.commands.registerCommand("charterGovernance.refresh", async () => {
       await fullRefresh();
       vscode.window.showInformationMessage("Charter governance status refreshed.");
+    })
+  );
+
+  // Bootstrap (new) — manually trigger bootstrap with auto-detect
+  context.subscriptions.push(
+    vscode.commands.registerCommand("charterGovernance.bootstrap", async () => {
+      const root = getWorkspaceRoot();
+      if (!root) {
+        vscode.window.showWarningMessage(
+          "Charter: No workspace folder open. Open a folder first."
+        );
+        return;
+      }
+
+      const charterPath = path.join(root, CHARTER_FILENAME);
+      if (fs.existsSync(charterPath)) {
+        const action = await vscode.window.showInformationMessage(
+          "Charter: This workspace is already governed.",
+          "View charter.yaml"
+        );
+        if (action === "View charter.yaml") {
+          const doc = await vscode.workspace.openTextDocument(charterPath);
+          await vscode.window.showTextDocument(doc);
+        }
+        return;
+      }
+
+      const ok = await runBootstrapWithProgress(root, outputChannel);
+      if (ok) {
+        const found = findCharterYaml(root);
+        state.governed = found !== null;
+        state.charterPath = found;
+        render();
+
+        if (state.governed) {
+          const action = await vscode.window.showInformationMessage(
+            "Charter: Governance initialized.",
+            "View charter.yaml",
+            "View CLAUDE.md"
+          );
+          if (action === "View charter.yaml" && state.charterPath) {
+            const doc = await vscode.workspace.openTextDocument(state.charterPath);
+            await vscode.window.showTextDocument(doc);
+          } else if (action === "View CLAUDE.md") {
+            const claudePath = path.join(root, "CLAUDE.md");
+            if (fs.existsSync(claudePath)) {
+              const doc = await vscode.workspace.openTextDocument(claudePath);
+              await vscode.window.showTextDocument(doc);
+            }
+          }
+        }
+      } else {
+        vscode.window.showErrorMessage(
+          "Charter: Bootstrap failed. Check the Charter Governance output channel for details."
+        );
+      }
+    })
+  );
+
+  // Select Domain (new) — pick a domain then bootstrap
+  context.subscriptions.push(
+    vscode.commands.registerCommand("charterGovernance.selectDomain", async () => {
+      const root = getWorkspaceRoot();
+      if (!root) {
+        vscode.window.showWarningMessage(
+          "Charter: No workspace folder open. Open a folder first."
+        );
+        return;
+      }
+
+      // Show quick pick with domain descriptions
+      const domainItems: vscode.QuickPickItem[] = [
+        {
+          label: "$(heart) Healthcare",
+          description: "HIPAA, clinical safety, medication checks",
+          detail: "healthcare",
+        },
+        {
+          label: "$(graph) Finance",
+          description: "SOX compliance, trade authorization, client data protection",
+          detail: "finance",
+        },
+        {
+          label: "$(book) Education",
+          description: "FERPA, student records, assessment oversight",
+          detail: "education",
+        },
+        {
+          label: "$(globe) General",
+          description: "Standard governance for any project",
+          detail: "general",
+        },
+        {
+          label: "$(person) Personal",
+          description: "Plain English governance for individual use",
+          detail: "personal",
+        },
+      ];
+
+      const selected = await vscode.window.showQuickPick(domainItems, {
+        placeHolder: "Select a governance domain for this workspace",
+        title: "Charter: Select Domain",
+      });
+
+      if (!selected || !selected.detail) {
+        return; // User cancelled
+      }
+
+      const domain = selected.detail as Domain;
+
+      const charterPath = path.join(root, CHARTER_FILENAME);
+      if (fs.existsSync(charterPath)) {
+        const overwrite = await vscode.window.showWarningMessage(
+          `Charter: charter.yaml already exists. Delete it and re-bootstrap as "${domain}"?`,
+          "Yes, replace",
+          "Cancel"
+        );
+        if (overwrite !== "Yes, replace") {
+          return;
+        }
+        // Remove existing files so bootstrap can create fresh ones
+        try {
+          fs.unlinkSync(charterPath);
+          const claudePath = path.join(root, "CLAUDE.md");
+          if (fs.existsSync(claudePath)) {
+            fs.unlinkSync(claudePath);
+          }
+          const promptPath = path.join(root, "system-prompt.txt");
+          if (fs.existsSync(promptPath)) {
+            fs.unlinkSync(promptPath);
+          }
+        } catch (err) {
+          outputChannel.appendLine(
+            `[${new Date().toISOString()}] Error removing old files: ${err}`
+          );
+        }
+      }
+
+      const ok = await runBootstrapWithProgress(root, outputChannel, domain);
+      if (ok) {
+        const found = findCharterYaml(root);
+        state.governed = found !== null;
+        state.charterPath = found;
+        render();
+
+        if (state.governed) {
+          const action = await vscode.window.showInformationMessage(
+            `Charter: Governed as "${domain}".`,
+            "View charter.yaml",
+            "View CLAUDE.md"
+          );
+          if (action === "View charter.yaml" && state.charterPath) {
+            const doc = await vscode.workspace.openTextDocument(state.charterPath);
+            await vscode.window.showTextDocument(doc);
+          } else if (action === "View CLAUDE.md") {
+            const claudePath = path.join(root, "CLAUDE.md");
+            if (fs.existsSync(claudePath)) {
+              const doc = await vscode.workspace.openTextDocument(claudePath);
+              await vscode.window.showTextDocument(doc);
+            }
+          }
+        }
+      } else {
+        vscode.window.showErrorMessage(
+          "Charter: Bootstrap failed. Check the Charter Governance output channel for details."
+        );
+      }
     })
   );
 

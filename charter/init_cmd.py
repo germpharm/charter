@@ -8,7 +8,7 @@ from charter.config import save_config, CONFIG_NAME
 from charter.identity import create_identity, load_identity
 
 
-DOMAINS = ["healthcare", "finance", "education", "general"]
+DOMAINS = ["healthcare", "finance", "education", "general", "personal"]
 
 
 def load_template(domain):
@@ -29,10 +29,10 @@ def prompt_domain():
     print()
 
     while True:
-        choice = input("Enter number (1-4): ").strip()
-        if choice in ("1", "2", "3", "4"):
+        choice = input(f"Enter number (1-{len(DOMAINS)}): ").strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(DOMAINS):
             return DOMAINS[int(choice) - 1]
-        print("Please enter 1, 2, 3, or 4.")
+        print(f"Please enter 1-{len(DOMAINS)}.")
 
 
 def prompt_customize(config):
