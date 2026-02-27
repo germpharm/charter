@@ -79,11 +79,11 @@ Charter is open source (Apache 2.0) because governance should not be a product y
 ## Links
 
 - [Discord Community](https://discord.gg/FTPczq4ngF)
-- [Website](https://germpharm.org)
+- [Website](https://charteragent.ai)
 - [GitHub](https://github.com/germpharm/charter)
 - [PyPI](https://pypi.org/project/charter-governance/)
 - [Report Issues](https://github.com/germpharm/charter/issues)
 
 ---
 
-**Apache 2.0** | **GermPharm LLC** | **2026**
+**Apache 2.0** | **Charter Governance Inc** | **2026**

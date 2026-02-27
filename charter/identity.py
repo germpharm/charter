@@ -83,8 +83,11 @@ def load_identity():
 
 def hash_entry(entry):
     """Compute SHA-256 hash of a chain entry."""
-    # Hash everything except the hash field itself
-    content = {k: v for k, v in entry.items() if k != "hash"}
+    # Hash everything except the hash and signature fields.
+    # The hash is the field we're computing; the signature is
+    # added after the hash, so it must be excluded to get the
+    # same result during verification.
+    content = {k: v for k, v in entry.items() if k not in ("hash", "signature")}
     raw = json.dumps(content, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(raw.encode()).hexdigest()
 
@@ -106,8 +109,13 @@ def sign_data(data, private_seed):
     return sig
 
 
-def append_to_chain(event, data):
-    """Append a new entry to the hash chain."""
+def append_to_chain(event, data, auto_batch=True):
+    """Append a new entry to the hash chain.
+
+    If auto_batch is True and enough unbatched entries have accumulated,
+    automatically rolls them into a Merkle tree. The threshold is
+    controlled by MERKLE_AUTO_BATCH_SIZE.
+    """
     chain_path = get_chain_path()
     identity = load_identity()
     if not identity:
@@ -143,7 +151,26 @@ def append_to_chain(event, data):
     with open(get_identity_path(), "w") as f:
         json.dump(identity, f, indent=2)
 
+    # Auto-batch into Merkle tree when threshold is reached
+    if auto_batch:
+        try:
+            from charter.merkle import batch_chain_entries
+            batch_chain_entries(
+                chain_path,
+                batch_size=MERKLE_AUTO_BATCH_SIZE,
+                min_entries=MERKLE_AUTO_BATCH_SIZE,
+            )
+        except Exception:
+            pass  # Merkle batching is non-critical; never block chain append
+
     return entry
+
+
+# Merkle tree auto-batching threshold.
+# When this many unbatched chain entries accumulate, they are
+# automatically rolled into a Merkle tree. 256 is optimal for
+# binary trees and keeps proof paths to 8 steps.
+MERKLE_AUTO_BATCH_SIZE = 256
 
 
 def verify_identity(name, email, method="manual", verification_token=None):

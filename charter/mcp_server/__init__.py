@@ -26,6 +26,16 @@ from charter.identity import (
     hash_entry,
 )
 from charter.stamp import create_stamp, verify_stamp
+from charter.dispute import export_dispute_package, verify_dispute_package, inspect_dispute_package
+from charter.timestamp import anchor_chain, verify_timestamp_anchor
+from charter.merkle import (
+    batch_chain_entries,
+    generate_proof,
+    verify_chain_entry,
+    create_exchange_proof,
+    verify_exchange_proof,
+    load_batch_index,
+)
 
 # ---------------------------------------------------------------------------
 # Server instance
@@ -87,6 +97,22 @@ def _get_status_data() -> dict:
             "last_event": last.get("event") if last else None,
             "last_timestamp": last.get("timestamp") if last else None,
         }
+
+    # Merkle tree status
+    try:
+        idx = load_batch_index()
+        batched = idx["last_chain_index"] + 1 if idx["last_chain_index"] >= 0 else 0
+        total = result.get("chain", {}).get("length", 0)
+        result["merkle"] = {
+            "total_batches": len(idx["batches"]),
+            "entries_batched": batched,
+            "entries_unbatched": total - batched,
+            "latest_root": idx["batches"][-1]["root"] if idx["batches"] else None,
+            "architecture": "production",
+            "proof_complexity": "O(log n)",
+        }
+    except Exception:
+        result["merkle"] = {"architecture": "available", "status": "no batches yet"}
 
     return result
 
@@ -299,6 +325,146 @@ TOOLS = [
             "required": ["prompt"],
         },
     ),
+    # --- Dispute tools ---
+    Tool(
+        name="charter_dispute_export",
+        description="Export a self-contained dispute proof package for a chain segment. The package includes chain entries, Merkle proofs, RFC 3161 timestamp anchors, governance config snapshots, and exchange proofs — everything an independent examiner needs to verify the evidence.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "from_index": {
+                    "type": "integer",
+                    "description": "Starting chain entry index (inclusive). Omit for full chain.",
+                },
+                "to_index": {
+                    "type": "integer",
+                    "description": "Ending chain entry index (inclusive). Omit for full chain.",
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_dispute_verify",
+        description="Verify a dispute proof package received from another party. Checks hash integrity, chain links, boundary links, and Merkle proofs. Returns VERIFIED or FAILED with specific failure points.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "package": {
+                    "type": "object",
+                    "description": "The dispute proof package JSON object to verify.",
+                },
+            },
+            "required": ["package"],
+        },
+    ),
+    # --- Timestamp tools ---
+    Tool(
+        name="charter_timestamp_anchor",
+        description="Create an RFC 3161 timestamp anchor for the current chain state. Submits the latest chain hash to a certified Time Stamping Authority (TSA) and records the signed token in the chain. Provides independently attested proof of when the chain state existed.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "force": {
+                    "type": "boolean",
+                    "description": "If true, anchor regardless of interval settings (default: true).",
+                    "default": True,
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_timestamp_status",
+        description="Get RFC 3161 timestamp anchoring status: total anchors, entries since last anchor, last anchor time and TSA, and anchoring interval settings.",
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
+    # --- Merkle tree tools ---
+    Tool(
+        name="charter_merkle_batch",
+        description="Roll unbatched chain entries into a Merkle tree. Returns the tree root hash and batch metadata. Run after bulk operations or on a schedule.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "batch_size": {
+                    "type": "integer",
+                    "description": "Max entries per batch (default: 256, powers of 2 optimal).",
+                    "default": 256,
+                },
+                "min_entries": {
+                    "type": "integer",
+                    "description": "Minimum entries to trigger batching (default: 16).",
+                    "default": 16,
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_merkle_prove",
+        description="Generate a Merkle inclusion proof for a specific chain entry. The proof is O(log n) — 40 steps to prove 1 entry out of 1 trillion.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "chain_index": {
+                    "type": "integer",
+                    "description": "The chain entry index to generate a proof for.",
+                },
+            },
+            "required": ["chain_index"],
+        },
+    ),
+    Tool(
+        name="charter_merkle_verify",
+        description="Verify a chain entry against its Merkle tree. Confirms the entry exists in the batch and the proof is valid.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "chain_index": {
+                    "type": "integer",
+                    "description": "The chain entry index to verify.",
+                },
+                "entry_hash": {
+                    "type": "string",
+                    "description": "The SHA-256 hash of the chain entry.",
+                },
+            },
+            "required": ["chain_index", "entry_hash"],
+        },
+    ),
+    Tool(
+        name="charter_merkle_exchange_proof",
+        description="Create a self-contained proof package for sending to another node. Contains the chain entry, Merkle proof, and signature. The receiving node can verify without access to your chain.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "chain_index": {
+                    "type": "integer",
+                    "description": "The chain entry index to create an exchange proof for.",
+                },
+            },
+            "required": ["chain_index"],
+        },
+    ),
+    Tool(
+        name="charter_merkle_verify_exchange",
+        description="Verify an exchange proof received from another node. No access to the source node's chain is needed.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "package": {
+                    "type": "object",
+                    "description": "The exchange proof package received from another node.",
+                },
+            },
+            "required": ["package"],
+        },
+    ),
+    Tool(
+        name="charter_merkle_status",
+        description="Get Merkle tree status: number of batches, total entries batched, unbatched entry count, latest root hash.",
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
 ]
 
 
@@ -391,6 +557,138 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
             return [TextContent(type="text", text=json.dumps({"error": str(e)}))]
         except Exception as e:
             return [TextContent(type="text", text=json.dumps({"error": f"Local inference failed: {e}"}))]
+
+    # --- Dispute handlers ---
+
+    elif name == "charter_dispute_export":
+        from_idx = arguments.get("from_index")
+        to_idx = arguments.get("to_index")
+        # Default to full chain if not specified
+        if from_idx is None or to_idx is None:
+            chain_path = get_chain_path()
+            if os.path.isfile(chain_path):
+                with open(chain_path) as f:
+                    entries = [json.loads(line) for line in f if line.strip()]
+                if entries:
+                    if from_idx is None:
+                        from_idx = entries[0].get("index", 0)
+                    if to_idx is None:
+                        to_idx = entries[-1].get("index", 0)
+        if from_idx is None or to_idx is None:
+            return [TextContent(type="text", text=json.dumps({"error": "No chain found."}))]
+        package = export_dispute_package(from_idx, to_idx)
+        if not package:
+            return [TextContent(type="text", text=json.dumps({"error": "Failed to create dispute package."}))]
+        return [TextContent(type="text", text=json.dumps(package, indent=2))]
+
+    elif name == "charter_dispute_verify":
+        package = arguments.get("package", {})
+        result = verify_dispute_package(package)
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- Timestamp handlers ---
+
+    elif name == "charter_timestamp_anchor":
+        force = arguments.get("force", True)
+        result = anchor_chain(force=force)
+        if not result:
+            return [TextContent(type="text", text=json.dumps({"error": "Anchoring failed. Check OpenSSL and network."}))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_timestamp_status":
+        chain_path = get_chain_path()
+        if not os.path.isfile(chain_path):
+            return [TextContent(type="text", text=json.dumps({"error": "No chain found."}))]
+        anchors = []
+        total = 0
+        with open(chain_path) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    total += 1
+                    entry = json.loads(line)
+                    if entry.get("event") == "timestamp_anchor":
+                        anchors.append(entry)
+        last_anchor_index = anchors[-1].get("index", 0) if anchors else -1
+        entries_since = total - 1 - last_anchor_index if last_anchor_index >= 0 else total
+        result = {
+            "total_anchors": len(anchors),
+            "entries_since_last": entries_since,
+            "anchor_interval_entries": 1000,
+            "anchor_interval_seconds": 3600,
+        }
+        if anchors:
+            last = anchors[-1]
+            result["last_anchor"] = {
+                "chain_index": last.get("index"),
+                "tsa_timestamp": last.get("data", {}).get("tsa_timestamp"),
+                "tsa_url": last.get("data", {}).get("tsa_url"),
+                "chain_hash_anchored": last.get("data", {}).get("chain_hash_anchored"),
+            }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- Merkle tree handlers ---
+
+    elif name == "charter_merkle_batch":
+        chain_path = get_chain_path()
+        bs = arguments.get("batch_size", 256)
+        me = arguments.get("min_entries", 16)
+        result = batch_chain_entries(chain_path, batch_size=bs, min_entries=me)
+        if not result:
+            idx = load_batch_index()
+            return [TextContent(type="text", text=json.dumps({
+                "batched": False,
+                "reason": "Not enough unbatched entries",
+                "existing_batches": len(idx["batches"]),
+                "last_chain_index_batched": idx["last_chain_index"],
+            }, indent=2))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_merkle_prove":
+        chain_index = arguments.get("chain_index", 0)
+        result = generate_proof(chain_index)
+        if not result:
+            return [TextContent(type="text", text=json.dumps({
+                "error": f"Chain entry {chain_index} not yet batched into a Merkle tree. Run charter_merkle_batch first."
+            }))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_merkle_verify":
+        chain_index = arguments.get("chain_index", 0)
+        entry_hash = arguments.get("entry_hash", "")
+        result = verify_chain_entry(chain_index, entry_hash)
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_merkle_exchange_proof":
+        chain_index = arguments.get("chain_index", 0)
+        result = create_exchange_proof(chain_index)
+        if not result:
+            return [TextContent(type="text", text=json.dumps({
+                "error": f"Could not create exchange proof for chain entry {chain_index}."
+            }))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_merkle_verify_exchange":
+        package = arguments.get("package", {})
+        result = verify_exchange_proof(package)
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_merkle_status":
+        idx = load_batch_index()
+        chain_path = get_chain_path()
+        total_chain = 0
+        if os.path.isfile(chain_path):
+            with open(chain_path) as f:
+                total_chain = sum(1 for line in f if line.strip())
+        unbatched = total_chain - (idx["last_chain_index"] + 1) if idx["last_chain_index"] >= 0 else total_chain
+        result = {
+            "total_chain_entries": total_chain,
+            "total_batches": len(idx["batches"]),
+            "entries_batched": idx["last_chain_index"] + 1 if idx["last_chain_index"] >= 0 else 0,
+            "entries_unbatched": unbatched,
+            "latest_batch": idx["batches"][-1] if idx["batches"] else None,
+        }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
     else:
         return [TextContent(type="text", text=json.dumps({"error": f"Unknown tool: {name}"}))]

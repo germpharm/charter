@@ -159,4 +159,4 @@ Open source because we don't need more rent seekers. We need human creativity to
 
 ## License
 
-Apache 2.0 — [GermPharm LLC](https://germpharm.org) — 2026
+Apache 2.0 — [Charter Governance Inc](https://charteragent.ai) — 2026

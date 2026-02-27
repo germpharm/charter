@@ -239,6 +239,72 @@ def main():
     team_p.add_argument("--role", help="Member role (for invite)")
     team_p.add_argument("--name", help="Member display name (for invite)")
 
+    # charter merkle
+    merkle_p = sub.add_parser("merkle", help="Merkle tree operations for production-scale verification")
+    merkle_p.add_argument(
+        "action",
+        choices=["batch", "prove", "verify", "exchange", "status"],
+        help="Merkle action",
+    )
+    merkle_p.add_argument(
+        "index",
+        nargs="?",
+        type=int,
+        help="Chain entry index (for prove, verify, exchange)",
+    )
+    merkle_p.add_argument(
+        "--batch-size",
+        type=int,
+        default=256,
+        help="Max entries per batch (default: 256)",
+    )
+    merkle_p.add_argument(
+        "--min-entries",
+        type=int,
+        default=16,
+        help="Min entries to trigger batching (default: 16)",
+    )
+    merkle_p.add_argument(
+        "--output", "-o",
+        help="Output file for exchange proof (default: stdout)",
+    )
+
+    # charter timestamp
+    ts_p = sub.add_parser("timestamp", help="RFC 3161 timestamp anchoring for dispute-ready evidence")
+    ts_p.add_argument(
+        "action",
+        choices=["anchor", "verify", "status"],
+        nargs="?",
+        default="status",
+        help="Timestamp action (default: status)",
+    )
+
+    # charter dispute
+    disp_p = sub.add_parser("dispute", help="Export chain evidence for dispute examination")
+    disp_p.add_argument(
+        "action",
+        choices=["export", "verify", "inspect"],
+        help="Dispute action",
+    )
+    disp_p.add_argument(
+        "--from", dest="from_index",
+        type=int,
+        help="Starting chain index",
+    )
+    disp_p.add_argument(
+        "--to", dest="to_index",
+        type=int,
+        help="Ending chain index",
+    )
+    disp_p.add_argument(
+        "--output", "-o",
+        help="Output file path (default: stdout)",
+    )
+    disp_p.add_argument(
+        "--package",
+        help="Path to dispute package file (for verify/inspect)",
+    )
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -316,6 +382,134 @@ def main():
     elif args.command == "team":
         from charter.team import run_team
         run_team(args)
+    elif args.command == "merkle":
+        from charter.merkle import (
+            batch_chain_entries,
+            generate_proof,
+            verify_chain_entry,
+            create_exchange_proof,
+            load_batch_index,
+        )
+        from charter.identity import get_chain_path
+        import json as _json
+
+        if args.action == "batch":
+            chain_path = get_chain_path()
+            result = batch_chain_entries(
+                chain_path,
+                batch_size=args.batch_size,
+                min_entries=args.min_entries,
+            )
+            if result:
+                print(f"Merkle Batch Created")
+                print(f"  Batch ID:    {result['batch_id']}")
+                print(f"  Root:        {result['root'][:32]}...")
+                print(f"  Leaves:      {result['leaf_count']}")
+                print(f"  Depth:       {result['depth']}")
+                print(f"  Chain range: [{result['chain_range'][0]}, {result['chain_range'][1]}]")
+            else:
+                idx = load_batch_index()
+                unbatched = "unknown"
+                import os
+                chain_path = get_chain_path()
+                if os.path.isfile(chain_path):
+                    with open(chain_path) as f:
+                        total = sum(1 for line in f if line.strip())
+                    batched = idx["last_chain_index"] + 1 if idx["last_chain_index"] >= 0 else 0
+                    unbatched = total - batched
+                print(f"Not enough unbatched entries (have {unbatched}, need {args.min_entries})")
+
+        elif args.action == "prove":
+            if args.index is None:
+                print("Usage: charter merkle prove <chain_index>")
+                return
+            result = generate_proof(args.index)
+            if result:
+                print(f"Merkle Proof for chain entry {args.index}")
+                print(f"  Batch:       {result['batch_id']}")
+                print(f"  Root:        {result['merkle_root'][:32]}...")
+                print(f"  Leaf:        {result['leaf_hash'][:32]}...")
+                print(f"  Proof steps: {result['proof_length']}")
+                print(f"  Dataset:     {result['batch_leaf_count']} entries")
+                print()
+                print(f"  {result['verification']['equivalent_dataset_size']}")
+            else:
+                print(f"Chain entry {args.index} not yet batched. Run 'charter merkle batch' first.")
+
+        elif args.action == "verify":
+            if args.index is None:
+                print("Usage: charter merkle verify <chain_index>")
+                return
+            # Load the entry hash from chain
+            chain_path = get_chain_path()
+            import os
+            if not os.path.isfile(chain_path):
+                print("No chain found.")
+                return
+            with open(chain_path) as f:
+                entries = [_json.loads(line) for line in f if line.strip()]
+            entry = None
+            for e in entries:
+                if e.get("index") == args.index:
+                    entry = e
+                    break
+            if not entry:
+                print(f"Chain entry {args.index} not found.")
+                return
+            result = verify_chain_entry(args.index, entry["hash"])
+            status = "VERIFIED" if result["verified"] else "FAILED"
+            print(f"Merkle Verification: {status}")
+            print(f"  Chain index: {result['chain_index']}")
+            print(f"  Reason:      {result['reason']}")
+            if result.get("batch_id"):
+                print(f"  Batch:       {result['batch_id']}")
+                print(f"  Root:        {result['merkle_root'][:32]}...")
+                print(f"  Proof steps: {result['proof_steps']}")
+
+        elif args.action == "exchange":
+            if args.index is None:
+                print("Usage: charter merkle exchange <chain_index>")
+                return
+            result = create_exchange_proof(args.index)
+            if not result:
+                print(f"Could not create exchange proof for entry {args.index}.")
+                return
+            output = _json.dumps(result, indent=2)
+            if args.output:
+                with open(args.output, "w") as f:
+                    f.write(output)
+                print(f"Exchange proof saved to: {args.output}")
+            else:
+                print(output)
+
+        elif args.action == "status":
+            idx = load_batch_index()
+            chain_path = get_chain_path()
+            total_chain = 0
+            import os
+            if os.path.isfile(chain_path):
+                with open(chain_path) as f:
+                    total_chain = sum(1 for line in f if line.strip())
+            batched = idx["last_chain_index"] + 1 if idx["last_chain_index"] >= 0 else 0
+            unbatched = total_chain - batched
+
+            print(f"Merkle Tree Status")
+            print(f"  Chain entries:   {total_chain}")
+            print(f"  Batched:         {batched}")
+            print(f"  Unbatched:       {unbatched}")
+            print(f"  Total batches:   {len(idx['batches'])}")
+            if idx["batches"]:
+                latest = idx["batches"][-1]
+                print(f"  Latest batch:    {latest['batch_id']}")
+                print(f"  Latest root:     {latest['root'][:32]}...")
+                print(f"  Latest range:    [{latest['chain_range'][0]}, {latest['chain_range'][1]}]")
+
+    elif args.command == "timestamp":
+        from charter.timestamp import run_timestamp
+        run_timestamp(args)
+    elif args.command == "dispute":
+        from charter.dispute import run_dispute
+        run_dispute(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
