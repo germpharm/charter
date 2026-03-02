@@ -109,12 +109,22 @@ def sign_data(data, private_seed):
     return sig
 
 
-def append_to_chain(event, data, auto_batch=True):
+def append_to_chain(event, data, auto_batch=True,
+                    confidence=None, evidence_basis=None,
+                    constraint_assumptions=None,
+                    revision_of=None, revision_reason=None):
     """Append a new entry to the hash chain.
 
     If auto_batch is True and enough unbatched entries have accumulated,
     automatically rolls them into a Merkle tree. The threshold is
     controlled by MERKLE_AUTO_BATCH_SIZE.
+
+    Optional confidence tagging (v2.2.0):
+        confidence: "verified" | "inferred" | "exploratory"
+        evidence_basis: str describing what evidence supports this decision
+        constraint_assumptions: list of assumptions that must remain true
+        revision_of: hash of a prior entry this revises
+        revision_reason: why the prior conclusion changed
     """
     chain_path = get_chain_path()
     identity = load_identity()
@@ -131,6 +141,20 @@ def append_to_chain(event, data, auto_batch=True):
                 last_entry = json.loads(lines[-1])
                 last_hash = last_entry.get("hash", "0" * 64)
                 index = last_entry.get("index", 0) + 1
+
+    # Enrich data with confidence metadata if provided
+    if confidence or evidence_basis or constraint_assumptions or revision_of:
+        data = dict(data)  # shallow copy to avoid mutating caller's dict
+        if confidence:
+            data["_confidence"] = confidence
+        if evidence_basis:
+            data["_evidence_basis"] = evidence_basis
+        if constraint_assumptions:
+            data["_constraint_assumptions"] = constraint_assumptions
+        if revision_of:
+            data["_revision_of"] = revision_of
+        if revision_reason:
+            data["_revision_reason"] = revision_reason
 
     entry = {
         "index": index,

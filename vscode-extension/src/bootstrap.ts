@@ -297,6 +297,10 @@ function nativeBootstrap(
       filesCreated.push("charter_audits/");
     }
 
+    // Step 9: Generate MCP config files for Claude Code and Cursor
+    const mcpFiles = generateMcpConfigs(workspacePath);
+    filesCreated.push(...mcpFiles);
+
     return {
       success: true,
       method: "typescript-native",
@@ -312,6 +316,101 @@ function nativeBootstrap(
       error: err instanceof Error ? err.message : String(err),
     };
   }
+}
+
+// ---------------------------------------------------------------------------
+// MCP config generation — write .mcp.json and .cursor/mcp.json
+// ---------------------------------------------------------------------------
+
+/**
+ * Find the charter CLI command for MCP server invocation.
+ * Returns [command, ...args] for the MCP server config.
+ */
+function findCharterMcpCommand(): { command: string; args: string[] } {
+  // Check common paths for the charter CLI
+  const extendedPath = getExtendedPath();
+  const pathDirs = extendedPath.split(":");
+
+  for (const dir of pathDirs) {
+    const candidate = path.join(dir, "charter");
+    if (fs.existsSync(candidate)) {
+      return {
+        command: candidate,
+        args: ["mcp-serve", "--transport", "stdio"],
+      };
+    }
+  }
+
+  // Fallback: use python module invocation
+  for (const dir of pathDirs) {
+    const candidate = path.join(dir, "python3");
+    if (fs.existsSync(candidate)) {
+      return {
+        command: candidate,
+        args: ["-m", "charter.mcp_server"],
+      };
+    }
+  }
+
+  // Last resort: assume charter is on PATH
+  return {
+    command: "charter",
+    args: ["mcp-serve", "--transport", "stdio"],
+  };
+}
+
+/**
+ * Merge a server entry into an MCP config file.
+ * Preserves existing server configs.
+ */
+function mergeMcpConfig(
+  filepath: string,
+  serverName: string,
+  serverConfig: { command: string; args: string[] }
+): void {
+  let existing: Record<string, unknown> = {};
+
+  if (fs.existsSync(filepath)) {
+    try {
+      const raw = fs.readFileSync(filepath, "utf-8");
+      existing = JSON.parse(raw);
+    } catch {
+      existing = {};
+    }
+  }
+
+  if (!existing.mcpServers || typeof existing.mcpServers !== "object") {
+    existing.mcpServers = {};
+  }
+
+  (existing.mcpServers as Record<string, unknown>)[serverName] = serverConfig;
+
+  fs.writeFileSync(filepath, JSON.stringify(existing, null, 2) + "\n", "utf-8");
+}
+
+/**
+ * Generate MCP config files for Claude Code and Cursor.
+ * Returns list of files created/updated.
+ */
+function generateMcpConfigs(workspacePath: string): string[] {
+  const serverConfig = findCharterMcpCommand();
+  const files: string[] = [];
+
+  // Claude Code: .mcp.json
+  const claudeMcpPath = path.join(workspacePath, ".mcp.json");
+  mergeMcpConfig(claudeMcpPath, "charter-governance", serverConfig);
+  files.push(".mcp.json");
+
+  // Cursor: .cursor/mcp.json
+  const cursorDir = path.join(workspacePath, ".cursor");
+  const cursorMcpPath = path.join(cursorDir, "mcp.json");
+  if (!fs.existsSync(cursorDir)) {
+    fs.mkdirSync(cursorDir, { recursive: true });
+  }
+  mergeMcpConfig(cursorMcpPath, "charter-governance", serverConfig);
+  files.push(".cursor/mcp.json");
+
+  return files;
 }
 
 // ---------------------------------------------------------------------------

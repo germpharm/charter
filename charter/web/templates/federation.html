@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Federation{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Federation</h1>
+<p class="page-subtitle">Cross-node governance federation and chain synchronization</p>
+
+{% if federation_status and federation_status.nodes %}
+
+{# ===== SUMMARY BAR ===== #}
+{% set total_nodes = federation_status.nodes|length %}
+{% set reachable_nodes = federation_status.nodes|selectattr('reachable')|list|length %}
+{% set unreachable_nodes = total_nodes - reachable_nodes %}
+{% set total_chain_entries = federation_status.nodes|sum(attribute='chain_length', default=0) %}
+{% set all_chains_intact = federation_status.nodes|rejectattr('chain_intact')|list|length == 0 %}
+
+<div class="cards">
+    <div class="card">
+        <div class="card-label">Total Nodes</div>
+        <div class="card-value">{{ total_nodes }}</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Reachable</div>
+        <div class="card-value">
+            <span class="badge badge-green">{{ reachable_nodes }}</span>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-label">Unreachable</div>
+        <div class="card-value">
+            {% if unreachable_nodes > 0 %}
+                <span class="badge badge-red">{{ unreachable_nodes }}</span>
+            {% else %}
+                <span class="badge badge-green">0</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-label">Total Chain Entries</div>
+        <div class="card-value">{{ total_chain_entries }}</div>
+    </div>
+    <div class="card">
+        <div class="card-label">Chain Status</div>
+        <div class="card-value">
+            {% if all_chains_intact %}
+                <span class="badge badge-green">All Chains Intact</span>
+            {% else %}
+                <span class="badge badge-red">Chain Issues Detected</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# ===== NODE TABLE ===== #}
+<div class="section">
+    <div class="section-header">
+        <span>Federated Nodes</span>
+        <span class="section-header-badge">{{ total_nodes }}</span>
+    </div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Alias</th>
+                    <th>Domain</th>
+                    <th>Version</th>
+                    <th>Chain Length</th>
+                    <th>Chain Integrity</th>
+                    <th>Last Checked</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for node in federation_status.nodes %}
+                <tr>
+                    <td>
+                        {% if node.reachable %}
+                            <span class="badge badge-green" title="Reachable">&#9679;</span>
+                        {% else %}
+                            <span class="badge badge-red" title="Unreachable">&#9679;</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ node.alias }}</strong></td>
+                    <td>{{ node.get('domain', '-') }}</td>
+                    <td class="mono">{{ node.get('version', '-') }}</td>
+                    <td>{{ node.chain_length }}</td>
+                    <td>
+                        {% if node.chain_intact %}
+                            <span class="badge badge-green">Intact</span>
+                        {% else %}
+                            <span class="badge badge-red">Broken</span>
+                        {% endif %}
+                    </td>
+                    <td class="mono">{{ node.get('last_checked', '-') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# ===== MERGED EVENT STREAM ===== #}
+{% if merged_events %}
+<div class="section">
+    <div class="section-header">
+        <span>Merged Event Stream</span>
+        <span class="section-header-badge">{{ merged_events|length }}</span>
+    </div>
+    <div class="section-body scrollable">
+        <table>
+            <thead>
+                <tr>
+                    <th>Node</th>
+                    <th>Event Type</th>
+                    <th>Timestamp</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in merged_events %}
+                <tr>
+                    <td><strong>{{ event.get('node_alias', 'unknown') }}</strong></td>
+                    <td>
+                        {% if 'identity' in event.get('event', '') %}
+                            <span class="event-identity">{{ event.event }}</span>
+                        {% elif 'governance' in event.get('event', '') or 'audit' in event.get('event', '') %}
+                            <span class="event-governance">{{ event.event }}</span>
+                        {% elif 'detected' in event.get('event', '') or 'daemon' in event.get('event', '') %}
+                            <span class="event-detection">{{ event.event }}</span>
+                        {% elif 'node' in event.get('event', '') or 'connection' in event.get('event', '') or 'federation' in event.get('event', '') %}
+                            <span class="event-network">{{ event.event }}</span>
+                        {% else %}
+                            {{ event.get('event', '') }}
+                        {% endif %}
+                    </td>
+                    <td class="mono">{{ event.get('timestamp', '-') }}</td>
+                    <td class="mono" style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        {% if event.get('data') %}
+                            {% for key, val in event.data.items() %}
+                                {{ key }}: {{ val }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="section">
+    <div class="section-header">
+        <span>Merged Event Stream</span>
+        <span class="section-header-badge">0</span>
+    </div>
+    <div class="section-body">
+        <div class="empty">
+            <p>No federated events yet.</p>
+            <p>Events will appear here as connected nodes sync their chains.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+{# ===== NO NODES CONFIGURED ===== #}
+<div class="section">
+    <div class="section-body">
+        <div class="empty">
+            <p>No federation nodes configured.</p>
+            <p>Federation connects multiple Charter nodes to create a shared governance network with cross-node chain verification.</p>
+            <p>To get started:</p>
+            <p>
+                1. Run <code>charter federation add &lt;node-url&gt;</code> to add a remote node.<br>
+                2. Run <code>charter federation sync</code> to synchronize chains.<br>
+                3. Run <code>charter federation status</code> to check node health.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

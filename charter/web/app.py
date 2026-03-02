@@ -130,6 +130,162 @@ def create_app(daemon=None):
             contributions=contributions,
         )
 
+    @app.route("/federation")
+    def federation_page():
+        from charter.federation import Federation
+
+        fed = Federation()
+        status = fed.get_all_status()
+        events = fed.get_event_stream(limit=50)
+
+        return render_template(
+            "federation.html",
+            active="federation",
+            nodes=status.get("nodes", []),
+            summary=status.get("summary", {}),
+            events=events,
+        )
+
+    @app.route("/api/federation/status")
+    def api_federation_status():
+        from charter.federation import Federation
+
+        fed = Federation()
+        return jsonify(fed.get_all_status())
+
+    @app.route("/api/federation/events")
+    def api_federation_events():
+        from charter.federation import Federation
+
+        limit = request.args.get("limit", 50, type=int)
+        fed = Federation()
+        return jsonify({"events": fed.get_event_stream(limit=limit)})
+
+    # --- Account & Licensing ---
+
+    @app.route("/account")
+    def account_page():
+        from charter.licensing import get_license_status, get_upgrade_info
+        from charter.onboard import _load_onboard_state, ONBOARD_STEPS
+
+        license_status = get_license_status()
+        upgrade_info = get_upgrade_info()
+        onboard_state = _load_onboard_state()
+        identity = load_identity()
+        chain = _read_chain()
+
+        return render_template(
+            "account.html",
+            active="account",
+            license=license_status,
+            upgrade_options=upgrade_info.get("options", []),
+            onboard_state=onboard_state,
+            onboard_steps=ONBOARD_STEPS,
+            identity=identity,
+            chain_length=len(chain),
+            chain_intact=_check_integrity(chain),
+        )
+
+    @app.route("/webhook/stripe", methods=["POST"])
+    def stripe_webhook():
+        """Handle Stripe webhook events for license management.
+
+        Events handled:
+          - checkout.session.completed: activate license
+          - customer.subscription.updated: update tier/seats
+          - customer.subscription.deleted: deactivate license
+        """
+        import hashlib
+        import hmac as _hmac
+
+        payload = request.get_data(as_text=True)
+        sig_header = request.headers.get("Stripe-Signature", "")
+
+        # Verify webhook signature if secret is configured
+        webhook_secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
+        if webhook_secret:
+            # Stripe signature format: t=timestamp,v1=signature
+            parts = {}
+            for item in sig_header.split(","):
+                if "=" in item:
+                    k, v = item.split("=", 1)
+                    parts[k] = v
+
+            timestamp = parts.get("t", "")
+            expected_sig = parts.get("v1", "")
+
+            signed_payload = f"{timestamp}.{payload}"
+            computed = _hmac.new(
+                webhook_secret.encode(),
+                signed_payload.encode(),
+                hashlib.sha256,
+            ).hexdigest()
+
+            if not _hmac.compare_digest(computed, expected_sig):
+                return jsonify({"error": "Invalid signature"}), 400
+
+        try:
+            event = json.loads(payload)
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON"}), 400
+
+        event_type = event.get("type", "")
+        data = event.get("data", {}).get("object", {})
+
+        if event_type == "checkout.session.completed":
+            _handle_checkout_completed(data)
+        elif event_type == "customer.subscription.updated":
+            _handle_subscription_updated(data)
+        elif event_type == "customer.subscription.deleted":
+            _handle_subscription_deleted(data)
+
+        return jsonify({"received": True})
+
+    def _handle_checkout_completed(session):
+        """Process a completed checkout — activate license."""
+        from charter.licensing import generate_license_key, activate_license
+
+        customer_id = session.get("customer", "")
+        # Determine tier from metadata or line items
+        metadata = session.get("metadata", {})
+        tier = metadata.get("tier", "pro")
+
+        key = generate_license_key(tier, identifier=customer_id)
+        seats = int(metadata.get("seats", 1))
+
+        activate_license(
+            key,
+            seats=seats,
+            stripe_customer_id=customer_id,
+        )
+
+    def _handle_subscription_updated(subscription):
+        """Process a subscription update — adjust tier/seats."""
+        from charter.licensing import get_license, activate_license
+
+        lic = get_license()
+        if not lic:
+            return
+
+        # Update seats from subscription quantity
+        items = subscription.get("items", {}).get("data", [])
+        if items:
+            seats = items[0].get("quantity", 1)
+            lic["seats"] = seats
+            # Re-activate with updated data
+            activate_license(
+                lic["key"],
+                seats=seats,
+                team_hash=lic.get("team_hash"),
+                stripe_customer_id=lic.get("stripe_customer_id"),
+                expires_at=lic.get("expires_at"),
+            )
+
+    def _handle_subscription_deleted(subscription):
+        """Process a subscription cancellation — deactivate license."""
+        from charter.licensing import deactivate_license
+        deactivate_license()
+
     # --- API endpoints ---
 
     @app.route("/api/status")

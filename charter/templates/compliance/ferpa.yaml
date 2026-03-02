@@ -1,0 +1,108 @@
+standard: ferpa
+name: "FERPA -- AI Governance Controls"
+description: "Maps Charter governance to Family Educational Rights and Privacy Act requirements for protection of student education records"
+
+controls:
+  # Disclosure and Consent (99.30-99.31)
+  - id: "FERPA-99.30"
+    name: "Prior Consent for Disclosure"
+    description: "Written consent required before disclosing personally identifiable information from education records"
+    match:
+      type: "layer_a"
+      keywords: ["disclose", "share", "external", "consent", "authorization"]
+    recommendation: "Add Layer A rule: Never disclose student records without written consent"
+
+  - id: "FERPA-99.31"
+    name: "Conditions for Disclosure Without Consent"
+    description: "Conditions under which educational records may be disclosed without prior consent (directory info, legitimate educational interest, etc.)"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "data", "student", "authorization"]
+    recommendation: "Add Layer B data_access rule for student records with human_review"
+
+  - id: "FERPA-99.31(a)(1)"
+    name: "School Official Legitimate Educational Interest"
+    description: "Disclosure to school officials with legitimate educational interest must be controlled"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization", "sensitive"]
+    recommendation: "Add Layer B data_access rule with human_review for educational records"
+
+  # Record Keeping (99.32)
+  - id: "FERPA-99.32"
+    name: "Record of Disclosures"
+    description: "Maintain a record of each request for access to and each disclosure of personally identifiable information"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "log"]
+    recommendation: "Hash chain provides immutable record of all data access and disclosure events"
+
+  # Data Integrity and Security (99.33)
+  - id: "FERPA-99.33"
+    name: "Redisclosure Limitations"
+    description: "Information disclosed under an exception may not be redisclosed without consent"
+    match:
+      type: "layer_a"
+      keywords: ["share", "external", "communication", "disclose"]
+    recommendation: "Add Layer A rule: Never share student information with unauthorized third parties"
+
+  - id: "FERPA-SEC-1"
+    name: "Reasonable Security Measures"
+    description: "Educational agencies must use reasonable methods to ensure access is limited to officials with legitimate interest"
+    match:
+      type: "layer_b"
+      keywords: ["access", "authorization", "approval"]
+    recommendation: "Layer B rules should gate access to student data behind human_review"
+
+  # Access Rights (99.10-99.12)
+  - id: "FERPA-99.10"
+    name: "Right to Inspect and Review"
+    description: "Parents and eligible students have the right to inspect and review education records"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "decisions", "data_accessed"]
+    recommendation: "Layer C audit trail should document what education records were accessed"
+
+  - id: "FERPA-99.12"
+    name: "Right to Amend Records"
+    description: "Parents and eligible students may request amendment of records they believe are inaccurate"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "evidence"]
+    recommendation: "Layer A universal constraint ensures data integrity; amendment requests need human review"
+
+  # AI-Specific Controls
+  - id: "FERPA-AI-1"
+    name: "Automated Decision Safeguards"
+    description: "AI systems processing student data must have human oversight for decisions affecting student outcomes"
+    match:
+      type: "layer_b"
+      action: "student_assessment"
+      keywords: ["assessment", "clinical_recommendation", "approval"]
+    recommendation: "Add Layer B student_assessment rule requiring instructor_review"
+
+  - id: "FERPA-AI-2"
+    name: "Data Minimization"
+    description: "AI systems should collect and process only the minimum student data necessary for the educational purpose"
+    match:
+      type: "layer_a"
+      keywords: ["collect", "data", "necessary", "beyond"]
+    recommendation: "Add Layer A rule: Never collect student data beyond what is educationally necessary"
+
+  - id: "FERPA-AI-3"
+    name: "Incident Response for Data Breaches"
+    description: "Mechanisms to detect and respond to unauthorized access to student education records"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "friction"]
+    recommendation: "Configure kill triggers to halt operations on suspected data breach"
+
+  - id: "FERPA-AI-4"
+    name: "Audit Trail for AI Actions"
+    description: "All AI actions involving student data must be logged for accountability and review"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "decisions", "ethical_flags"]
+    recommendation: "Configure Layer C self-audit to include student_data_accessed in report"

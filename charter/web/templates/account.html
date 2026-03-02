@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Account{% endblock %}
+
+{% block content %}
+<h1>Account</h1>
+
+<section class="card">
+    <h2>License</h2>
+    <table>
+        <tr><td><strong>Tier</strong></td><td>{{ license.tier_label }}</td></tr>
+        {% if license.key %}
+        <tr><td><strong>Key</strong></td><td><code>{{ license.key }}</code></td></tr>
+        {% endif %}
+        <tr><td><strong>Seats</strong></td><td>{{ license.seats }}</td></tr>
+        {% if license.activated_at %}
+        <tr><td><strong>Activated</strong></td><td>{{ license.activated_at }}</td></tr>
+        {% endif %}
+        {% if license.expires_at %}
+        <tr><td><strong>Expires</strong></td><td>{{ license.expires_at }}</td></tr>
+        {% endif %}
+        {% if license.expired %}
+        <tr><td><strong>Status</strong></td><td><span class="badge badge-red">EXPIRED</span></td></tr>
+        {% endif %}
+    </table>
+
+    {% if upgrade_options %}
+    <h3>Upgrade Options</h3>
+    {% for opt in upgrade_options %}
+    <div class="upgrade-option">
+        <strong>{{ opt.label }}</strong>
+        <p>{{ opt.description }}</p>
+        <a href="{{ opt.stripe_link }}" class="btn" target="_blank">Subscribe</a>
+    </div>
+    {% endfor %}
+    {% endif %}
+</section>
+
+{% if onboard_state %}
+<section class="card">
+    <h2>Enterprise Onboarding</h2>
+    <p>Progress: {{ onboard_state.steps_completed | length }}/8 steps</p>
+    {% if onboard_state.started_at %}
+    <p>Started: {{ onboard_state.started_at }}</p>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr><th>Step</th><th>Name</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            {% for step in onboard_steps %}
+            <tr>
+                <td>{{ step.number }}</td>
+                <td>{{ step.name }}</td>
+                <td>
+                    {% if step.number in onboard_state.steps_completed %}
+                    <span class="badge badge-green">Complete</span>
+                    {% else %}
+                    <span class="badge badge-gray">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endif %}
+
+<section class="card">
+    <h2>Governance Summary</h2>
+    {% if identity %}
+    <table>
+        <tr><td><strong>Node</strong></td><td>{{ identity.alias }} ({{ identity.public_id[:16] }}...)</td></tr>
+        <tr><td><strong>Chain Length</strong></td><td>{{ chain_length }}</td></tr>
+        <tr><td><strong>Chain Integrity</strong></td><td>
+            {% if chain_intact %}
+            <span class="badge badge-green">Intact</span>
+            {% else %}
+            <span class="badge badge-red">Broken</span>
+            {% endif %}
+        </td></tr>
+    </table>
+    {% else %}
+    <p>No identity configured. Run <code>charter init</code> to get started.</p>
+    {% endif %}
+</section>
+{% endblock %}

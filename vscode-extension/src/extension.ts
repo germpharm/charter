@@ -4,6 +4,14 @@ import * as path from "path";
 import * as http from "http";
 import { bootstrap, bootstrapWithDomain } from "./bootstrap";
 import { ALL_DOMAINS, Domain } from "./types";
+import { checkForUpdates } from "./updateChecker";
+import { promptForContext, resetContextPrompt } from "./contextManager";
+
+// ---------------------------------------------------------------------------
+// Extension version — bump this when publishing
+// ---------------------------------------------------------------------------
+
+const EXTENSION_VERSION = "3.0.0";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -21,6 +29,26 @@ interface GovernanceState {
   governed: boolean;
   charterPath: string | null;
   daemonActive: boolean;
+  licenseTier: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// License tier detection — reads ~/.charter/license.json
+// ---------------------------------------------------------------------------
+
+function readLicenseTier(): string | null {
+  const home = process.env.HOME || process.env.USERPROFILE || "";
+  const licensePath = path.join(home, ".charter", "license.json");
+  try {
+    if (fs.existsSync(licensePath)) {
+      const raw = fs.readFileSync(licensePath, "utf-8");
+      const data = JSON.parse(raw);
+      return data.tier || null;
+    }
+  } catch {
+    // Ignore read errors
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -153,8 +181,9 @@ async function runBootstrapWithProgress(
 // ---------------------------------------------------------------------------
 
 export function activate(context: vscode.ExtensionContext): void {
+  _extensionContext = context;
   const outputChannel = vscode.window.createOutputChannel("Charter Governance");
-  outputChannel.appendLine("Charter Governance extension activated (v2.0.0).");
+  outputChannel.appendLine(`Charter Governance extension activated (v${EXTENSION_VERSION}).`);
 
   // Log workspace info immediately for debugging
   const folders = vscode.workspace.workspaceFolders;
@@ -187,6 +216,7 @@ export function activate(context: vscode.ExtensionContext): void {
     governed: false,
     charterPath: null,
     daemonActive: false,
+    licenseTier: null,
   };
 
   // ---- Read configuration ----
@@ -209,10 +239,14 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
     if (state.governed) {
-      statusBarItem.text = "$(shield) GOVERNED";
+      // Show license tier badge
+      const tierLabel = state.licenseTier === "enterprise" ? " (Enterprise)"
+        : state.licenseTier === "pro" ? " (Pro)"
+        : "";
+      statusBarItem.text = `$(shield) GOVERNED${tierLabel}`;
       statusBarItem.tooltip = state.charterPath
-        ? `Charter governance active\n${state.charterPath}`
-        : "Charter governance active";
+        ? `Charter governance active${tierLabel}\n${state.charterPath}`
+        : `Charter governance active${tierLabel}`;
       statusBarItem.backgroundColor = new vscode.ThemeColor(
         "statusBarItem.prominentBackground"
       );
@@ -332,11 +366,17 @@ export function activate(context: vscode.ExtensionContext): void {
     }
   }
 
+  // ---- Refresh license tier ----
+  function refreshLicenseTier(): void {
+    state.licenseTier = readLicenseTier();
+  }
+
   // ---- Full refresh ----
   async function fullRefresh(): Promise<void> {
     await refreshCharterFile();
     await refreshDaemon();
-    render(); // Single render after both checks complete
+    refreshLicenseTier();
+    render(); // Single render after all checks complete
   }
 
   // ---- Commands ----
@@ -541,6 +581,19 @@ export function activate(context: vscode.ExtensionContext): void {
     })
   );
 
+  // New Context — manually start a new context boundary
+  context.subscriptions.push(
+    vscode.commands.registerCommand("charterGovernance.newContext", async () => {
+      if (!state.governed || !state.charterPath) {
+        vscode.window.showWarningMessage(
+          "Charter: No governed workspace. Open a governed project first."
+        );
+        return;
+      }
+      await promptForContext(context, state.charterPath, outputChannel);
+    })
+  );
+
   // ---- File system watcher for charter.yaml ----
   // Watch across all workspace folders. The glob pattern picks up
   // charter.yaml at the workspace root or any subdirectory.
@@ -602,8 +655,18 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push({ dispose: stopDaemonPolling });
 
   // ---- Initial run (with retry if workspace not ready) ----
-  fullRefresh().then(() => {
+  fullRefresh().then(async () => {
     outputChannel.appendLine("Charter Governance extension ready.");
+
+    // --- Update check (non-blocking, 24h cache) ---
+    // Runs after governance status is resolved so status bar exists.
+    checkForUpdates(context, EXTENSION_VERSION, outputChannel, statusBarItem);
+
+    // --- Context continuation prompt ---
+    // If workspace is governed, ask whether to continue or start new context.
+    if (state.governed && state.charterPath) {
+      await promptForContext(context, state.charterPath, outputChannel);
+    }
 
     // VS Code sometimes activates extensions before workspace folders
     // are available (restored windows, slow workspace loading).
@@ -618,6 +681,10 @@ export function activate(context: vscode.ExtensionContext): void {
               `[${new Date().toISOString()}] Retry: workspace root now available: ${root}`
             );
             await fullRefresh();
+            // Check context on retry too
+            if (state.governed && state.charterPath) {
+              await promptForContext(context, state.charterPath, outputChannel);
+            }
           }
         }, delay);
       }
@@ -626,6 +693,13 @@ export function activate(context: vscode.ExtensionContext): void {
   startDaemonPolling();
 }
 
+// Store context ref for deactivation
+let _extensionContext: vscode.ExtensionContext | undefined;
+
 export function deactivate(): void {
-  // Cleanup is handled by disposables registered on the ExtensionContext.
+  // Reset context prompt flag so next session prompts again
+  if (_extensionContext) {
+    resetContextPrompt(_extensionContext);
+  }
+  // Remaining cleanup handled by disposables registered on the ExtensionContext.
 }

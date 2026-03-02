@@ -8,6 +8,41 @@ import yaml
 
 CONFIG_NAME = "charter.yaml"
 
+# Valid values for the 'requires' field in Layer B rules.
+# human_approval / human_review are the original v1.0 types.
+# multi_model_check was added in v2.2.0 for multi-model arbitration.
+VALID_REQUIRES = {"human_approval", "human_review", "multi_model_check"}
+
+
+def validate_layer_b_rules(config):
+    """Validate Layer B rules in a charter config.
+
+    Checks that each rule has 'action' and 'requires' fields, and that
+    'requires' is one of the recognized values.
+
+    Args:
+        config: The charter config dict.
+
+    Returns:
+        List of error strings. Empty list if valid.
+    """
+    errors = []
+    if not config:
+        return errors
+
+    rules = config.get("governance", {}).get("layer_b", {}).get("rules", [])
+    for i, rule in enumerate(rules):
+        if not isinstance(rule, dict):
+            continue
+        requires = rule.get("requires")
+        if requires and requires not in VALID_REQUIRES:
+            errors.append(
+                f"Layer B rule {i} ({rule.get('action', '?')}): "
+                f"unknown requires value '{requires}'. "
+                f"Valid: {', '.join(sorted(VALID_REQUIRES))}"
+            )
+    return errors
+
 
 def find_config(path=None):
     """Find charter.yaml starting from path, walking up to root."""

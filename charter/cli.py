@@ -305,6 +305,208 @@ def main():
         help="Path to dispute package file (for verify/inspect)",
     )
 
+    # charter confidence
+    conf_p = sub.add_parser(
+        "confidence",
+        help="Tag chain entries with confidence levels and revision linkage",
+    )
+    conf_p.add_argument(
+        "action",
+        choices=["tag", "revisions", "history"],
+        help="Confidence action",
+    )
+    conf_p.add_argument(
+        "target",
+        nargs="?",
+        help="Chain entry index (for tag) or entry hash (for revisions/history)",
+    )
+    conf_p.add_argument(
+        "--level",
+        choices=["verified", "inferred", "exploratory"],
+        help="Confidence level (for tag)",
+    )
+    conf_p.add_argument(
+        "--basis",
+        help="Evidence basis for the confidence tag",
+    )
+    conf_p.add_argument(
+        "--assumptions",
+        help="Comma-separated constraint assumptions",
+    )
+
+    # charter redteam
+    rt_p = sub.add_parser(
+        "redteam",
+        help="Adversarial testing of governance defenses",
+    )
+    rt_p.add_argument(
+        "action",
+        choices=["run", "generate", "report"],
+        nargs="?",
+        default="run",
+        help="Red team action (default: run)",
+    )
+    rt_p.add_argument(
+        "threats_file",
+        nargs="?",
+        help="Path to enterprise threat log (for generate)",
+    )
+    rt_p.add_argument(
+        "--category",
+        help="Comma-separated categories to test",
+    )
+    rt_p.add_argument(
+        "--config", "-c",
+        help="Path to charter.yaml",
+    )
+
+    # charter arbitrate
+    arb_p = sub.add_parser(
+        "arbitrate",
+        help="Multi-model arbitration for critical decisions",
+    )
+    arb_p.add_argument(
+        "--question", "-q",
+        required=True,
+        help="The question or decision to arbitrate",
+    )
+    arb_p.add_argument(
+        "--models", "-m",
+        help="Comma-separated model names (default: auto based on reversibility)",
+    )
+    arb_p.add_argument(
+        "--reversibility",
+        choices=["reversible", "low_reversibility", "irreversible"],
+        help="Override reversibility classification",
+    )
+
+    # charter role
+    role_p = sub.add_parser(
+        "role",
+        help="RBAC, dual signoff, and Layer 0 invariant enforcement",
+    )
+    role_p.add_argument(
+        "action",
+        choices=["assign", "propose", "sign", "status", "invariants"],
+        help="Role action",
+    )
+    role_p.add_argument("--team", help="Team hash")
+    role_p.add_argument("--member", help="Member public ID")
+    role_p.add_argument(
+        "--role",
+        choices=["operator", "reviewer", "auditor", "observer"],
+        help="Governance role to assign",
+    )
+    role_p.add_argument("--rule", help="Rule text for proposal")
+    role_p.add_argument("--layer", choices=["a", "b"], help="Layer for proposed rule")
+    role_p.add_argument("--proposal", help="Proposal ID to sign")
+    role_p.add_argument(
+        "--approve",
+        action="store_true",
+        default=True,
+        help="Approve the proposal (default)",
+    )
+    role_p.add_argument(
+        "--reject",
+        action="store_true",
+        help="Reject the proposal",
+    )
+
+    # charter alert
+    alert_p = sub.add_parser(
+        "alert",
+        help="Alerting pipeline for governance events",
+    )
+    alert_p.add_argument(
+        "action",
+        choices=["test", "status", "configure"],
+        nargs="?",
+        default="status",
+        help="Alert action (default: status)",
+    )
+
+    # charter siem
+    siem_p = sub.add_parser(
+        "siem",
+        help="Export chain events for SIEM integration (Splunk, Datadog, syslog)",
+    )
+    siem_p.add_argument(
+        "action",
+        choices=["export", "stream", "status"],
+        nargs="?",
+        default="status",
+        help="SIEM action (default: status)",
+    )
+    siem_p.add_argument(
+        "--format", "-f",
+        choices=["cef", "json", "syslog"],
+        default="cef",
+        help="Export format (default: cef)",
+    )
+    siem_p.add_argument("--from", dest="from_index", type=int, help="Starting chain index")
+    siem_p.add_argument("--to", dest="to_index", type=int, help="Ending chain index")
+
+    # charter compliance
+    comp_p = sub.add_parser(
+        "compliance",
+        help="Map governance to regulatory compliance frameworks (SOX, HIPAA, FERPA)",
+    )
+    comp_p.add_argument(
+        "action",
+        choices=["map", "report", "gap", "standards"],
+        nargs="?",
+        default="map",
+        help="Compliance action (default: map)",
+    )
+    comp_p.add_argument(
+        "--standard", "-s",
+        help="Compliance standard (sox, hipaa, ferpa)",
+    )
+    comp_p.add_argument(
+        "--config", "-c",
+        help="Path to charter.yaml",
+    )
+
+    # charter federation
+    fed_p = sub.add_parser(
+        "federation",
+        help="Federated governance dashboard — aggregate status across Charter nodes",
+    )
+    fed_p.add_argument(
+        "action",
+        choices=["status", "add", "remove", "events"],
+        nargs="?",
+        default="status",
+        help="Federation action (default: status)",
+    )
+    fed_p.add_argument("--sse-url", help="SSE URL of the node to add")
+    fed_p.add_argument("--alias", help="Alias for the node")
+    fed_p.add_argument("--node-id", help="Node ID (for remove; auto-discovered for add)")
+    fed_p.add_argument("--limit", type=int, default=50, help="Event stream limit (default: 50)")
+
+    # charter activate
+    act_p = sub.add_parser("activate", help="Activate a Charter Pro or Enterprise license key")
+    act_p.add_argument("key", help="License key (e.g. CHARTER-PRO-a1b2c3d4-e5f6)")
+
+    # charter license
+    sub.add_parser("license", help="Show current license status and tier")
+
+    # charter upgrade
+    sub.add_parser("upgrade", help="Show upgrade options with payment links")
+
+    # charter onboard
+    onb_p = sub.add_parser("onboard", help="Enterprise onboarding wizard (Enterprise tier)")
+    onb_p.add_argument(
+        "--step",
+        type=int,
+        help="Run a specific onboarding step (1-8)",
+    )
+    onb_p.add_argument(
+        "--status",
+        action="store_true",
+        help="Show onboarding progress",
+    )
+
     # charter status
     sub.add_parser("status", help="Show current governance status")
 
@@ -317,6 +519,18 @@ def main():
         parser.print_help()
         sys.exit(0)
 
+    # Import license gating
+    from charter.licensing import gate, LicenseError
+
+    try:
+        _run_command(args, gate)
+    except LicenseError as e:
+        print(str(e))
+        sys.exit(1)
+
+
+def _run_command(args, gate):
+    """Dispatch to the appropriate command handler."""
     if args.command == "bootstrap":
         from charter.bootstrap import run_bootstrap
         run_bootstrap(args)
@@ -348,6 +562,7 @@ def main():
         from charter.verify import run_verify
         run_verify(args)
     elif args.command == "serve":
+        gate("serve")
         from charter.daemon.service import run_serve
         run_serve(args)
     elif args.command == "detect":
@@ -374,6 +589,7 @@ def main():
         from charter.stamp import run_verify
         run_verify(args)
     elif args.command == "mcp-serve":
+        gate("mcp-serve")
         from charter.mcp_server import run_mcp_serve
         run_mcp_serve(args)
     elif args.command == "join":
@@ -504,12 +720,60 @@ def main():
                 print(f"  Latest root:     {latest['root'][:32]}...")
                 print(f"  Latest range:    [{latest['chain_range'][0]}, {latest['chain_range'][1]}]")
 
+    elif args.command == "confidence":
+        gate("confidence")
+        from charter.confidence import run_confidence
+        run_confidence(args)
+    elif args.command == "redteam":
+        gate("redteam")
+        from charter.redteam import run_redteam
+        run_redteam(args)
+    elif args.command == "arbitrate":
+        gate("arbitrate")
+        from charter.arbitration import run_arbitrate
+        run_arbitrate(args)
+    elif args.command == "role":
+        gate("role")
+        from charter.roles import run_roles
+        # Translate --reject flag to approve=False
+        if getattr(args, "reject", False):
+            args.approve = False
+        run_roles(args)
+    elif args.command == "alert":
+        gate("alert")
+        from charter.alerting import run_alerting
+        run_alerting(args)
+    elif args.command == "siem":
+        gate("siem")
+        from charter.siem import run_siem
+        run_siem(args)
+    elif args.command == "compliance":
+        gate("compliance")
+        from charter.compliance import run_compliance
+        run_compliance(args)
+    elif args.command == "federation":
+        gate("federation")
+        from charter.federation import run_federation
+        run_federation(args)
     elif args.command == "timestamp":
         from charter.timestamp import run_timestamp
         run_timestamp(args)
     elif args.command == "dispute":
         from charter.dispute import run_dispute
         run_dispute(args)
+    elif args.command == "activate":
+        from charter.licensing import run_activate
+        run_activate(args)
+    elif args.command == "license":
+        from charter.licensing import run_license
+        run_license(args)
+    elif args.command == "upgrade":
+        from charter.licensing import run_upgrade
+        run_upgrade(args)
+    elif args.command == "onboard":
+        gate("onboard")
+        from charter.onboard import run_onboard
+        run_onboard(args)
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)

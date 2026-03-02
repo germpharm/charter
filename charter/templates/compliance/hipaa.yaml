@@ -1,0 +1,130 @@
+standard: hipaa
+name: "HIPAA Security Rule -- AI Governance Controls"
+description: "Maps Charter governance to HIPAA Administrative, Physical, and Technical Safeguards for electronic protected health information (ePHI)"
+
+controls:
+  # Administrative Safeguards (164.308)
+  - id: "164.308(a)(1)"
+    name: "Security Management Process"
+    description: "Implement policies and procedures to prevent, detect, contain, and correct security violations"
+    match:
+      type: "kill_triggers"
+      keywords: ["security", "violation", "ethics", "compliance"]
+    recommendation: "Configure kill triggers for security violations and compliance deviation"
+
+  - id: "164.308(a)(2)"
+    name: "Assigned Security Responsibility"
+    description: "Identify the security official responsible for developing and implementing security policies"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "authorization", "responsible"]
+    recommendation: "Layer B rules should route security decisions to a designated human approver"
+
+  - id: "164.308(a)(3)"
+    name: "Workforce Security"
+    description: "Implement policies to ensure workforce members have appropriate access and prevent unauthorized access"
+    match:
+      type: "layer_a"
+      keywords: ["access", "authorization", "unauthorized"]
+    recommendation: "Add Layer A rule: Never access patient data without explicit authorization"
+
+  - id: "164.308(a)(4)"
+    name: "Information Access Management"
+    description: "Implement policies and procedures for authorizing access to ePHI"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization", "data"]
+    recommendation: "Add Layer B data_access rule with human_review for sensitive health data"
+
+  - id: "164.308(a)(5)"
+    name: "Security Awareness and Training"
+    description: "Implement a security awareness and training program for all workforce members"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "escalation"]
+    recommendation: "Layer C audit reports should track security awareness metrics"
+
+  - id: "164.308(a)(6)"
+    name: "Security Incident Procedures"
+    description: "Implement policies and procedures to address security incidents"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "friction"]
+    recommendation: "Configure kill triggers as incident response circuit breakers"
+
+  - id: "164.308(a)(7)"
+    name: "Contingency Plan"
+    description: "Establish policies and procedures for responding to an emergency or occurrence that damages systems containing ePHI"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "audit", "conflict"]
+    recommendation: "Kill triggers provide automated contingency response; document escalation procedures"
+
+  - id: "164.308(a)(8)"
+    name: "Evaluation"
+    description: "Perform periodic technical and nontechnical evaluation of security policies"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "decisions"]
+    recommendation: "Configure Layer C audit with at least weekly frequency"
+
+  # Technical Safeguards (164.312)
+  - id: "164.312(a)(1)"
+    name: "Access Control"
+    description: "Implement technical policies and procedures to allow access only to authorized persons or software programs"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization"]
+    recommendation: "Add Layer B data_access rule with human_review"
+
+  - id: "164.312(b)"
+    name: "Audit Controls"
+    description: "Implement hardware, software, and/or procedural mechanisms to record and examine activity in systems containing ePHI"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "log", "record"]
+    recommendation: "Hash chain provides immutable, tamper-evident audit trail"
+
+  - id: "164.312(c)(1)"
+    name: "Integrity Controls"
+    description: "Implement policies and procedures to protect ePHI from improper alteration or destruction"
+    match:
+      type: "layer_a"
+      keywords: ["alter", "destroy", "fabricate", "conceal"]
+    recommendation: "Add Layer A rules prohibiting data alteration and destruction"
+
+  - id: "164.312(d)"
+    name: "Person or Entity Authentication"
+    description: "Implement procedures to verify that a person or entity seeking access is the one claimed"
+    match:
+      type: "layer_a"
+      keywords: ["impersonate", "identity", "person"]
+    recommendation: "Layer A universal constraint: Never impersonate a real person"
+
+  - id: "164.312(e)(1)"
+    name: "Transmission Security"
+    description: "Implement technical security measures to guard against unauthorized access to ePHI being transmitted"
+    match:
+      type: "layer_b"
+      action: "external_communication"
+      keywords: ["communication", "external", "transmission"]
+    recommendation: "Add Layer B external_communication rule with human_approval"
+
+  # Privacy Rule overlap
+  - id: "164.502(a)"
+    name: "Minimum Necessary Standard"
+    description: "Use, disclose, and request only the minimum amount of PHI necessary"
+    match:
+      type: "layer_a"
+      keywords: ["disclose", "patient", "health", "consent", "share"]
+    recommendation: "Add Layer A rule: Never disclose patient health information without explicit consent"
+
+  - id: "164.530(c)"
+    name: "Administrative Requirements - Safeguards"
+    description: "Covered entity must have safeguards to protect privacy of PHI and limit incidental uses/disclosures"
+    match:
+      type: "layer_a"
+      keywords: ["share", "information", "unauthorized", "parties"]
+    recommendation: "Add Layer A rule prohibiting sharing health information with unauthorized parties"

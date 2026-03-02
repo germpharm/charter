@@ -465,6 +465,223 @@ TOOLS = [
         description="Get Merkle tree status: number of batches, total entries batched, unbatched entry count, latest root hash.",
         inputSchema={"type": "object", "properties": {}, "required": []},
     ),
+    # --- v2.2.0: Confidence tagging tools ---
+    Tool(
+        name="charter_tag_confidence",
+        description="Tag a chain entry with a confidence level (verified, inferred, exploratory), evidence basis, and constraint assumptions. Records the tagging as a chain event.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "entry_index": {
+                    "type": "integer",
+                    "description": "The chain entry index to tag.",
+                },
+                "confidence": {
+                    "type": "string",
+                    "enum": ["verified", "inferred", "exploratory"],
+                    "description": "Confidence level.",
+                },
+                "evidence_basis": {
+                    "type": "string",
+                    "description": "What evidence supports this decision.",
+                },
+                "constraint_assumptions": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Assumptions that must remain true.",
+                },
+            },
+            "required": ["entry_index", "confidence"],
+        },
+    ),
+    Tool(
+        name="charter_revision_history",
+        description="Get the full revision chain for a chain entry, showing how a decision evolved as new evidence arrived. Traces backward through revision links.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "entry_hash": {
+                    "type": "string",
+                    "description": "The hash of the chain entry to trace revisions for.",
+                },
+            },
+            "required": ["entry_hash"],
+        },
+    ),
+    # --- v2.2.0: Red team tools ---
+    Tool(
+        name="charter_redteam_run",
+        description="Run the adversarial test battery against the current governance configuration. Tests constraint escape, gradient manipulation, chain tampering, threshold erosion, identity spoofing, and audit evasion. Returns pass/fail for each scenario.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Categories to test (default: all). Options: constraint_escape, gradient_manipulation, chain_tampering, threshold_erosion, identity_spoofing, audit_evasion.",
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_redteam_status",
+        description="Get the results of the most recent red team run, or run a new battery and return the results.",
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
+    # --- v2.2.0: Arbitration tools ---
+    Tool(
+        name="charter_arbitrate",
+        description="Route a decision through multiple AI models for divergence analysis. Implements the Bezos Type 1/Type 2 framework: irreversible decisions get multi-model checks, reversible decisions use single model. Returns agreement status, divergence score, and recommendation.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "question": {
+                    "type": "string",
+                    "description": "The question or decision to arbitrate.",
+                },
+                "models": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Model names to consult (default: auto based on reversibility). Options: local, anthropic.",
+                },
+                "reversibility": {
+                    "type": "string",
+                    "enum": ["reversible", "low_reversibility", "irreversible"],
+                    "description": "Override reversibility classification.",
+                },
+            },
+            "required": ["question"],
+        },
+    ),
+    # --- v2.3.0: Role-Based Access Control tools ---
+    Tool(
+        name="charter_propose_rule",
+        description="Propose a new governance rule for a team. Requires operator or reviewer role. The proposal enters dual-signoff workflow — two team members must approve before the rule takes effect. Layer A proposals are additive-only (no deletions).",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "team_hash": {
+                    "type": "string",
+                    "description": "The team hash to propose a rule for.",
+                },
+                "rule_text": {
+                    "type": "string",
+                    "description": "The rule text to propose.",
+                },
+                "layer": {
+                    "type": "string",
+                    "enum": ["a", "b"],
+                    "description": "Which governance layer this rule belongs to.",
+                },
+            },
+            "required": ["team_hash", "rule_text", "layer"],
+        },
+    ),
+    Tool(
+        name="charter_sign_rule",
+        description="Sign (approve or reject) a pending governance rule proposal. Requires operator or reviewer role. When the required number of signatures is met, the rule is automatically applied or rejected.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "team_hash": {
+                    "type": "string",
+                    "description": "The team hash.",
+                },
+                "proposal_id": {
+                    "type": "string",
+                    "description": "The proposal ID to sign.",
+                },
+                "approve": {
+                    "type": "boolean",
+                    "description": "True to approve, False to reject.",
+                    "default": True,
+                },
+            },
+            "required": ["team_hash", "proposal_id"],
+        },
+    ),
+    Tool(
+        name="charter_role_status",
+        description="Get RBAC status for a team: member roles, open proposals, Layer 0 invariants, and signoff requirements.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "team_hash": {
+                    "type": "string",
+                    "description": "The team hash to check status for.",
+                },
+            },
+            "required": ["team_hash"],
+        },
+    ),
+    # --- v2.3.0: Alerting tools ---
+    Tool(
+        name="charter_alert_status",
+        description="Get the current alerting configuration: configured channels (webhooks, Slack, email), event filters, and connection status.",
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
+    # --- v2.3.0: SIEM tools ---
+    Tool(
+        name="charter_siem_export",
+        description="Export chain events in SIEM-compatible formats. Supports CEF (Splunk), structured JSON (Datadog), and RFC 5424 syslog. Optionally filter by chain index range.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "format": {
+                    "type": "string",
+                    "enum": ["cef", "json", "syslog"],
+                    "description": "Export format (default: cef).",
+                    "default": "cef",
+                },
+                "from_index": {
+                    "type": "integer",
+                    "description": "Starting chain index (inclusive).",
+                },
+                "to_index": {
+                    "type": "integer",
+                    "description": "Ending chain index (inclusive).",
+                },
+            },
+            "required": [],
+        },
+    ),
+    # --- v2.3.0: Compliance tools ---
+    Tool(
+        name="charter_compliance_map",
+        description="Map current governance configuration against a regulatory compliance framework (SOX, HIPAA, FERPA). Returns coverage percentage, covered controls, gaps, and recommendations.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "standard": {
+                    "type": "string",
+                    "description": "Compliance standard to map against (sox, hipaa, ferpa).",
+                },
+            },
+            "required": ["standard"],
+        },
+    ),
+    Tool(
+        name="charter_federation_status",
+        description="Get aggregated governance status across all federated Charter nodes. Shows node health, chain lengths, integrity, and overall summary.",
+        inputSchema={
+            "type": "object",
+            "properties": {},
+        },
+    ),
+    Tool(
+        name="charter_federation_events",
+        description="Get a merged event stream from all federated Charter nodes, sorted by timestamp. Provides a unified view of governance activity across the network.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of events to return (default: 50).",
+                },
+            },
+        },
+    ),
 ]
 
 
@@ -480,6 +697,18 @@ async def handle_list_tools() -> list[Tool]:
 @server.call_tool()
 async def handle_call_tool(name: str, arguments: dict | None) -> list[TextContent]:
     arguments = arguments or {}
+
+    # License tier gating for paid MCP tools
+    from charter.licensing import MCP_FEATURE_TIERS, check_tier, TIER_LABELS
+    if name in MCP_FEATURE_TIERS:
+        if not check_tier(name, feature_map=MCP_FEATURE_TIERS):
+            required = MCP_FEATURE_TIERS[name]
+            return [TextContent(type="text", text=json.dumps({
+                "error": "license_required",
+                "required_tier": required,
+                "tier_label": TIER_LABELS.get(required, required),
+                "message": f"Charter {TIER_LABELS.get(required, required)} required for {name}. Run: charter upgrade",
+            }, indent=2))]
 
     if name == "charter_status":
         data = _get_status_data()
@@ -672,6 +901,197 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
         package = arguments.get("package", {})
         result = verify_exchange_proof(package)
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- v2.2.0: Confidence tagging handlers ---
+
+    elif name == "charter_tag_confidence":
+        entry_index = arguments.get("entry_index", 0)
+        confidence = arguments.get("confidence", "exploratory")
+        evidence_basis = arguments.get("evidence_basis", "")
+        assumptions = arguments.get("constraint_assumptions", [])
+        from charter.confidence import validate_confidence
+        if not validate_confidence(confidence):
+            return [TextContent(
+                type="text",
+                text=json.dumps({"error": "Invalid confidence level. Use: verified, inferred, exploratory"}),
+            )]
+        entry = append_to_chain(
+            "confidence_tagged",
+            {
+                "entry_index": entry_index,
+                "confidence": confidence,
+                "evidence_basis": evidence_basis,
+                "constraint_assumptions": assumptions,
+            },
+        )
+        if not entry:
+            return [TextContent(type="text", text=json.dumps({"error": "No identity found."}))]
+        return [TextContent(type="text", text=json.dumps(entry, indent=2))]
+
+    elif name == "charter_revision_history":
+        entry_hash = arguments.get("entry_hash", "")
+        from charter.confidence import get_revision_chain
+        chain_path = get_chain_path()
+        history = get_revision_chain(chain_path, entry_hash)
+        return [TextContent(type="text", text=json.dumps(history, indent=2))]
+
+    # --- v2.2.0: Red team handlers ---
+
+    elif name == "charter_redteam_run":
+        categories = arguments.get("categories")
+        from charter.redteam import RedTeamRunner
+        runner = RedTeamRunner()
+        results = runner.run_battery(categories=categories)
+        if not results:
+            return [TextContent(type="text", text=json.dumps({"error": "No scenarios to run."}))]
+        return [TextContent(type="text", text=json.dumps(results, indent=2))]
+
+    elif name == "charter_redteam_status":
+        from charter.redteam import RedTeamRunner
+        runner = RedTeamRunner()
+        results = runner.run_battery()
+        if not results:
+            return [TextContent(type="text", text=json.dumps({"status": "no scenarios"}))]
+        summary = {
+            "passed": results["passed"],
+            "failed": results["failed"],
+            "total": results["total"],
+            "duration_ms": results["duration_ms"],
+            "all_passed": results["failed"] == 0,
+        }
+        return [TextContent(type="text", text=json.dumps(summary, indent=2))]
+
+    # --- v2.2.0: Arbitration handlers ---
+
+    elif name == "charter_arbitrate":
+        question = arguments.get("question", "")
+        models = arguments.get("models")
+        reversibility = arguments.get("reversibility")
+        from charter.arbitration import arbitrate
+        result = arbitrate(
+            question,
+            models=models,
+            reversibility=reversibility,
+        )
+        if not result:
+            return [TextContent(type="text", text=json.dumps({"error": "Arbitration failed."}))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- v2.3.0: RBAC handlers ---
+
+    elif name == "charter_propose_rule":
+        team_hash = arguments.get("team_hash", "")
+        rule_text = arguments.get("rule_text", "")
+        layer = arguments.get("layer", "a")
+        identity = load_identity()
+        if not identity:
+            return [TextContent(type="text", text=json.dumps({"error": "No identity found."}))]
+        from charter.roles import propose_rule
+        result = propose_rule(team_hash, rule_text, layer, identity["public_id"])
+        if not result:
+            return [TextContent(type="text", text=json.dumps({"error": "Proposal failed. Check role permissions."}))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_sign_rule":
+        team_hash = arguments.get("team_hash", "")
+        proposal_id = arguments.get("proposal_id", "")
+        approve = arguments.get("approve", True)
+        identity = load_identity()
+        if not identity:
+            return [TextContent(type="text", text=json.dumps({"error": "No identity found."}))]
+        from charter.roles import sign_proposal
+        result = sign_proposal(team_hash, proposal_id, identity["public_id"], identity["private_seed"], approve)
+        if not result:
+            return [TextContent(type="text", text=json.dumps({"error": "Signing failed. Check role permissions."}))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_role_status":
+        team_hash = arguments.get("team_hash", "")
+        from charter.roles import LAYER_0_INVARIANTS, VALID_ROLES, get_member_role
+        # Gather roles for known members
+        team_dir = os.path.join(os.path.expanduser("~"), ".charter", "teams", team_hash)
+        members_path = os.path.join(team_dir, "members.jsonl")
+        member_roles = {}
+        if os.path.isfile(members_path):
+            with open(members_path) as f:
+                for line in f:
+                    if line.strip():
+                        m = json.loads(line)
+                        mid = m.get("member_id") or m.get("email", "unknown")
+                        role = get_member_role(team_hash, mid)
+                        member_roles[m.get("name", mid)] = role or "(no governance role)"
+        # Gather open proposals
+        proposals_path = os.path.join(team_dir, "proposals.jsonl")
+        open_proposals = []
+        if os.path.isfile(proposals_path):
+            with open(proposals_path) as f:
+                for line in f:
+                    if line.strip():
+                        p = json.loads(line)
+                        if p.get("status") == "open":
+                            open_proposals.append(p)
+        result = {
+            "team_hash": team_hash,
+            "layer_0_invariants": LAYER_0_INVARIANTS,
+            "available_roles": list(VALID_ROLES),
+            "member_roles": member_roles,
+            "open_proposals": open_proposals,
+        }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- v2.3.0: Alerting handlers ---
+
+    elif name == "charter_alert_status":
+        from charter.alerting import load_alerting_config
+        alert_config = load_alerting_config()
+        webhooks = alert_config.get("webhooks", [])
+        has_email = bool(alert_config.get("email"))
+        has_slack = bool(alert_config.get("slack"))
+        result = {
+            "configured": bool(webhooks or has_email or has_slack),
+            "webhook_count": len(webhooks),
+            "email_configured": has_email,
+            "slack_configured": has_slack,
+            "webhooks": [{"url": w.get("url", ""), "events": w.get("events", [])} for w in webhooks],
+        }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    # --- v2.3.0: SIEM handlers ---
+
+    elif name == "charter_siem_export":
+        fmt = arguments.get("format", "cef")
+        from_idx = arguments.get("from_index")
+        to_idx = arguments.get("to_index")
+        from charter.siem import export_chain as siem_export
+        try:
+            lines = siem_export(fmt, from_index=from_idx, to_index=to_idx)
+            return [TextContent(type="text", text="\n".join(lines))]
+        except ValueError as e:
+            return [TextContent(type="text", text=json.dumps({"error": str(e)}))]
+
+    # --- v2.3.0: Compliance handlers ---
+
+    elif name == "charter_compliance_map":
+        standard = arguments.get("standard", "hipaa")
+        from charter.compliance import ComplianceMapper
+        mapper = ComplianceMapper(standard=standard)
+        result = mapper.map_to_standard()
+        if not result:
+            return [TextContent(type="text", text=json.dumps({"error": f"Failed to map against {standard}."}))]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_federation_status":
+        from charter.federation import Federation
+        fed = Federation()
+        result = fed.get_all_status()
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+    elif name == "charter_federation_events":
+        from charter.federation import Federation
+        limit = arguments.get("limit", 50)
+        fed = Federation()
+        events = fed.get_event_stream(limit=limit)
+        return [TextContent(type="text", text=json.dumps({"events": events, "count": len(events)}, indent=2))]
 
     elif name == "charter_merkle_status":
         idx = load_batch_index()

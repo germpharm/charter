@@ -106,3 +106,40 @@ def config_file(tmp_path, sample_config):
     with open(config_path, "w") as f:
         yaml.dump(sample_config, f, default_flow_style=False)
     return str(config_path)
+
+
+@pytest.fixture
+def license_home(tmp_path, monkeypatch):
+    """Redirect license path to temp directory and suppress chain logging."""
+    charter_dir = tmp_path / ".charter"
+    charter_dir.mkdir(exist_ok=True)
+    license_path = str(charter_dir / "license.json")
+
+    monkeypatch.setattr("charter.licensing._get_license_path", lambda: license_path)
+    monkeypatch.setattr("charter.licensing._log_chain_event", lambda e, d: None)
+
+    return charter_dir
+
+
+@pytest.fixture
+def free_license(license_home):
+    """No license file — free tier."""
+    return license_home
+
+
+@pytest.fixture
+def pro_license(license_home):
+    """Activate a Pro license and return the charter dir."""
+    from charter.licensing import generate_license_key, activate_license, TIER_PRO
+    key = generate_license_key(TIER_PRO, identifier="test-pro")
+    activate_license(key)
+    return license_home
+
+
+@pytest.fixture
+def enterprise_license(license_home):
+    """Activate an Enterprise license and return the charter dir."""
+    from charter.licensing import generate_license_key, activate_license, TIER_ENTERPRISE
+    key = generate_license_key(TIER_ENTERPRISE, identifier="test-ent")
+    activate_license(key)
+    return license_home

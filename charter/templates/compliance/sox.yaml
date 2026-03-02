@@ -1,0 +1,89 @@
+standard: sox
+name: "Sarbanes-Oxley Act (SOX) -- AI Governance Controls"
+description: "Maps Charter governance layers to SOX Section 302/404 requirements for internal controls over financial reporting and AI-assisted processes"
+
+controls:
+  - id: "SOX-302-1"
+    name: "CEO/CFO Certification of Internal Controls"
+    description: "Officers must certify the effectiveness of internal controls over financial reporting"
+    match:
+      type: "layer_b"
+      action: "financial_transaction"
+      keywords: ["financial", "transaction", "approval"]
+    recommendation: "Ensure Layer B financial_transaction rule requires human_approval"
+
+  - id: "SOX-302-2"
+    name: "Disclosure Controls and Procedures"
+    description: "Ensure information is recorded, processed, summarized, and reported within required time periods"
+    match:
+      type: "layer_b"
+      action: "report_generation"
+      keywords: ["report", "disclosure", "external"]
+    recommendation: "Add Layer B report_generation rule with human_approval for external reports"
+
+  - id: "SOX-302-3"
+    name: "Disclosure of Material Changes"
+    description: "Report any significant changes in internal controls or material weaknesses"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "decisions"]
+    recommendation: "Configure Layer C audit frequency to at least weekly with compliance checks"
+
+  - id: "SOX-404-1"
+    name: "Assessment of Internal Controls"
+    description: "Annual assessment of internal control structure and procedures effectiveness"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance"]
+    recommendation: "Configure Layer C audit frequency to at least weekly"
+
+  - id: "SOX-404-2"
+    name: "Control Environment Monitoring"
+    description: "Ongoing monitoring of control environment to detect weaknesses"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "ethics", "deviation"]
+    recommendation: "Configure kill trigger for compliance_deviation"
+
+  - id: "SOX-802-1"
+    name: "Record Retention and Integrity"
+    description: "Maintain audit records and work papers for not less than 7 years; tampering prohibited"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "tamper"]
+    recommendation: "Hash chain provides immutable audit trail; configure retention policy"
+
+  - id: "SOX-802-2"
+    name: "Audit Trail Tampering Prevention"
+    description: "Knowingly altering, destroying, or concealing records with intent to obstruct is prohibited"
+    match:
+      type: "layer_a"
+      keywords: ["conceal", "alter", "destroy", "audit trail"]
+    recommendation: "Add Layer A rule: Never conceal, alter, or destroy the audit trail"
+
+  - id: "SOX-906-1"
+    name: "Certification of Financial Statements"
+    description: "Periodic reports containing financial statements must be certified by responsible officers"
+    match:
+      type: "layer_b"
+      action: "financial_transaction"
+      keywords: ["financial", "certification", "approval"]
+    recommendation: "Ensure all financial transactions require human_approval in Layer B"
+
+  - id: "SOX-IT-1"
+    name: "IT General Controls — Access Management"
+    description: "Logical access controls to prevent unauthorized access to financial systems"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization", "data"]
+    recommendation: "Add Layer B data_access rule with human_review threshold"
+
+  - id: "SOX-IT-2"
+    name: "IT General Controls — Change Management"
+    description: "Controls over changes to IT systems that process financial data"
+    match:
+      type: "layer_b"
+      action: "code_deployment"
+      keywords: ["deployment", "production", "change"]
+    recommendation: "Add Layer B code_deployment rule with human_approval for production"
