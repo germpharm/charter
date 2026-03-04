@@ -5,6 +5,9 @@ Runs as a background process that:
 2. Logs detected tools to the hash chain
 3. Serves the web dashboard on localhost
 4. Can be installed as a system service (launchd/systemd)
+5. Runs scheduled audits per Layer C frequency
+6. Dispatches alerts on governance events
+7. Applies chain retention policy after audits
 """
 
 import json
@@ -15,17 +18,27 @@ import sys
 import threading
 import time
 
+from charter.config import load_config
 from charter.daemon.detector import detect_ai_tools, get_summary
 from charter.identity import load_identity, append_to_chain
+from charter.alerting import AlertDispatcher, load_alerting_config
+from charter.audit import (
+    generate_audit_report,
+    is_audit_overdue,
+    FREQUENCY_SECONDS,
+)
+from charter.retention import apply_retention_policy
 
 DEFAULT_PORT = 8374
 SCAN_INTERVAL = 60
+AUDIT_CHECK_INTERVAL = 300  # check every 5 minutes
 
 
 class CharterDaemon:
     """Main daemon process. Combines detection loop with web server."""
 
-    def __init__(self, port=DEFAULT_PORT, scan_interval=SCAN_INTERVAL):
+    def __init__(self, port=DEFAULT_PORT, scan_interval=SCAN_INTERVAL,
+                 config=None):
         self.port = port
         self.scan_interval = scan_interval
         self.running = False
@@ -33,12 +46,27 @@ class CharterDaemon:
         self._last_scan = None
         self._lock = threading.Lock()
 
+        # Load config and alerting dispatcher
+        self._config = config or load_config() or {}
+        alerting_cfg = load_alerting_config(self._config)
+        self._dispatcher = AlertDispatcher(alerting_cfg)
+
+        # Parse audit frequency from Layer C config
+        gov = self._config.get("governance", {})
+        layer_c = gov.get("layer_c", {})
+        freq_label = layer_c.get("frequency", "weekly")
+        self._audit_interval = FREQUENCY_SECONDS.get(freq_label, 604800)
+        self._audit_freq_label = freq_label
+
     def start(self):
         """Start the daemon. Blocks until stopped."""
         self.running = True
 
         detector = threading.Thread(target=self._detection_loop, daemon=True)
         detector.start()
+
+        auditor = threading.Thread(target=self._audit_loop, daemon=True)
+        auditor.start()
 
         self._start_web()
 
@@ -55,6 +83,7 @@ class CharterDaemon:
                 "last_scan": self._last_scan,
                 "detection_log": list(self._detection_log),
                 "total_detected": len(self._detection_log),
+                "audit_frequency": self._audit_freq_label,
             }
 
     def _detection_loop(self):
@@ -85,10 +114,64 @@ class CharterDaemon:
                                 })
                             except Exception:
                                 pass
+
+                            # Alert on ungoverned AI tools
+                            if not tool.get("governable"):
+                                try:
+                                    self._dispatcher.dispatch(
+                                        "ai_tool_ungoverned",
+                                        {
+                                            "tool": tool["name"],
+                                            "vendor": tool["vendor"],
+                                            "detected_at": now,
+                                        },
+                                    )
+                                except Exception:
+                                    pass
             except Exception:
                 pass
 
             time.sleep(self.scan_interval)
+
+    def _audit_loop(self):
+        """Background thread: run scheduled audits per Layer C frequency."""
+        while self.running:
+            try:
+                if is_audit_overdue(self._config):
+                    result = generate_audit_report(config=self._config)
+                    if result and result.get("report"):
+                        # Dispatch audit_generated alert
+                        try:
+                            self._dispatcher.dispatch("audit_generated", {
+                                "chain_intact": result["chain_intact"],
+                                "chain_entries": result["chain_entries"],
+                                "report_path": result["report_path"],
+                            })
+                        except Exception:
+                            pass
+
+                        # Alert on chain integrity failure
+                        if not result["chain_intact"]:
+                            try:
+                                self._dispatcher.dispatch(
+                                    "chain_integrity_failure",
+                                    {
+                                        "chain_entries": result["chain_entries"],
+                                        "report_path": result["report_path"],
+                                    },
+                                )
+                            except Exception:
+                                pass
+
+                    # Apply retention policy after audit
+                    try:
+                        apply_retention_policy(self._config)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
+            time.sleep(AUDIT_CHECK_INTERVAL)
 
     def _start_web(self):
         """Start the Flask web server."""
@@ -121,12 +204,19 @@ def run_serve(args):
         print("No identity found. Run 'charter init' first.")
         return
 
-    daemon = CharterDaemon(port=port, scan_interval=interval)
+    config = load_config()
+    daemon = CharterDaemon(port=port, scan_interval=interval, config=config)
+
+    # Retention status
+    retention_cfg = (config or {}).get("retention")
+    retention_status = "enabled" if retention_cfg else "disabled"
 
     print(f"Charter Daemon v{__version__}")
-    print(f"  Dashboard: http://127.0.0.1:{port}")
-    print(f"  Detection: every {interval}s")
-    print(f"  Identity:  {identity['alias']} ({identity['public_id'][:16]}...)")
+    print(f"  Dashboard:  http://127.0.0.1:{port}")
+    print(f"  Detection:  every {interval}s")
+    print(f"  Audit:      {daemon._audit_freq_label} (check every {AUDIT_CHECK_INTERVAL}s)")
+    print(f"  Retention:  {retention_status}")
+    print(f"  Identity:   {identity['alias']} ({identity['public_id'][:16]}...)")
     print()
     print("Press Ctrl+C to stop.")
     print()
@@ -135,6 +225,8 @@ def run_serve(args):
         append_to_chain("daemon_started", {
             "port": port,
             "scan_interval": interval,
+            "audit_frequency": daemon._audit_freq_label,
+            "retention": retention_status,
         })
     except Exception:
         pass

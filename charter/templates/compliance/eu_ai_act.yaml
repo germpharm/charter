@@ -1,0 +1,74 @@
+standard: eu_ai_act
+name: "EU AI Act — High-Risk AI Requirements"
+description: "Maps Charter governance to EU Artificial Intelligence Act (Regulation 2024/1689) Title III requirements for high-risk AI systems. Compliance deadline: August 2, 2026."
+
+controls:
+  # Risk Management (Article 9)
+  - id: "AIA-Art9"
+    name: "Risk Management System"
+    description: "High-risk AI systems shall have a risk management system established, implemented, documented, and maintained throughout their entire lifecycle"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "deviation"]
+    recommendation: "Kill triggers implement automated risk response — configure all four standard triggers (ethical_gradient_acceleration, audit_friction, conscience_conflict, compliance_deviation)"
+
+  - id: "AIA-Art9-Chain"
+    name: "Risk Management — Documentation and Audit Trail"
+    description: "The risk management system documentation shall be kept up to date and systematically maintained"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "tamper"]
+    recommendation: "Hash chain provides the tamper-evident risk management log required for Art 9 documentation"
+
+  # Data Governance (Article 10)
+  - id: "AIA-Art10"
+    name: "Data and Data Governance"
+    description: "Training, validation, and testing data sets shall be subject to appropriate data governance and management practices"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "evidence", "access"]
+    recommendation: "Layer A universals prohibiting data fabrication and unauthorized access satisfy Art 10 data governance"
+
+  # Transparency (Article 13)
+  - id: "AIA-Art13"
+    name: "Transparency and Provision of Information to Deployers"
+    description: "High-risk AI systems shall be designed and developed in such a way to ensure that their operation is sufficiently transparent to enable deployers to interpret the system's output and use it appropriately"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "decisions", "rules"]
+    recommendation: "Layer C self-audit reports provide required transparency — configure report_includes with decisions_made and rules_applied"
+
+  # Human Oversight (Article 14)
+  - id: "AIA-Art14"
+    name: "Human Oversight"
+    description: "High-risk AI systems shall be designed and developed in such a way that they can be effectively overseen by natural persons during the period in which the AI system is in use"
+    match:
+      type: "layer_b"
+      keywords: ["human_approval", "human_review", "approval", "authorization"]
+    recommendation: "Layer B gradient decisions implement human oversight gates — ensure all high-risk actions route to human review"
+
+  - id: "AIA-Art14-KillSwitch"
+    name: "Human Oversight — Stop Mechanism"
+    description: "The system shall include the ability to be interrupted through a 'stop' button or similar procedure that allows the system to come to a halt in a safe state"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "friction"]
+    recommendation: "Kill triggers ARE the kill switch required by Art 14(4)(e) — they halt all AI operations immediately on trigger conditions"
+
+  # Accuracy, Robustness, Cybersecurity (Article 15)
+  - id: "AIA-Art15"
+    name: "Accuracy, Robustness, and Cybersecurity"
+    description: "High-risk AI systems shall be designed and developed in such a way that they achieve an appropriate level of accuracy, robustness, and cybersecurity"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "conceal", "alter"]
+    recommendation: "Layer A constraints prohibiting fabrication and alteration address accuracy; hash chain integrity addresses robustness and cybersecurity"
+
+  # Post-Market Monitoring (Article 61)
+  - id: "AIA-Art61"
+    name: "Post-Market Monitoring by Providers"
+    description: "Providers shall establish and document a post-market monitoring system to proactively collect, document, and analyse relevant data provided by deployers for the purpose of evaluating the continuous compliance of AI systems"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "escalation"]
+    recommendation: "Layer C self-audit with regular frequency satisfies post-market monitoring — configure at minimum weekly frequency"

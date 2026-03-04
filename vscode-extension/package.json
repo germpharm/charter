@@ -2,7 +2,7 @@
   "name": "charter-governance",
   "displayName": "Charter — AI Governance & Safety for Claude, GPT, Copilot",
   "description": "AI governance for every project. Auto-enforces hard constraints, compliance rules, and self-audit on AI agents (Claude, GPT, Copilot, Gemini). Free tier forever. Pro/Enterprise tiers for RBAC, SIEM, federation. Open source.",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "publisher": "germpharm",
   "license": "Apache-2.0",
   "icon": "icon.png",

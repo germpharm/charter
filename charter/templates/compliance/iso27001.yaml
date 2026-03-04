@@ -1,0 +1,106 @@
+standard: iso27001
+name: "ISO/IEC 27001:2022 — Information Security Management"
+description: "Maps Charter governance to ISO 27001:2022 Annex A controls most relevant to AI-assisted systems and governance automation"
+
+controls:
+  # A.5 — Organizational Controls
+  - id: "A.5.1"
+    name: "Policies for Information Security"
+    description: "Information security policy and topic-specific policies shall be defined, approved by management, published, communicated to and acknowledged by relevant personnel"
+    match:
+      type: "layer_a"
+      keywords: ["law", "fabricate", "conceal", "impersonate"]
+    recommendation: "Layer A hard constraints constitute the information security policy — ensure they are documented and accessible"
+
+  - id: "A.5.2"
+    name: "Information Security Roles and Responsibilities"
+    description: "Information security roles and responsibilities shall be defined and allocated"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "human_approval", "requires", "authorization"]
+    recommendation: "Layer B human-approval assignments define security responsibility allocation for AI-driven actions"
+
+  - id: "A.5.33"
+    name: "Protection of Records"
+    description: "Records shall be protected from loss, destruction, falsification, unauthorized access, and unauthorized release in accordance with legislative, regulatory, contractual, and business requirements"
+    match:
+      type: "layer_a"
+      keywords: ["conceal", "alter", "destroy", "fabricate"]
+    recommendation: "Layer A universals prohibiting concealment, alteration, and destruction of audit trail directly satisfy record protection"
+
+  - id: "A.5.36"
+    name: "Compliance with Policies, Rules, and Standards"
+    description: "Compliance with the organization's information security policy, topic-specific policies, rules, and standards shall be regularly reviewed"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "decisions"]
+    recommendation: "Configure Layer C with at least weekly audit frequency and compliance_checks in report_includes"
+
+  # A.6 — People Controls
+  - id: "A.6.4"
+    name: "Disciplinary Process"
+    description: "A disciplinary process shall be formalized and communicated to take actions against personnel and other relevant interested parties who have committed an information security policy violation"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "deviation"]
+    recommendation: "Kill triggers halt AI operations on policy violations — the automated equivalent of a disciplinary response"
+
+  # A.8 — Technological Controls
+  - id: "A.8.2"
+    name: "Privileged Access Rights"
+    description: "The allocation and use of privileged access rights shall be restricted and managed"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization", "sensitive"]
+    recommendation: "Add Layer B data_access rule with human_review for privileged or sensitive data access"
+
+  - id: "A.8.3"
+    name: "Information Access Restriction"
+    description: "Access to information and other associated assets shall be restricted in accordance with the established topic-specific policy on access control"
+    match:
+      type: "layer_a"
+      keywords: ["access", "authorization", "unauthorized"]
+    recommendation: "Add Layer A rule: Never access information systems without explicit authorization"
+
+  - id: "A.8.9"
+    name: "Configuration Management"
+    description: "Configurations, including security configurations, of hardware, software, services, and networks shall be established, documented, implemented, monitored, and reviewed"
+    match:
+      type: "layer_b"
+      action: "code_deployment"
+      keywords: ["deployment", "production", "change"]
+    recommendation: "Add Layer B code_deployment rule with human_approval for configuration changes to production"
+
+  - id: "A.8.15"
+    name: "Logging"
+    description: "Logs that record activities, exceptions, faults, and other relevant events shall be produced, stored, protected, and analysed"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "log"]
+    recommendation: "Hash chain provides immutable, tamper-evident logging of all governance events"
+
+  - id: "A.8.16"
+    name: "Monitoring Activities"
+    description: "Networks, systems, and applications shall be monitored for anomalous behaviour and appropriate actions taken to evaluate potential information security incidents"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "ethics", "deviation", "friction"]
+    recommendation: "Kill triggers implement automated monitoring response — configure all four standard triggers"
+
+  - id: "A.8.24"
+    name: "Use of Cryptography"
+    description: "Rules for the effective use of cryptography, including cryptographic key management, shall be defined and implemented"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "tamper"]
+    recommendation: "Hash chain uses HMAC-SHA256 cryptographic signing — satisfies integrity and authenticity requirements for audit logs"
+
+  - id: "A.8.32"
+    name: "Change Management"
+    description: "Changes to information processing facilities and information systems shall be subject to change management procedures"
+    match:
+      type: "layer_b"
+      action: "code_deployment"
+      keywords: ["deployment", "change", "production"]
+    recommendation: "Layer B code_deployment rule with human_approval gate satisfies change management authorization"

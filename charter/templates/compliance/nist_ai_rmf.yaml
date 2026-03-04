@@ -1,0 +1,104 @@
+standard: nist_ai_rmf
+name: "NIST AI Risk Management Framework (AI RMF 1.0)"
+description: "Maps Charter governance to NIST AI RMF 1.0 (NIST AI 100-1) four core functions: Govern, Map, Measure, Manage"
+
+controls:
+  # GOVERN Function
+  - id: "GOVERN-1.1"
+    name: "Govern — AI Risk Policies"
+    description: "Legal and regulatory requirements involving AI are understood, managed, and documented"
+    match:
+      type: "layer_a"
+      keywords: ["law", "fabricate", "conceal", "impersonate"]
+    recommendation: "Layer A hard constraints constitute the risk policy baseline — document their scope and applicability"
+
+  - id: "GOVERN-1.2"
+    name: "Govern — Accountability Structures"
+    description: "The characteristics of trustworthy AI are integrated into organizational policies, processes, and procedures"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "human_approval", "requires", "authorization"]
+    recommendation: "Layer B human-approval requirements define accountability for AI-driven decisions"
+
+  - id: "GOVERN-1.3"
+    name: "Govern — Organizational AI Risk Culture"
+    description: "Processes and procedures are in place for determining whether existing AI systems are mapped to the latest AI risk classification"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "ethical_flags", "decisions"]
+    recommendation: "Layer C self-audit with ethical_flags in report_includes documents cultural adherence to AI risk practices"
+
+  - id: "GOVERN-2.1"
+    name: "Govern — Roles and Responsibilities"
+    description: "Roles and responsibilities and lines of communication related to mapping, measuring, and managing AI risks are documented"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict"]
+    recommendation: "Kill triggers define the escalation chain — configure triggers with clear ownership and response procedures"
+
+  # MAP Function
+  - id: "MAP-1.1"
+    name: "Map — Context Establishment"
+    description: "The intended purposes, potentially beneficial uses, context of use, and deployment setting of the AI system are understood"
+    match:
+      type: "layer_a"
+      keywords: ["law", "fabricate", "impersonate"]
+    recommendation: "Layer A rules establish the compliance context in which the AI operates — ensure domain-specific rules are configured"
+
+  - id: "MAP-2.1"
+    name: "Map — Categorization of AI System"
+    description: "The AI system is evaluated for trustworthy characteristics, and scientific integrity and TEVV considerations are identified and documented"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "decisions", "compliance"]
+    recommendation: "Layer C audit captures practice adherence — include compliance_checks in report_includes"
+
+  - id: "MAP-5.1"
+    name: "Map — Likelihood and Impact Assessment"
+    description: "Likelihood and magnitude of each identified AI risk based on available information are estimated and documented"
+    match:
+      type: "kill_triggers"
+      keywords: ["deviation", "acceleration", "friction"]
+    recommendation: "Kill trigger thresholds represent encoded impact assessments — document risk severity per trigger"
+
+  # MEASURE Function
+  - id: "MEASURE-1.1"
+    name: "Measure — AI Risk Metrics"
+    description: "Approaches and metrics for measurement of AI risks enumerated during the MAP function are selected for implementation"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "escalation"]
+    recommendation: "Configure Layer C to include ethical_flags and escalations_to_human in report_includes as risk metrics"
+
+  - id: "MEASURE-2.1"
+    name: "Measure — AI System Testing and Evaluation"
+    description: "Evaluations involving AI system testing are to be performed and results are documented"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "log"]
+    recommendation: "Hash chain provides the evidence trail for trustworthiness measurement over time"
+
+  # MANAGE Function
+  - id: "MANAGE-1.1"
+    name: "Manage — Risk Response and Recovery"
+    description: "A determination is made as to whether the AI system achieves its intended purpose and stated objectives and that its continued deployment is justified"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "deviation"]
+    recommendation: "Kill triggers are the automated risk treatment layer — configure all four standard triggers"
+
+  - id: "MANAGE-2.1"
+    name: "Manage — Risk Treatment Plans"
+    description: "Responses to the AI risks deemed high priority are developed, planned, and documented"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "human_approval", "review"]
+    recommendation: "Layer B human-approval gates constitute the response plan for gradient-risk AI decisions"
+
+  - id: "MANAGE-4.1"
+    name: "Manage — Residual Risk Monitoring"
+    description: "Post-deployment AI system monitoring plans are implemented, including mechanisms to track identified risks and associated metrics"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance", "decisions"]
+    recommendation: "Layer C self-audit at regular frequency provides ongoing residual risk monitoring"

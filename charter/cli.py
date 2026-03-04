@@ -449,7 +449,7 @@ def main():
     # charter compliance
     comp_p = sub.add_parser(
         "compliance",
-        help="Map governance to regulatory compliance frameworks (SOX, HIPAA, FERPA)",
+        help="Map governance to regulatory compliance frameworks (SOX, HIPAA, FERPA, SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001)",
     )
     comp_p.add_argument(
         "action",
@@ -460,11 +460,21 @@ def main():
     )
     comp_p.add_argument(
         "--standard", "-s",
-        help="Compliance standard (sox, hipaa, ferpa)",
+        help="Compliance standard (sox, hipaa, ferpa, soc2, gdpr, eu_ai_act, nist_ai_rmf, iso27001)",
     )
     comp_p.add_argument(
         "--config", "-c",
         help="Path to charter.yaml",
+    )
+    comp_p.add_argument(
+        "--output", "-o",
+        help="Output file path (report action only)",
+    )
+    comp_p.add_argument(
+        "--format", "-f",
+        choices=["markdown"],
+        default="markdown",
+        help="Output format (default: markdown)",
     )
 
     # charter federation

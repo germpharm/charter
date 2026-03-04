@@ -11,7 +11,7 @@ import { promptForContext, resetContextPrompt } from "./contextManager";
 // Extension version — bump this when publishing
 // ---------------------------------------------------------------------------
 
-const EXTENSION_VERSION = "3.0.0";
+const EXTENSION_VERSION = "3.1.0";
 
 // ---------------------------------------------------------------------------
 // Constants

@@ -20,5 +20,5 @@
         <pkg-ref id="com.germpharm.charter.pkg"/>
     </choice>
 
-    <pkg-ref id="com.germpharm.charter.pkg" version="3.0.0" onConclusion="none">charter-core.pkg</pkg-ref>
+    <pkg-ref id="com.germpharm.charter.pkg" version="3.1.0" onConclusion="none">charter-core.pkg</pkg-ref>
 </installer-gui-script>

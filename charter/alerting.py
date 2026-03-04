@@ -42,10 +42,13 @@ KNOWN_EVENTS = frozenset({
     "chain_integrity_failure",
     "threshold_exceeded",
     "audit_overdue",
+    "audit_generated",
     "ethical_gradient_acceleration",
     "audit_friction",
     "conscience_conflict",
     "compliance_deviation",
+    "ai_tool_ungoverned",
+    "retention_applied",
     "alert_test",
 })
 

@@ -1,6 +1,6 @@
 # Enterprise Integration Specification
 
-**Charter v3.0.0 — Codename: Federation**
+**Charter v3.1.0 — Codename: Federation**
 **Revision:** 1.0
 **Date:** 2026-03-01
 **Status:** Definitive
@@ -134,7 +134,7 @@ Charter exposes its full governance surface through the Model Context Protocol (
 
 | Tool | Purpose |
 |------|---------|
-| `charter_compliance_map` | Maps current governance state to a compliance framework (SOX, HIPAA, FERPA) |
+| `charter_compliance_map` | Maps current governance state to a compliance framework (SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001, SOX, HIPAA, FERPA) |
 
 #### Federation
 
@@ -726,7 +726,8 @@ The private seed that signs chain entries (stored at `.charter/identity/private_
 | 2.2 | Intelligence | 2026-02 | Confidence tagging, red team probes, multi-model arbitration, revision history |
 | 2.3 | Enterprise | 2026-02 | RBAC with dual signoff, alerting (webhook/Slack/email), SIEM export (CEF/JSON/syslog), compliance mapping (SOX/HIPAA/FERPA) |
 | 3.0 | Federation | 2026-03 | Federated dashboard, enterprise integration specification, 50+ Python modules, local inference routing |
+| 3.1 | Compliance | 2026-03 | 8 compliance frameworks (SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001), scheduled audits, chain retention, runtime alerting |
 
 ---
 
-Charter v3.0.0 — 37 Python modules, 33 MCP tools, 27 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.
+Charter v3.1.0 — 40 Python modules, 33 MCP tools, 46 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.

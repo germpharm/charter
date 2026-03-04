@@ -1,0 +1,95 @@
+standard: gdpr
+name: "GDPR — General Data Protection Regulation"
+description: "Maps Charter governance to EU GDPR (Regulation 2016/679) requirements for AI systems processing personal data of EU data subjects"
+
+controls:
+  # Principles (Article 5)
+  - id: "GDPR-Art5"
+    name: "Principles of Processing"
+    description: "Personal data must be processed lawfully, fairly, and transparently, with purpose limitation, data minimisation, accuracy, storage limitation, and integrity"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "conceal", "law"]
+    recommendation: "Layer A universals (no fabrication, no concealment, no law violations) address accuracy, integrity, and lawfulness principles"
+
+  # Lawfulness (Article 6)
+  - id: "GDPR-Art6"
+    name: "Lawfulness of Processing"
+    description: "Processing must have a lawful basis: consent, contract, legal obligation, vital interests, public task, or legitimate interests"
+    match:
+      type: "layer_a"
+      keywords: ["law", "consent", "authorization"]
+    recommendation: "Add Layer A rule: Never process personal data without a documented lawful basis"
+
+  # Transparency (Article 13)
+  - id: "GDPR-Art13"
+    name: "Transparency — Information to Data Subjects"
+    description: "Controller must provide information about processing purposes, retention periods, rights, and contact details at the time of collection"
+    match:
+      type: "layer_a"
+      keywords: ["disclose", "share", "external", "communication"]
+    recommendation: "Add Layer A rule: Never collect personal data without providing a transparency notice"
+
+  # Right of Access (Article 15)
+  - id: "GDPR-Art15"
+    name: "Right of Access by the Data Subject"
+    description: "Data subjects have the right to obtain confirmation of whether their personal data is being processed and to access that data"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "data", "authorization"]
+    recommendation: "Layer B data_access rule with human_review supports right-of-access request fulfillment"
+
+  # Right to Erasure (Article 17)
+  - id: "GDPR-Art17"
+    name: "Right to Erasure (Right to Be Forgotten)"
+    description: "Data subjects have the right to obtain erasure of personal data without undue delay under certain conditions"
+    match:
+      type: "layer_b"
+      keywords: ["delete", "data", "human", "approval"]
+    recommendation: "Add Layer B rule requiring human_approval before deleting personal data records"
+
+  # Data Protection by Design (Article 25)
+  - id: "GDPR-Art25"
+    name: "Data Protection by Design and by Default"
+    description: "Controller must implement appropriate technical and organisational measures to ensure data protection principles are embedded from the design stage"
+    match:
+      type: "layer_a"
+      keywords: ["access", "authorization", "unauthorized"]
+    recommendation: "Layer A access-authorization rules and data minimisation constraints satisfy data protection by design"
+
+  # Records of Processing (Article 30)
+  - id: "GDPR-Art30"
+    name: "Records of Processing Activities"
+    description: "Controller must maintain records of processing activities including purposes, categories of data subjects, recipients, and retention periods"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "log"]
+    recommendation: "Hash chain provides immutable records of all AI processing activities"
+
+  # Security of Processing (Article 32)
+  - id: "GDPR-Art32"
+    name: "Security of Processing"
+    description: "Controller must implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict", "deviation"]
+    recommendation: "Kill triggers provide automated security response — configure compliance_deviation and conscience_conflict triggers"
+
+  # Breach Notification (Article 33)
+  - id: "GDPR-Art33"
+    name: "Notification of Personal Data Breach"
+    description: "Controller must notify the supervisory authority of a personal data breach without undue delay and within 72 hours of becoming aware"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "friction", "conflict"]
+    recommendation: "Kill triggers halt operations on breach indicators — configure audit_friction trigger to surface breach conditions for 72-hour reporting"
+
+  # Data Protection Impact Assessment (Article 35)
+  - id: "GDPR-Art35"
+    name: "Data Protection Impact Assessment (DPIA)"
+    description: "Where processing is likely to result in a high risk to the rights and freedoms of natural persons, the controller must carry out a DPIA prior to the processing"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "human_approval", "authorization", "sensitive"]
+    recommendation: "Layer B human_approval gates for high-risk data operations satisfy DPIA procedural requirements"

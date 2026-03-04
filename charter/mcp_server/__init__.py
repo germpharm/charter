@@ -649,13 +649,13 @@ TOOLS = [
     # --- v2.3.0: Compliance tools ---
     Tool(
         name="charter_compliance_map",
-        description="Map current governance configuration against a regulatory compliance framework (SOX, HIPAA, FERPA). Returns coverage percentage, covered controls, gaps, and recommendations.",
+        description="Map current governance configuration against a regulatory compliance framework (SOX, HIPAA, FERPA, SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001). Returns coverage percentage, covered controls, gaps, and recommendations.",
         inputSchema={
             "type": "object",
             "properties": {
                 "standard": {
                     "type": "string",
-                    "description": "Compliance standard to map against (sox, hipaa, ferpa).",
+                    "description": "Compliance standard to map against (sox, hipaa, ferpa, soc2, gdpr, eu_ai_act, nist_ai_rmf, iso27001).",
                 },
             },
             "required": ["standard"],

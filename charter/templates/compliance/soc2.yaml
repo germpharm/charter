@@ -1,0 +1,180 @@
+standard: soc2
+name: "SOC 2 — Trust Services Criteria"
+description: "Maps Charter governance to AICPA SOC 2 Trust Services Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) for AI-assisted systems"
+
+controls:
+  # Common Criteria — Control Environment (CC1)
+  - id: "CC1.1"
+    name: "Commitment to Integrity and Ethical Values"
+    description: "The entity demonstrates a commitment to integrity and ethical values"
+    match:
+      type: "layer_a"
+      keywords: ["law", "fabricate", "impersonate", "conceal"]
+    recommendation: "Layer A universal constraints define the ethical control environment — hard prohibitions on fabrication, concealment, impersonation, and law violation"
+
+  - id: "CC1.2"
+    name: "Board Oversight of Internal Controls"
+    description: "The board of directors demonstrates independence from management and exercises oversight of the development and performance of internal control"
+    match:
+      type: "layer_b"
+      keywords: ["approval", "human_approval", "authorization"]
+    recommendation: "Layer B human-approval gates implement oversight of AI-driven decisions"
+
+  # Common Criteria — Communication and Information (CC2)
+  - id: "CC2.1"
+    name: "Internal Communication of Control Information"
+    description: "The entity obtains or generates and uses relevant, quality information to support the functioning of internal control"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "decisions"]
+    recommendation: "Configure Layer C to include decisions_made and rules_applied in report_includes"
+
+  - id: "CC2.2"
+    name: "Communication of Control Objectives"
+    description: "The entity internally communicates information, including objectives and responsibilities for internal control, necessary to support the functioning of internal control"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "escalation"]
+    recommendation: "Layer C audit reports communicate governance state and escalation history"
+
+  # Common Criteria — Risk Assessment (CC3)
+  - id: "CC3.1"
+    name: "Specification of Objectives"
+    description: "The entity specifies objectives with sufficient clarity to enable the identification and assessment of risks relating to objectives"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict"]
+    recommendation: "Kill triggers define risk thresholds and automated halt conditions — configure compliance_deviation trigger"
+
+  - id: "CC3.2"
+    name: "Risk Identification and Analysis"
+    description: "The entity identifies risks to the achievement of its objectives across the entity and analyzes risks as a basis for determining how the risks should be managed"
+    match:
+      type: "kill_triggers"
+      keywords: ["deviation", "friction", "acceleration"]
+    recommendation: "Kill triggers for audit_friction and ethical_gradient_acceleration provide automated risk identification"
+
+  # Common Criteria — Monitoring Activities (CC4)
+  - id: "CC4.1"
+    name: "Ongoing and Separate Evaluations"
+    description: "The entity selects, develops, and performs ongoing and/or separate evaluations to ascertain whether the components of internal control are present and functioning"
+    match:
+      type: "layer_c"
+      keywords: ["audit", "report", "compliance"]
+    recommendation: "Configure Layer C with at least weekly frequency for continuous monitoring"
+
+  # Common Criteria — Control Activities (CC5)
+  - id: "CC5.1"
+    name: "Selection and Development of Control Activities"
+    description: "The entity selects and develops control activities that contribute to the mitigation of risks to the achievement of objectives to acceptable levels"
+    match:
+      type: "layer_b"
+      keywords: ["threshold", "requires", "human"]
+    recommendation: "Layer B gradient decisions are control activities — ensure all high-risk actions have defined thresholds"
+
+  - id: "CC5.2"
+    name: "Technology General Controls"
+    description: "The entity also selects and develops general control activities over technology to support the achievement of objectives"
+    match:
+      type: "layer_b"
+      action: "code_deployment"
+      keywords: ["deployment", "production", "change"]
+    recommendation: "Add Layer B code_deployment rule requiring human_approval for production changes"
+
+  # Common Criteria — Logical and Physical Access (CC6)
+  - id: "CC6.1"
+    name: "Logical Access — Registration and Authorization"
+    description: "Prior to issuing system credentials and granting system access, the entity registers and authorizes new internal and external users"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "authorization", "data"]
+    recommendation: "Add Layer B data_access rule with human_review threshold"
+
+  - id: "CC6.2"
+    name: "Access Restriction and Removal"
+    description: "The entity restricts logical access to information assets based on the user's role or function"
+    match:
+      type: "layer_a"
+      keywords: ["access", "authorization", "unauthorized"]
+    recommendation: "Add Layer A rule: Never access systems or data without explicit authorization"
+
+  # Common Criteria — System Operations (CC7)
+  - id: "CC7.1"
+    name: "Configuration and Vulnerability Management"
+    description: "To meet its objectives, the entity uses detection and monitoring procedures to identify changes to configurations that result in the introduction of new vulnerabilities"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "ethics", "deviation"]
+    recommendation: "Configure kill triggers to halt operations on compliance deviations"
+
+  - id: "CC7.2"
+    name: "Anomaly and Security Event Detection"
+    description: "The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives"
+    match:
+      type: "kill_triggers"
+      keywords: ["conflict", "friction", "acceleration"]
+    recommendation: "Kill triggers for conscience_conflict and audit_friction provide automated anomaly response"
+
+  # Common Criteria — Change Management (CC8)
+  - id: "CC8.1"
+    name: "Change Management"
+    description: "The entity authorizes, designs, develops, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives"
+    match:
+      type: "layer_b"
+      action: "code_deployment"
+      keywords: ["deployment", "production", "change"]
+    recommendation: "Layer B code_deployment rule requiring human_approval covers change management authorization"
+
+  # Common Criteria — Risk Mitigation (CC9)
+  - id: "CC9.1"
+    name: "Vendor and Business Partner Risk Mitigation"
+    description: "The entity identifies, selects, and develops risk mitigation activities for risks arising from potential business disruptions and the use of vendors and business partners"
+    match:
+      type: "layer_a"
+      keywords: ["external", "share", "communication", "unauthorized"]
+    recommendation: "Layer A rules prohibiting unauthorized external sharing and communications mitigate third-party risk"
+
+  # Availability (A1)
+  - id: "A1.1"
+    name: "Availability — Performance Monitoring and Recovery"
+    description: "The entity maintains, monitors, and evaluates current processing capacity and use of system components to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict"]
+    recommendation: "Kill triggers provide automated halt and recovery response — document recovery procedures alongside triggers"
+
+  # Confidentiality (C1)
+  - id: "C1.1"
+    name: "Confidentiality — Identification and Protection"
+    description: "The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality"
+    match:
+      type: "layer_a"
+      keywords: ["share", "external", "disclose", "unauthorized"]
+    recommendation: "Add Layer A rule: Never share confidential information with unauthorized parties"
+
+  # Processing Integrity (PI1)
+  - id: "PI1.1"
+    name: "Processing Integrity — Completeness and Accuracy"
+    description: "The entity implements policies and procedures over system inputs, system processing, and outputs to provide reasonable assurance that the system achieves its specified processing integrity objectives"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "evidence", "alter"]
+    recommendation: "Layer A universal constraint: Never fabricate data, citations, or evidence — satisfies processing integrity"
+
+  - id: "PI1.2"
+    name: "Processing Integrity — Audit Trail"
+    description: "The entity implements audit trails that capture sufficient information to reconstruct processing activities and to verify completeness and accuracy of processing"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "tamper"]
+    recommendation: "Hash chain provides immutable, HMAC-SHA256-signed processing audit trail"
+
+  # Privacy (P1)
+  - id: "P1.1"
+    name: "Privacy — Notice and Consent"
+    description: "The entity provides notice to data subjects about its privacy practices and obtains consent as required"
+    match:
+      type: "layer_a"
+      keywords: ["disclose", "share", "consent", "external"]
+    recommendation: "Add Layer A rule requiring notice and consent before disclosure of personal information"

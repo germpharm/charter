@@ -374,3 +374,29 @@ class TestDispatchChainLogging:
         assert "sent" in result
         assert "failed" in result
         assert "channels" in result
+
+
+# ---------------------------------------------------------------------------
+# KNOWN_EVENTS coverage
+# ---------------------------------------------------------------------------
+
+class TestKnownEvents:
+    def test_contains_core_events(self):
+        assert "kill_trigger_fired" in KNOWN_EVENTS
+        assert "chain_integrity_failure" in KNOWN_EVENTS
+        assert "threshold_exceeded" in KNOWN_EVENTS
+        assert "alert_test" in KNOWN_EVENTS
+
+    def test_contains_new_runtime_events(self):
+        assert "ai_tool_ungoverned" in KNOWN_EVENTS
+        assert "audit_generated" in KNOWN_EVENTS
+        assert "retention_applied" in KNOWN_EVENTS
+
+    def test_contains_governance_events(self):
+        assert "ethical_gradient_acceleration" in KNOWN_EVENTS
+        assert "audit_friction" in KNOWN_EVENTS
+        assert "conscience_conflict" in KNOWN_EVENTS
+        assert "compliance_deviation" in KNOWN_EVENTS
+
+    def test_total_event_count(self):
+        assert len(KNOWN_EVENTS) == 12

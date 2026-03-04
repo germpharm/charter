@@ -21,7 +21,7 @@ class TestRunAudit:
         args.period = period
         return args
 
-    def test_generates_report(self, charter_home, tmp_path, sample_config):
+    def test_generates_report(self, charter_home, tmp_path, sample_config, monkeypatch):
         create_identity()
 
         # Write config
@@ -29,26 +29,23 @@ class TestRunAudit:
         with open(config_path, "w") as f:
             yaml.dump(sample_config, f)
 
-        # Run audit from tmp_path so audit dir is created there
-        old_cwd = os.getcwd()
-        os.chdir(str(tmp_path))
-        try:
-            captured = StringIO()
-            with patch("sys.stdout", captured):
-                run_audit(self._make_args(config_path))
+        # Patch DEFAULT_AUDIT_DIR to a temp directory
+        audit_dir = tmp_path / "charter_audits"
+        monkeypatch.setattr("charter.audit.DEFAULT_AUDIT_DIR", str(audit_dir))
 
-            output = captured.getvalue()
-            assert "Charter Governance Audit Report" in output
-            assert "Layer A" in output
-            assert "Chain Integrity" in output
+        captured = StringIO()
+        with patch("sys.stdout", captured):
+            run_audit(self._make_args(config_path))
 
-            # Check audit file was saved
-            audit_dir = tmp_path / "charter_audits"
-            assert audit_dir.is_dir()
-            audit_files = list(audit_dir.glob("audit_*.md"))
-            assert len(audit_files) == 1
-        finally:
-            os.chdir(old_cwd)
+        output = captured.getvalue()
+        assert "Charter Governance Audit Report" in output
+        assert "Layer A" in output
+        assert "Chain Integrity" in output
+
+        # Check audit file was saved
+        assert audit_dir.is_dir()
+        audit_files = list(audit_dir.glob("audit_*.md"))
+        assert len(audit_files) == 1
 
     def test_reports_chain_activity(self, charter_home, tmp_path, sample_config):
         create_identity()

@@ -48,6 +48,26 @@ class TestGetAvailableStandards:
         result = get_available_standards()
         assert "ferpa" in result
 
+    def test_contains_soc2(self):
+        result = get_available_standards()
+        assert "soc2" in result
+
+    def test_contains_gdpr(self):
+        result = get_available_standards()
+        assert "gdpr" in result
+
+    def test_contains_eu_ai_act(self):
+        result = get_available_standards()
+        assert "eu_ai_act" in result
+
+    def test_contains_nist_ai_rmf(self):
+        result = get_available_standards()
+        assert "nist_ai_rmf" in result
+
+    def test_contains_iso27001(self):
+        result = get_available_standards()
+        assert "iso27001" in result
+
     def test_names_are_strings(self):
         result = get_available_standards()
         for name in result:
@@ -99,6 +119,36 @@ class TestLoadStandard:
         data = mapper.load_standard("ferpa")
         assert data is not None
         assert data["standard"] == "ferpa"
+
+    def test_loads_soc2(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config)
+        data = mapper.load_standard("soc2")
+        assert data is not None
+        assert data["standard"] == "soc2"
+
+    def test_loads_gdpr(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config)
+        data = mapper.load_standard("gdpr")
+        assert data is not None
+        assert data["standard"] == "gdpr"
+
+    def test_loads_eu_ai_act(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config)
+        data = mapper.load_standard("eu_ai_act")
+        assert data is not None
+        assert data["standard"] == "eu_ai_act"
+
+    def test_loads_nist_ai_rmf(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config)
+        data = mapper.load_standard("nist_ai_rmf")
+        assert data is not None
+        assert data["standard"] == "nist_ai_rmf"
+
+    def test_loads_iso27001(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config)
+        data = mapper.load_standard("iso27001")
+        assert data is not None
+        assert data["standard"] == "iso27001"
 
     def test_returns_none_for_unknown(self, sample_config):
         mapper = ComplianceMapper(config=sample_config)
@@ -462,3 +512,70 @@ class TestWithSampleConfig:
         assert "T" in ts
         # Expect ISO-like format: YYYY-MM-DDTHH:MM:SS
         assert len(ts) == 19
+
+
+# ---------------------------------------------------------------------------
+# TestWithSOC2Config
+# ---------------------------------------------------------------------------
+
+
+class TestWithSOC2Config:
+    """Tests using the sample_config fixture against SOC 2 controls."""
+
+    def test_map_against_soc2(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        assert result is not None
+        assert "total_controls" in result
+
+    def test_soc2_total_controls_is_twenty(self, sample_config):
+        """SOC 2 template defines exactly 20 controls."""
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        assert result["total_controls"] == 20
+
+    def test_soc2_audit_trail_covered(self, sample_config):
+        """Hash chain type should always be covered — PI1.2."""
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        pi12 = next(
+            (m for m in result["mappings"] if m["control_id"] == "PI1.2"), None
+        )
+        assert pi12 is not None, "PI1.2 not found in mappings"
+        assert pi12["status"] == "covered"
+        assert pi12["charter_coverage"] == "chain"
+
+    def test_soc2_cc12_oversight_covered(self, sample_config):
+        """sample_config has financial_transaction rule — CC1.2 matches via approval keyword."""
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        cc12 = next(
+            (m for m in result["mappings"] if m["control_id"] == "CC1.2"), None
+        )
+        assert cc12 is not None, "CC1.2 not found in mappings"
+        assert cc12["status"] == "covered"
+
+    def test_soc2_mappings_count_equals_total(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        assert len(result["mappings"]) == result["total_controls"]
+
+    def test_soc2_coverage_percentage_is_number(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        assert isinstance(result["coverage_percentage"], float)
+        assert 0.0 <= result["coverage_percentage"] <= 100.0
+
+    def test_soc2_report_contains_soc2(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        report = mapper.generate_report()
+        assert "SOC 2" in report
+
+    def test_soc2_control_counts_add_up(self, sample_config):
+        mapper = ComplianceMapper(config=sample_config, standard="soc2")
+        result = mapper.map_to_standard()
+        total = result["total_controls"]
+        covered = result["covered_controls"]
+        partial = result["partial_controls"]
+        gap = result["gap_controls"]
+        assert covered + partial + gap == total
