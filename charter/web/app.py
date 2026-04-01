@@ -288,6 +288,16 @@ def create_app(daemon=None):
 
     # --- API endpoints ---
 
+    # --- Analytics API ---
+
+    try:
+        from charter.analytics.interface import register_analytics_routes
+        register_analytics_routes(app)
+    except ImportError:
+        pass  # analytics optional dependency not installed
+
+    # --- Core API ---
+
     @app.route("/api/status")
     def api_status():
         identity = load_identity()

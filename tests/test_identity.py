@@ -123,6 +123,29 @@ class TestAppendToChain:
         identity = load_identity()
         assert identity["contributions"] == 2
 
+    def test_actor_field_included(self, charter_home):
+        create_identity()
+        entry = append_to_chain("actor_test", {"x": 1}, actor="human")
+        assert entry["actor"] == "human"
+
+    def test_actor_field_in_hash(self, charter_home):
+        """Actor field is included in hash computation (cannot be altered)."""
+        create_identity()
+        entry = append_to_chain("hash_test", {"x": 1}, actor="ai")
+        # Recompute hash — actor must be present for it to match
+        recomputed = hash_entry(entry)
+        assert recomputed == entry["hash"]
+
+    def test_actor_defaults_to_collaborative(self, charter_home):
+        create_identity()
+        entry = append_to_chain("default_actor_test", {"x": 1})
+        assert entry["actor"] == "collaborative"
+
+    def test_actor_validates_to_known_values(self, charter_home):
+        create_identity()
+        entry = append_to_chain("bad_actor", {"x": 1}, actor="invalid_value")
+        assert entry["actor"] == "collaborative"
+
 
 class TestVerifyIdentity:
     def test_links_real_identity(self, charter_home):

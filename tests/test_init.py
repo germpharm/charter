@@ -70,3 +70,22 @@ class TestLoadTemplate:
             for rule in template["governance"]["layer_b"]["rules"]:
                 assert isinstance(rule, dict)
                 assert "action" in rule
+
+
+class TestRunInit:
+    def test_creates_audit_log_directory(self, charter_home, tmp_path, monkeypatch):
+        """charter init should create charter_audits/charter_log.jsonl."""
+        from charter.init_cmd import run_init
+
+        monkeypatch.chdir(tmp_path)
+
+        class Args:
+            domain = "general"
+            non_interactive = True
+
+        run_init(Args())
+
+        audit_dir = tmp_path / "charter_audits"
+        log_file = audit_dir / "charter_log.jsonl"
+        assert audit_dir.is_dir()
+        assert log_file.is_file()

@@ -37,7 +37,7 @@ def hash_charter(config):
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
-def create_stamp(tools=None, description=None, config_path=None):
+def create_stamp(tools=None, description=None, config_path=None, actor=None):
     """Create an attribution stamp from current state.
 
     Args:
@@ -45,6 +45,8 @@ def create_stamp(tools=None, description=None, config_path=None):
                attempts live detection.
         description: Optional description of the work product.
         config_path: Path to charter.yaml. If None, searches up.
+        actor: One of "human", "ai", or "collaborative". Recorded in
+               the hash chain entry for attribution.
 
     Returns:
         dict with the stamp, or None if no identity exists.
@@ -102,7 +104,7 @@ def create_stamp(tools=None, description=None, config_path=None):
         "tools": [t["tool_id"] for t in tool_attestations],
         "governed": all_governed,
         "description": description or "",
-    })
+    }, actor=actor)
 
     if chain_entry:
         stamp["chain_index"] = chain_entry["index"]

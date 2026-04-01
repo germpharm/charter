@@ -1,0 +1,178 @@
+/* Charter Chrome Extension — Content Script Badge Styles */
+/* Injects a subtle governance indicator into AI chat pages */
+
+#charter-governance-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+  opacity: 0.85;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+#charter-governance-badge:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Governed state (green) */
+#charter-governance-badge.charter-governed {
+  background: #052e16;
+  color: #22c55e;
+  border: 1px solid #16653480;
+}
+
+/* Ungoverned state (red) */
+#charter-governance-badge.charter-ungoverned {
+  background: #450a0a;
+  color: #ef4444;
+  border: 1px solid #991b1b80;
+}
+
+/* Offline state (gray) */
+#charter-governance-badge.charter-offline {
+  background: #1c1c1c;
+  color: #8b8fa3;
+  border: 1px solid #3a3a3a80;
+}
+
+/* Diamond icon */
+#charter-governance-badge .charter-diamond {
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Tier label */
+#charter-governance-badge .charter-tier {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.charter-tier-pro {
+  background: #422006;
+  color: #f59e0b;
+}
+
+.charter-tier-enterprise {
+  background: #2e1065;
+  color: #a78bfa;
+}
+
+/* Minimized state — just the diamond */
+#charter-governance-badge.charter-minimized {
+  padding: 6px 8px;
+  border-radius: 50%;
+}
+
+#charter-governance-badge.charter-minimized .charter-label,
+#charter-governance-badge.charter-minimized .charter-tier {
+  display: none;
+}
+
+/* Tooltip on hover */
+#charter-governance-tooltip {
+  position: fixed;
+  bottom: 52px;
+  right: 16px;
+  z-index: 99998;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #1a1d27;
+  color: #e2e4ea;
+  border: 1px solid #2a2d3a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  max-width: 240px;
+  display: none;
+  pointer-events: none;
+}
+
+#charter-governance-badge:hover + #charter-governance-tooltip,
+#charter-governance-tooltip.charter-tooltip-visible {
+  display: block;
+}
+
+#charter-governance-tooltip .tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#charter-governance-tooltip .tooltip-label {
+  color: #8b8fa3;
+}
+
+#charter-governance-tooltip .tooltip-value {
+  font-weight: 600;
+}
+
+#charter-governance-tooltip .tooltip-value.good { color: #22c55e; }
+#charter-governance-tooltip .tooltip-value.warn { color: #eab308; }
+
+/* Animation for initial appearance */
+@keyframes charter-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+
+#charter-governance-badge.charter-animate-in {
+  animation: charter-slide-in 0.4s ease-out;
+}
+
+/* Dark mode override — badge should look good on any background */
+@media (prefers-color-scheme: light) {
+  #charter-governance-badge.charter-governed {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #86efac80;
+  }
+
+  #charter-governance-badge.charter-ungoverned {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a580;
+  }
+
+  #charter-governance-badge.charter-offline {
+    background: #f3f4f6;
+    color: #6b7280;
+    border-color: #d1d5db80;
+  }
+
+  #charter-governance-tooltip {
+    background: #ffffff;
+    color: #1f2937;
+    border-color: #e5e7eb;
+  }
+
+  #charter-governance-tooltip .tooltip-label {
+    color: #6b7280;
+  }
+}

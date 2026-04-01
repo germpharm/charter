@@ -29,10 +29,38 @@ TIER_LABELS = {
     TIER_ENTERPRISE: "Enterprise ($249/seat/month)",
 }
 
+# --- Regional pricing ---
+
+SUPPORTED_REGIONS = {
+    "us": {
+        "currency": "USD",
+        "symbol": "$",
+        "pro_price": 29,
+        "enterprise_price": 249,
+    },
+    "in": {
+        "currency": "INR",
+        "symbol": "\u20b9",
+        "pro_price": 2500,
+        "enterprise_price": 20700,
+    },
+}
+
+DEFAULT_REGION = "us"
+
+REGION_TIER_LABELS = {}
+for _region, _rp in SUPPORTED_REGIONS.items():
+    REGION_TIER_LABELS[_region] = {
+        TIER_FREE: "Free",
+        TIER_PRO: f"Pro ({_rp['symbol']}{_rp['pro_price']:,}/seat/month)",
+        TIER_ENTERPRISE: f"Enterprise ({_rp['symbol']}{_rp['enterprise_price']:,}/seat/month)",
+    }
+
 # --- Feature → minimum tier ---
 
 CLI_FEATURE_TIERS = {
     # Pro features
+    "analytics": TIER_PRO,
     "confidence": TIER_PRO,
     "redteam": TIER_PRO,
     "arbitrate": TIER_PRO,
@@ -403,32 +431,60 @@ def get_license_status():
     return status
 
 
-def get_upgrade_info():
-    """Get upgrade options with Stripe payment links."""
+STRIPE_LINKS = {
+    "us": {
+        TIER_PRO: "https://buy.stripe.com/test_6oU7sL9lKfK07Hk8sx6AM04",
+        TIER_ENTERPRISE: "https://buy.stripe.com/test_aFa9AT9lK55m0eSfUZ6AM05",
+    },
+    "in": {
+        TIER_PRO: "https://buy.stripe.com/test_inr_pro_placeholder",
+        TIER_ENTERPRISE: "https://buy.stripe.com/test_inr_ent_placeholder",
+    },
+}
+
+
+def get_upgrade_info(region=None):
+    """Get upgrade options with Stripe payment links.
+
+    Args:
+        region: pricing region ('us', 'in'). Defaults to 'us'.
+    """
+    if region is None:
+        region = DEFAULT_REGION
+    if region not in SUPPORTED_REGIONS:
+        region = DEFAULT_REGION
+
+    rp = SUPPORTED_REGIONS[region]
+    labels = REGION_TIER_LABELS[region]
+    links = STRIPE_LINKS.get(region, STRIPE_LINKS["us"])
     current = get_current_tier()
 
     info = {
         "current_tier": current,
-        "current_label": TIER_LABELS.get(current, current),
+        "current_label": labels.get(current, current),
+        "region": region,
+        "currency": rp["currency"],
         "options": [],
     }
 
     if TIER_ORDER[current] < TIER_ORDER[TIER_PRO]:
         info["options"].append({
             "tier": TIER_PRO,
-            "label": TIER_LABELS[TIER_PRO],
+            "label": labels[TIER_PRO],
+            "price": f"{rp['symbol']}{rp['pro_price']:,}/seat/month",
             "description": "Teams dashboard, compliance reports, audit export, "
                            "red team, arbitration, alerting, SIEM",
-            "stripe_link": "https://buy.stripe.com/test_6oU7sL9lKfK07Hk8sx6AM04",
+            "stripe_link": links[TIER_PRO],
         })
 
     if TIER_ORDER[current] < TIER_ORDER[TIER_ENTERPRISE]:
         info["options"].append({
             "tier": TIER_ENTERPRISE,
-            "label": TIER_LABELS[TIER_ENTERPRISE],
+            "label": labels[TIER_ENTERPRISE],
+            "price": f"{rp['symbol']}{rp['enterprise_price']:,}/seat/month",
             "description": "Everything in Pro + RBAC, dual signoff, federation, "
                            "Layer 0 invariants, enterprise onboarding",
-            "stripe_link": "https://buy.stripe.com/test_aFa9AT9lK55m0eSfUZ6AM05",
+            "stripe_link": links[TIER_ENTERPRISE],
         })
 
     return info
@@ -479,9 +535,12 @@ def run_license(args):
 
 
 def run_upgrade(args):
-    """Handle `charter upgrade`."""
-    info = get_upgrade_info()
+    """Handle `charter upgrade [--region us|in]`."""
+    region = getattr(args, "region", None)
+    info = get_upgrade_info(region=region)
     print(f"Current tier: {info['current_label']}")
+    if info.get("currency") != "USD":
+        print(f"Region: {info['region'].upper()} ({info['currency']})")
     print()
 
     if not info["options"]:
@@ -498,3 +557,259 @@ def run_upgrade(args):
 
     print("After subscribing, activate your key:")
     print("  charter activate <key>")
+
+
+# --- Prospect provisioning ---
+
+def _get_prospects_path():
+    """Path to ~/.charter/prospects.jsonl"""
+    home = os.path.expanduser("~")
+    return os.path.join(home, ".charter", "prospects.jsonl")
+
+
+def provision_trial(email, name=None, company=None, trial_days=30,
+                    tier=None, seats=1, notes=None, region=None):
+    """Provision an Enterprise trial license for a prospect.
+
+    Generates a key, logs the prospect, and returns activation instructions.
+
+    Args:
+        email: prospect's email (required, used as identifier)
+        name: prospect's name
+        company: prospect's company
+        trial_days: trial duration in days (default: 30)
+        tier: license tier (default: enterprise)
+        seats: number of seats (default: 1)
+        notes: optional notes about the prospect
+        region: pricing region ('us', 'in')
+
+    Returns:
+        dict with key, expiry, and activation instructions
+    """
+    if tier is None:
+        tier = TIER_ENTERPRISE
+    if region is None:
+        region = DEFAULT_REGION
+
+    # Generate key bound to this prospect's email
+    key = generate_license_key(tier, identifier=email)
+
+    # Calculate expiry
+    expires_at = time.strftime(
+        "%Y-%m-%dT%H:%M:%SZ",
+        time.gmtime(time.time() + trial_days * 86400),
+    )
+
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    rp = SUPPORTED_REGIONS.get(region, SUPPORTED_REGIONS[DEFAULT_REGION])
+
+    # Build prospect record
+    prospect = {
+        "email": email,
+        "name": name,
+        "company": company,
+        "key": key,
+        "tier": tier,
+        "seats": seats,
+        "trial_days": trial_days,
+        "expires_at": expires_at,
+        "provisioned_at": now,
+        "status": "provisioned",
+        "notes": notes,
+        "region": region,
+        "currency": rp["currency"],
+        "post_trial_price": f"{rp['symbol']}{rp['enterprise_price' if tier == TIER_ENTERPRISE else 'pro_price']:,}/seat/month",
+    }
+
+    # Append to prospects ledger
+    prospects_path = _get_prospects_path()
+    os.makedirs(os.path.dirname(prospects_path), exist_ok=True)
+    with open(prospects_path, "a") as f:
+        f.write(json.dumps(prospect) + "\n")
+
+    # Log to chain
+    _log_chain_event("prospect_provisioned", {
+        "email": email,
+        "company": company,
+        "tier": tier,
+        "trial_days": trial_days,
+        "key_prefix": key[:15] + "...",
+    })
+
+    return prospect
+
+
+def list_prospects():
+    """List all provisioned prospects from the ledger.
+
+    Returns:
+        list of prospect dicts
+    """
+    path = _get_prospects_path()
+    if not os.path.isfile(path):
+        return []
+    prospects = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    prospects.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+    return prospects
+
+
+def revoke_prospect(email):
+    """Revoke a prospect's trial by marking their record.
+
+    Does not reach into their machine — their license will expire naturally,
+    or if they contact us, we just don't renew.
+
+    Returns:
+        dict with result
+    """
+    path = _get_prospects_path()
+    if not os.path.isfile(path):
+        return {"success": False, "error": "No prospects ledger found"}
+
+    prospects = []
+    found = False
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                prospects.append(line)
+                continue
+            if record.get("email") == email and record.get("status") == "provisioned":
+                record["status"] = "revoked"
+                record["revoked_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                found = True
+            prospects.append(json.dumps(record))
+
+    if not found:
+        return {"success": False, "error": f"No active prospect found for {email}"}
+
+    with open(path, "w") as f:
+        for line in prospects:
+            f.write(line + "\n")
+
+    _log_chain_event("prospect_revoked", {"email": email})
+    return {"success": True, "email": email}
+
+
+def run_provision(args):
+    """Handle `charter provision`."""
+    action = getattr(args, "action", "create")
+
+    if action == "list":
+        prospects = list_prospects()
+        if not prospects:
+            print("No prospects provisioned yet.")
+            return
+        print(f"Charter Prospects ({len(prospects)})")
+        print()
+        for p in prospects:
+            status = p.get("status", "unknown")
+            expired = False
+            if status == "provisioned":
+                exp = p.get("expires_at", "")
+                if exp:
+                    try:
+                        exp_time = time.mktime(time.strptime(exp, "%Y-%m-%dT%H:%M:%SZ"))
+                        if time.time() > exp_time:
+                            expired = True
+                    except (ValueError, OverflowError):
+                        pass
+            tag = "EXPIRED" if expired else status.upper()
+            print(f"  [{tag}] {p.get('name', 'unknown')} <{p.get('email', '?')}>")
+            if p.get("company"):
+                print(f"          Company:  {p['company']}")
+            print(f"          Key:      {p.get('key', '?')[:15]}...")
+            print(f"          Expires:  {p.get('expires_at', '?')}")
+            print(f"          Created:  {p.get('provisioned_at', '?')}")
+            if p.get("notes"):
+                print(f"          Notes:    {p['notes']}")
+            print()
+        return
+
+    if action == "revoke":
+        email = getattr(args, "email", None)
+        if not email:
+            print("Email required: charter provision revoke --email <email>")
+            return
+        result = revoke_prospect(email)
+        if result["success"]:
+            print(f"Revoked trial for {email}")
+        else:
+            print(f"Revoke failed: {result['error']}")
+        return
+
+    # Default: create
+    email = getattr(args, "email", None)
+    if not email:
+        print("Email required: charter provision create --email <email>")
+        return
+
+    name = getattr(args, "name", None)
+    company = getattr(args, "company", None)
+    trial_days = getattr(args, "trial_days", 30)
+    seats = getattr(args, "seats", 1)
+    notes = getattr(args, "notes", None)
+    region = getattr(args, "region", DEFAULT_REGION)
+    tier = getattr(args, "tier", TIER_ENTERPRISE)
+
+    result = provision_trial(
+        email=email,
+        name=name,
+        company=company,
+        trial_days=trial_days,
+        tier=tier,
+        seats=seats,
+        notes=notes,
+        region=region,
+    )
+
+    key = result["key"]
+    expires = result["expires_at"]
+    rp = SUPPORTED_REGIONS.get(region, SUPPORTED_REGIONS[DEFAULT_REGION])
+    tier_label = REGION_TIER_LABELS[region][tier]
+    price_key = "enterprise_price" if tier == TIER_ENTERPRISE else "pro_price"
+
+    print(f"{tier_label} Trial Provisioned")
+    print("=" * 40)
+    print()
+    if name:
+        print(f"  Name:     {name}")
+    print(f"  Email:    {email}")
+    if company:
+        print(f"  Company:  {company}")
+    print(f"  Tier:     {tier_label}")
+    print(f"  Seats:    {seats}")
+    print(f"  Region:   {region.upper()} ({rp['currency']})")
+    print(f"  Trial:    {trial_days} days")
+    print(f"  Expires:  {expires}")
+    print(f"  After:    {rp['symbol']}{rp[price_key]:,}/seat/month")
+    print(f"  Key:      {key}")
+    print()
+    print("Send to prospect:")
+    print("-" * 40)
+    print()
+    print(f"  pip install charter-governance && charter activate {key}")
+    print()
+    print("Then run the onboarding wizard:")
+    print()
+    print(f"  charter onboard")
+    print()
+    if region == "in":
+        print(f"  Upgrade after trial: charter upgrade --region in")
+        print()
+    print("-" * 40)
+    print()
+    print(f"Prospect logged to: ~/.charter/prospects.jsonl")
+    if notes:
+        print(f"Notes: {notes}")

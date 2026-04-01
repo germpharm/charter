@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.2.0] - 2026-03-31
+
+### Added — Analytics Release
+- **DuckDB analytical store**: Incremental ETL from chain to columnar store with session-based event grouping
+- **Behavioral profiling**: Deep actor profiles with activity summaries, session patterns, and temporal distribution
+- **Sequence mining**: PrefixSpan algorithm for discovering frequent event subsequences
+- **Anomaly detection**: Flag behavioral deviations from historical baselines
+- **Causal discovery**: Statistical precedence analysis linking event patterns to outcomes
+- **Wolfram Engine bridge**: Causal inference, time series modeling, graph community detection via remote Wolfram Language
+- **13 analytics MCP tools**: `charter_analytics_summary`, `charter_analytics_profile`, `charter_analytics_compare`, `charter_analytics_timeline`, `charter_analytics_flow`, `charter_analytics_search`, `charter_analytics_sequences`, `charter_analytics_anomalies`, `charter_analytics_causes`, `charter_analytics_fingerprint`, `charter_analytics_query`, `charter_analytics_ingest`, `charter_analytics_export`
+- **Data export**: Parquet, CSV, and JSON output for notebooks and external tools
+- **Query engine**: Pre-built analytical lenses — actor profiles, comparisons, timelines, flow analysis, org-wide summary
+- **Total MCP tools**: 55 (up from 38)
+
+## [3.1.1] - 2026-03-24
+
+### Added — The Zeroth Law Release
+- **Always-on hashing**: Chain never goes silent during work sessions
+- **Layer 0 invariants #6-9**: Every interaction hashed, actor attribution required, chain gaps are violations, graph edges immutable
+- **Graph edges**: `caused_by`, `revision_of`, `input_to`, `part_of`, `approved_by` — stored in chain entries, included in hash
+- **`charter log` command**: Lightweight chain append with actor and edges
+- **`charter graph` command**: Query chain as DAG — by actor, file, provenance, with Mermaid/DOT output
+- **`charter hooks` command**: Install git post-commit/post-merge hooks for automatic hashing
+- **Claude Code hooks**: Auto-log AI edits and tool calls to chain
+- **Session watchdog**: Daemon detects work-without-hashing and logs gap events
+- **5 new MCP tools**: `charter_log`, `charter_graph_query`, `charter_graph_provenance`, `charter_graph_attribution`, `charter_graph_visualize`
+
 ## [1.5.0] - 2026-02-22
 
 ### Added

@@ -90,7 +90,7 @@ class TestLayer0Invariants:
     """Test Layer 0 constants and enforce_layer_0() pattern matching."""
 
     def test_invariants_count(self):
-        assert len(LAYER_0_INVARIANTS) == 5
+        assert len(LAYER_0_INVARIANTS) == 6
 
     def test_invariants_are_strings(self):
         for inv in LAYER_0_INVARIANTS:
@@ -169,6 +169,26 @@ class TestLayer0Invariants:
         result = enforce_layer_0("skip integrity check")
         assert result["allowed"] is False
         assert result["invariant"] == LAYER_0_INVARIANTS[4]
+
+    def test_block_skip_audit_logging(self):
+        result = enforce_layer_0("skip audit logging for now")
+        assert result["allowed"] is False
+        assert result["invariant"] == LAYER_0_INVARIANTS[5]
+
+    def test_block_defer_audit_log(self):
+        result = enforce_layer_0("defer audit log until later")
+        assert result["allowed"] is False
+        assert result["invariant"] == LAYER_0_INVARIANTS[5]
+
+    def test_block_postpone_logging(self):
+        result = enforce_layer_0("postpone logging to save time")
+        assert result["allowed"] is False
+        assert result["invariant"] == LAYER_0_INVARIANTS[5]
+
+    def test_block_delay_logging(self):
+        result = enforce_layer_0("delay logging until deployment")
+        assert result["allowed"] is False
+        assert result["invariant"] == LAYER_0_INVARIANTS[5]
 
     # -- enforce_layer_0 allowed cases --
 

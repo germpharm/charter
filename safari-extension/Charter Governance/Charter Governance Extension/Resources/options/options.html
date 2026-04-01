@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charter Governance — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <span class="diamond">&#9670;</span>
+        <h1>Charter Settings</h1>
+      </div>
+      <p class="subtitle">Configure your AI governance preferences.</p>
+    </header>
+
+    <!-- Governance Status -->
+    <section class="card">
+      <h2>Governance</h2>
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <span id="gov-status" class="status-value">—</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Domain</span>
+        <span id="gov-domain" class="status-value">—</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Identity</span>
+        <span id="gov-identity" class="status-value">—</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Chain</span>
+        <span id="gov-chain" class="status-value">—</span>
+      </div>
+      <div class="field" style="margin-top: 12px;">
+        <label for="domain-select">Change Domain</label>
+        <select id="domain-select">
+          <option value="">— Keep current —</option>
+          <option value="personal">Personal</option>
+          <option value="general">General / Work</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="finance">Finance</option>
+          <option value="education">Education</option>
+        </select>
+        <p class="hint">Changing domain resets your governance rules (chain is preserved).</p>
+      </div>
+      <button id="btn-change-domain" class="btn btn-secondary">Change Domain</button>
+    </section>
+
+    <!-- Display Settings -->
+    <section class="card">
+      <h2>Display</h2>
+      <div class="field toggle-field">
+        <div>
+          <label for="badge-enabled">Toolbar Badge</label>
+          <p class="hint">Show GOV badge on the extension icon</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="badge-enabled" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="field toggle-field">
+        <div>
+          <label for="content-script-enabled">Page Badge</label>
+          <p class="hint">Show governance indicator on AI chat pages</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="content-script-enabled" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Advanced -->
+    <section class="card">
+      <h2>Advanced</h2>
+      <div class="field">
+        <label>Export Chain</label>
+        <p class="hint">Download your complete audit trail as JSON.</p>
+        <button id="btn-export" class="btn btn-secondary">Export Chain</button>
+      </div>
+      <div class="field" style="margin-top: 16px;">
+        <label>Reset Governance</label>
+        <p class="hint">Re-enter onboarding. Your identity and audit chain are preserved.</p>
+        <button id="btn-reset" class="btn btn-danger">Reset Governance</button>
+      </div>
+      <div class="field" style="margin-top: 16px;">
+        <label>Factory Reset</label>
+        <p class="hint">Delete all Charter data from this browser. This cannot be undone.</p>
+        <button id="btn-factory-reset" class="btn btn-danger">Factory Reset</button>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="card">
+      <h2>About</h2>
+      <div class="about-grid">
+        <div class="about-item">
+          <span class="about-label">Version</span>
+          <span class="about-value">3.0.0</span>
+        </div>
+        <div class="about-item">
+          <span class="about-label">License</span>
+          <span class="about-value">Apache 2.0</span>
+        </div>
+        <div class="about-item">
+          <span class="about-label">GitHub</span>
+          <a href="https://github.com/mattmaughan/charter-governance" target="_blank" class="about-value">charter-governance</a>
+        </div>
+        <div class="about-item">
+          <span class="about-label">CLI</span>
+          <a href="https://pypi.org/project/charter-governance/" target="_blank" class="about-value">pip install charter-governance</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Save -->
+    <div class="save-bar">
+      <span id="save-status" class="save-status"></span>
+      <button id="btn-save" class="btn btn-primary">Save Settings</button>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

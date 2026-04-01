@@ -40,11 +40,29 @@ charter join <token>            # Join a governed team with one command
 
 Charter creates a governance framework for your AI. You define the rules. The AI follows them. The system audits itself.
 
+**Layer 0: The Zeroth Law.** The chain must always be recording. Who did it. What they did. When. This cannot be turned off.
+
 **Layer A: Hard Constraints.** Things your AI must never do. No exceptions.
 
 **Layer B: Gradient Decisions.** Actions that require human judgment above certain thresholds.
 
 **Layer C: Self-Audit.** The system reviews what it did and reports honestly.
+
+## Always-On Attribution
+
+Every interaction is hashed and attributed: **human**, **AI**, or **collaborative**.
+
+```bash
+charter log file_introduced --actor human -m "Uploaded lab results"
+charter log design_decision --actor collaborative --edge caused_by:a1b2c3
+charter graph summary                   # Who did what (% breakdown)
+charter graph actor human --since 2026-03-22  # All human contributions
+charter graph provenance a1b2c3         # Trace who thought what → who built what
+charter graph mermaid                   # Render as network diagram
+charter hooks install                   # Auto-hash every git commit
+```
+
+Graph edges (`caused_by`, `revision_of`, `input_to`, `part_of`, `approved_by`) are stored inside chain entries and included in the hash — relationships are immutable once signed.
 
 ## Domain Templates
 
@@ -139,9 +157,43 @@ charter mcp-serve --transport stdio
 charter mcp-serve --transport sse --port 8375
 ```
 
-10 tools exposed: `charter_status`, `charter_stamp`, `charter_verify_stamp`, `charter_append_chain`, `charter_read_chain`, `charter_check_integrity`, `charter_get_config`, `charter_identity`, `charter_audit`, `charter_local_inference`.
+55 tools exposed including governance, identity, chain operations, graph queries, compliance mapping, federation, always-on attribution, and analytics. Key analytics tools: `charter_analytics_summary`, `charter_analytics_profile`, `charter_analytics_compare`, `charter_analytics_timeline`, `charter_analytics_flow`, `charter_analytics_sequences`, `charter_analytics_anomalies`, `charter_analytics_causes`, `charter_analytics_export`.
 
 Every action logged to an immutable hash chain. Same governance, any model.
+
+## Analytics Engine (v3.2.0)
+
+Turn your governance chain into an analytical data warehouse. DuckDB-backed, millisecond queries, zero cloud dependency.
+
+```bash
+pip install charter-governance[analytics]
+
+charter analytics sync              # ETL chain → DuckDB analytical store
+charter analytics status            # Store health, event counts, velocity
+charter analytics summary           # Org-wide governance dashboard
+```
+
+### What You Can Do
+
+- **Actor profiling** — Deep behavioral profiles with session patterns and temporal distribution
+- **Behavioral comparison** — Rank actors by volume, diversity, escalation rate, cadence
+- **Sequence mining** — Discover frequent event patterns via PrefixSpan algorithm
+- **Anomaly detection** — Flag behavioral deviations from historical baselines
+- **Causal discovery** — Link event patterns to outcome differences
+- **Timeline analysis** — Activity density with 7d/30d/90d trend detection
+- **Flow analysis** — Event predecessors, successors, and common sequences
+- **Data export** — Parquet, CSV, or JSON for notebooks and external tools
+
+### Wolfram Engine Bridge
+
+For publication-grade statistical analysis, Charter bridges to Wolfram Language Engine:
+
+- Causal inference (FindCausalModel)
+- Time series modeling (SequencePredict)
+- Graph community detection (FindGraphCommunities)
+- Hypothesis testing (LocationTest)
+
+All analytics work without Wolfram. Wolfram adds depth when available.
 
 ## The Network
 

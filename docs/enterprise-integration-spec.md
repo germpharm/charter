@@ -1,6 +1,6 @@
 # Enterprise Integration Specification
 
-**Charter v3.1.0 — Codename: Federation**
+**Charter v3.2.0 — Codename: Analytics**
 **Revision:** 1.0
 **Date:** 2026-03-01
 **Status:** Definitive
@@ -727,7 +727,8 @@ The private seed that signs chain entries (stored at `.charter/identity/private_
 | 2.3 | Enterprise | 2026-02 | RBAC with dual signoff, alerting (webhook/Slack/email), SIEM export (CEF/JSON/syslog), compliance mapping (SOX/HIPAA/FERPA) |
 | 3.0 | Federation | 2026-03 | Federated dashboard, enterprise integration specification, 50+ Python modules, local inference routing |
 | 3.1 | Compliance | 2026-03 | 8 compliance frameworks (SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001), scheduled audits, chain retention, runtime alerting |
+| 3.2 | Analytics | 2026-03 | DuckDB analytical store, behavioral profiling, sequence mining (PrefixSpan), anomaly detection, causal discovery, Wolfram Engine bridge, 13 analytics MCP tools, data export (Parquet/CSV/JSON) |
 
 ---
 
-Charter v3.1.0 — 40 Python modules, 33 MCP tools, 46 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.
+Charter v3.2.0 — 51 Python modules, 55 MCP tools, 46 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.

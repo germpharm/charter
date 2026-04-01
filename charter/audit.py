@@ -270,6 +270,39 @@ def _build_report(config, identity, gov, entries, period):
             lines.append(f"  - {event}: {count}")
     lines.append("")
 
+    # Actor breakdown
+    actor_counts = {"human": 0, "ai": 0, "collaborative": 0, "unspecified": 0}
+    autonomous_ai_actions = []
+    for entry in entries:
+        actor = entry.get("actor")
+        if actor in ("human", "ai", "collaborative"):
+            actor_counts[actor] += 1
+        else:
+            actor_counts["unspecified"] += 1
+        if actor == "ai":
+            autonomous_ai_actions.append({
+                "event": entry.get("event", "unknown"),
+                "timestamp": entry.get("timestamp", "unknown"),
+                "description": entry.get("data", {}).get("description", ""),
+            })
+
+    lines.append("## Actor Attribution")
+    lines.append("")
+    lines.append(f"Human actions: {actor_counts['human']}")
+    lines.append(f"AI actions (autonomous): {actor_counts['ai']}")
+    lines.append(f"Collaborative actions: {actor_counts['collaborative']}")
+    if actor_counts["unspecified"] > 0:
+        lines.append(f"Unspecified (pre-v3.1.1): {actor_counts['unspecified']}")
+    lines.append("")
+
+    if autonomous_ai_actions:
+        lines.append("### Autonomous AI Actions")
+        lines.append("")
+        for action in autonomous_ai_actions:
+            desc = action["description"] or action["event"]
+            lines.append(f"  - [{action['timestamp']}] {desc}")
+        lines.append("")
+
     # Chain integrity
     intact = _check_chain_integrity(entries)
     lines.append("## Chain Integrity")

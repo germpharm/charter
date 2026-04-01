@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charter Governance</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- ================================================================== -->
+  <!-- SCREEN 1: Onboarding — pick your domain, done                      -->
+  <!-- ================================================================== -->
+  <div id="screen-onboarding" style="display: none;">
+    <header class="onboard-header">
+      <span class="diamond lg">&#9670;</span>
+      <h1>Charter</h1>
+      <p class="tagline">AI governance in one click.</p>
+    </header>
+
+    <section class="onboard-body">
+      <p class="onboard-prompt">What do you use AI for?</p>
+
+      <div class="domain-grid">
+        <button class="domain-card" data-domain="personal">
+          <span class="domain-icon">&#128100;</span>
+          <span class="domain-name">Personal</span>
+          <span class="domain-desc">Your personal AI assistant</span>
+        </button>
+
+        <button class="domain-card" data-domain="general">
+          <span class="domain-icon">&#128188;</span>
+          <span class="domain-name">Work</span>
+          <span class="domain-desc">Professional projects</span>
+        </button>
+
+        <button class="domain-card" data-domain="healthcare">
+          <span class="domain-icon">&#9877;&#65039;</span>
+          <span class="domain-name">Healthcare</span>
+          <span class="domain-desc">HIPAA-aware rules</span>
+        </button>
+
+        <button class="domain-card" data-domain="finance">
+          <span class="domain-icon">&#128176;</span>
+          <span class="domain-name">Finance</span>
+          <span class="domain-desc">Compliance-first</span>
+        </button>
+
+        <button class="domain-card" data-domain="education">
+          <span class="domain-icon">&#127891;</span>
+          <span class="domain-name">Education</span>
+          <span class="domain-desc">FERPA-compliant</span>
+        </button>
+      </div>
+    </section>
+
+    <footer class="onboard-footer">
+      <span>Free forever &middot; Open source</span>
+    </footer>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SCREEN 2: Setting up — brief animation                             -->
+  <!-- ================================================================== -->
+  <div id="screen-setup" style="display: none;">
+    <div class="setup-center">
+      <div class="setup-spinner"></div>
+      <p class="setup-text">Setting up governance...</p>
+    </div>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SCREEN 3: Dashboard — the daily view                               -->
+  <!-- ================================================================== -->
+  <div id="screen-dashboard" style="display: none;">
+    <header>
+      <div class="brand">
+        <span class="diamond">&#9670;</span>
+        <span class="brand-text">Charter</span>
+      </div>
+      <div id="status-badge" class="badge badge-governed">Governed</div>
+    </header>
+
+    <!-- Identity bar -->
+    <section class="identity-bar">
+      <span id="identity-alias">—</span>
+      <span class="sep">&middot;</span>
+      <span id="identity-domain">—</span>
+    </section>
+
+    <!-- Stats -->
+    <section class="panel">
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">Rules</div>
+          <div class="stat-value" id="rule-count">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Chain</div>
+          <div class="stat-value" id="chain-length">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Integrity</div>
+          <div class="stat-value" id="chain-integrity">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Audit</div>
+          <div class="stat-value" id="audit-freq">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Events -->
+    <section class="panel">
+      <div class="panel-header">Recent Activity</div>
+      <div id="events-list" class="events-list">
+        <div class="event-empty">No events yet</div>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="actions">
+      <button id="btn-audit" class="action-btn" title="Run self-audit">&#128203; Audit</button>
+      <button id="btn-rules" class="action-btn action-primary" title="View your rules">&#128220; My Rules</button>
+      <button id="btn-settings" class="action-btn" title="Settings">&#9881;</button>
+    </section>
+
+    <footer>
+      <span>Charter v3.0.0</span>
+      <span id="footer-id" class="footer-dim"></span>
+    </footer>
+  </div>
+
+  <!-- ================================================================== -->
+  <!-- SCREEN 4: Rules viewer                                             -->
+  <!-- ================================================================== -->
+  <div id="screen-rules" style="display: none;">
+    <header>
+      <button id="btn-back-rules" class="back-btn">&larr;</button>
+      <span class="header-title">Your Rules</span>
+      <span id="rules-domain-badge" class="badge badge-governed"></span>
+    </header>
+    <div id="rules-content" class="rules-scroll"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

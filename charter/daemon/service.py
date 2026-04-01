@@ -32,6 +32,7 @@ from charter.retention import apply_retention_policy
 DEFAULT_PORT = 8374
 SCAN_INTERVAL = 60
 AUDIT_CHECK_INTERVAL = 300  # check every 5 minutes
+SESSION_WATCHDOG_INTERVAL = 120  # check every 2 minutes
 
 
 class CharterDaemon:
@@ -62,11 +63,20 @@ class CharterDaemon:
         """Start the daemon. Blocks until stopped."""
         self.running = True
 
-        detector = threading.Thread(target=self._detection_loop, daemon=True)
+        detector = threading.Thread(
+            target=self._detection_loop, daemon=True,
+        )
         detector.start()
 
-        auditor = threading.Thread(target=self._audit_loop, daemon=True)
+        auditor = threading.Thread(
+            target=self._audit_loop, daemon=True,
+        )
         auditor.start()
+
+        watchdog = threading.Thread(
+            target=self._session_watchdog, daemon=True,
+        )
+        watchdog.start()
 
         self._start_web()
 
@@ -172,6 +182,74 @@ class CharterDaemon:
                 pass
 
             time.sleep(AUDIT_CHECK_INTERVAL)
+
+    def _session_watchdog(self):
+        """v3.1.1 Layer 0 enforcement: detect work without hashing.
+
+        Checks whether AI tools are running but no chain entries
+        have been created recently. If a gap is detected, logs a
+        chain_gap_detected event — the gap itself becomes evidence.
+        """
+        import os
+        chain_path = get_chain_path()
+        last_known_count = 0
+        if os.path.isfile(chain_path):
+            with open(chain_path) as f:
+                last_known_count = sum(
+                    1 for line in f if line.strip()
+                )
+
+        while self.running:
+            try:
+                # Check if AI tools are active
+                tools = detect_ai_tools()
+                ai_active = len(tools) > 0
+
+                # Check chain growth
+                current_count = 0
+                if os.path.isfile(chain_path):
+                    with open(chain_path) as f:
+                        current_count = sum(
+                            1 for line in f if line.strip()
+                        )
+
+                chain_grew = current_count > last_known_count
+
+                if ai_active and not chain_grew:
+                    # AI tools running but chain is silent
+                    try:
+                        append_to_chain(
+                            "chain_gap_detected",
+                            {
+                                "active_tools": len(tools),
+                                "chain_entries": current_count,
+                                "invariant": (
+                                    "Layer 0 #8: Chain gaps "
+                                    "during active sessions "
+                                    "are violations"
+                                ),
+                            },
+                            actor="ai",
+                        )
+                        # Alert on gap
+                        try:
+                            self._dispatcher.dispatch(
+                                "chain_gap_detected",
+                                {
+                                    "tools": len(tools),
+                                    "entries": current_count,
+                                },
+                            )
+                        except Exception:
+                            pass
+                    except Exception:
+                        pass
+
+                last_known_count = current_count
+            except Exception:
+                pass
+
+            time.sleep(SESSION_WATCHDOG_INTERVAL)
 
     def _start_web(self):
         """Start the Flask web server."""

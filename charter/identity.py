@@ -26,6 +26,116 @@ def get_chain_path():
     return os.path.join(get_identity_dir(), CHAIN_FILE)
 
 
+def get_project_chain_path(project_path=None):
+    """Get the chain path for a specific project.
+
+    If project_path is provided, returns a per-project chain path
+    at ~/.charter/chains/<project_hash>.jsonl.
+    If None, falls back to the global chain.
+
+    The project_hash is SHA-256 of the absolute project path.
+    """
+    if project_path is None:
+        return get_chain_path()
+
+    abs_path = os.path.abspath(project_path)
+    project_hash = hashlib.sha256(abs_path.encode()).hexdigest()
+    chains_dir = os.path.join(get_identity_dir(), "chains")
+    os.makedirs(chains_dir, exist_ok=True)
+    return os.path.join(chains_dir, f"{project_hash}.jsonl")
+
+
+def get_project_hash(project_path):
+    """Compute the project hash from a path."""
+    abs_path = os.path.abspath(project_path)
+    return hashlib.sha256(abs_path.encode()).hexdigest()
+
+
+def register_project(project_path, project_name=None):
+    """Register a project in the global chain and create its chain file.
+
+    Records a project_registered event in the global root chain,
+    and creates the per-project chain file if it doesn't exist.
+
+    Returns the project hash.
+    """
+    abs_path = os.path.abspath(project_path)
+    project_hash = get_project_hash(project_path)
+    chain_path = get_project_chain_path(project_path)
+
+    # Create project chain with genesis entry if it doesn't exist
+    if not os.path.isfile(chain_path):
+        identity = load_identity()
+        if not identity:
+            return None
+        genesis = {
+            "index": 0,
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "event": "project_chain_created",
+            "data": {
+                "project_hash": project_hash,
+                "project_path": abs_path,
+                "project_name": project_name or os.path.basename(abs_path),
+            },
+            "actor": "collaborative",
+            "previous_hash": "0" * 64,
+        }
+        genesis["hash"] = hash_entry(genesis)
+        with open(chain_path, "w") as f:
+            f.write(json.dumps(genesis) + "\n")
+
+    # Register in global chain
+    append_to_chain("project_registered", {
+        "project_hash": project_hash,
+        "project_path": abs_path,
+        "project_name": project_name or os.path.basename(abs_path),
+        "chain_file": chain_path,
+    }, actor="collaborative")
+
+    return project_hash
+
+
+def list_project_chains():
+    """List all registered project chains.
+
+    Returns a list of dicts with project_hash, chain_path,
+    and entry count for each project chain.
+    """
+    chains_dir = os.path.join(get_identity_dir(), "chains")
+    if not os.path.isdir(chains_dir):
+        return []
+
+    projects = []
+    for filename in os.listdir(chains_dir):
+        if not filename.endswith(".jsonl"):
+            continue
+        chain_path = os.path.join(chains_dir, filename)
+        project_hash = filename.replace(".jsonl", "")
+
+        entry_count = 0
+        project_name = None
+        with open(chain_path) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    entry_count += 1
+                    if entry_count == 1:
+                        try:
+                            genesis = json.loads(line)
+                            project_name = genesis.get("data", {}).get("project_name")
+                        except json.JSONDecodeError:
+                            pass
+
+        projects.append({
+            "project_hash": project_hash,
+            "chain_path": chain_path,
+            "entry_count": entry_count,
+            "project_name": project_name,
+        })
+
+    return projects
+
+
 def create_identity(alias=None):
     """Create a new pseudonymous identity.
 
@@ -109,15 +219,33 @@ def sign_data(data, private_seed):
     return sig
 
 
+VALID_ACTORS = ("human", "ai", "collaborative")
+
+
 def append_to_chain(event, data, auto_batch=True,
                     confidence=None, evidence_basis=None,
                     constraint_assumptions=None,
-                    revision_of=None, revision_reason=None):
+                    revision_of=None, revision_reason=None,
+                    actor=None, edges=None,
+                    project_path=None):
     """Append a new entry to the hash chain.
 
     If auto_batch is True and enough unbatched entries have accumulated,
     automatically rolls them into a Merkle tree. The threshold is
     controlled by MERKLE_AUTO_BATCH_SIZE.
+
+    Args:
+        actor: Required (v3.1.1 Layer 0 invariant #7). One of "human",
+            "ai", or "collaborative". Indicates who performed this action.
+            Included in the hash computation so it cannot be altered
+            after the fact. Defaults to "collaborative" only for
+            backward compatibility — callers should always specify.
+
+        edges: Optional list of graph edges (v3.1.1). Each edge is a
+            dict with "type" and "hash" keys. Valid types: caused_by,
+            revision_of, input_to, part_of, approved_by. Edges are
+            included in the hash computation — once signed, relationships
+            are immutable.
 
     Optional confidence tagging (v2.2.0):
         confidence: "verified" | "inferred" | "exploratory"
@@ -126,7 +254,14 @@ def append_to_chain(event, data, auto_batch=True,
         revision_of: hash of a prior entry this revises
         revision_reason: why the prior conclusion changed
     """
-    chain_path = get_chain_path()
+    # v3.1.1: Actor attribution is a Layer 0 invariant.
+    # Default to "collaborative" for backward compatibility,
+    # but callers should always specify explicitly.
+    if actor is None:
+        actor = "collaborative"
+    if actor not in VALID_ACTORS:
+        actor = "collaborative"
+    chain_path = get_project_chain_path(project_path)
     identity = load_identity()
     if not identity:
         return None
@@ -161,9 +296,22 @@ def append_to_chain(event, data, auto_batch=True,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "event": event,
         "data": data,
+        "actor": actor,
         "previous_hash": last_hash,
         "signer": identity["public_id"],
     }
+
+    # v3.1.1: Graph edges — immutable relationships between entries.
+    # Included in hash computation so they cannot be altered after signing.
+    if edges:
+        _VALID_EDGE_TYPES = ("caused_by", "revision_of", "input_to", "part_of", "approved_by")
+        validated_edges = []
+        for edge in edges:
+            if isinstance(edge, dict) and edge.get("type") in _VALID_EDGE_TYPES and edge.get("hash"):
+                validated_edges.append({"type": edge["type"], "hash": edge["hash"]})
+        if validated_edges:
+            entry["_edges"] = validated_edges
+
     entry["hash"] = hash_entry(entry)
     entry["signature"] = sign_data(entry, identity["private_seed"])
 

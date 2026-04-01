@@ -141,7 +141,17 @@ def run_init(args):
 
     # Save config
     path = save_config(config)
+
+    # Create logging infrastructure (Layer 0 requires active audit logging)
+    audit_dir = os.path.join(os.path.dirname(path), "charter_audits")
+    os.makedirs(audit_dir, exist_ok=True)
+    log_path = os.path.join(audit_dir, "charter_log.jsonl")
+    if not os.path.isfile(log_path):
+        with open(log_path, "w") as f:
+            pass  # Create empty file, ready for entries
+
     print(f"\nGovernance config saved to: {path}")
+    print(f"Audit log initialized: {log_path}")
     print(f"\nNext steps:")
     print(f"  charter generate          Generate a CLAUDE.md with your governance rules")
     print(f"  charter generate --format system-prompt   Generate a system prompt for any AI")

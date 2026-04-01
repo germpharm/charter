@@ -682,7 +682,255 @@ TOOLS = [
             },
         },
     ),
+    # --- v3.1.1: Graph tools (always-on attribution) ---
+    Tool(
+        name="charter_graph_query",
+        description=(
+            "Query the hash chain as a directed graph. Filter by "
+            "actor (human/ai/collaborative), file path, event type, "
+            "or date range. Returns matching entries with edges."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "actor": {
+                    "type": "string",
+                    "enum": ["human", "ai", "collaborative"],
+                    "description": "Filter by actor type.",
+                },
+                "file": {
+                    "type": "string",
+                    "description": "Filter by file path.",
+                },
+                "event_type": {
+                    "type": "string",
+                    "description": "Filter by event type.",
+                },
+                "since": {
+                    "type": "string",
+                    "description": "ISO 8601 start date.",
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Max entries (default: 20).",
+                    "default": 20,
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_graph_provenance",
+        description=(
+            "Trace the full provenance of a chain entry by "
+            "following caused_by edges backward to the root. "
+            "Shows who thought what, who built what, and why."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "entry_hash": {
+                    "type": "string",
+                    "description": "Hash (or prefix) of entry.",
+                },
+            },
+            "required": ["entry_hash"],
+        },
+    ),
+    Tool(
+        name="charter_graph_attribution",
+        description=(
+            "Get attribution summary: percentage of work done by "
+            "human, AI, and collaborative actors. Optionally filter "
+            "by date range."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "since": {
+                    "type": "string",
+                    "description": "ISO 8601 start date.",
+                },
+                "until": {
+                    "type": "string",
+                    "description": "ISO 8601 end date.",
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_graph_visualize",
+        description=(
+            "Generate a Mermaid or DOT diagram of chain entries "
+            "with graph edges. Renders actor attribution as color-"
+            "coded nodes and relationship types as labeled edges."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "format": {
+                    "type": "string",
+                    "enum": ["mermaid", "dot"],
+                    "description": "Output format (default: mermaid).",
+                    "default": "mermaid",
+                },
+                "since": {
+                    "type": "string",
+                    "description": "ISO 8601 start date.",
+                },
+                "max_entries": {
+                    "type": "integer",
+                    "description": "Max entries to render (default: 50).",
+                    "default": 50,
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_log",
+        description=(
+            "Log an event to the hash chain with actor attribution "
+            "and optional graph edges. The lightweight entry point "
+            "for always-on hashing (v3.1.1)."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "event": {
+                    "type": "string",
+                    "description": "Event type.",
+                },
+                "data": {
+                    "type": "object",
+                    "description": "Event data payload.",
+                },
+                "actor": {
+                    "type": "string",
+                    "enum": ["human", "ai", "collaborative"],
+                    "description": "Who performed this action.",
+                },
+                "edges": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "caused_by",
+                                    "revision_of",
+                                    "input_to",
+                                    "part_of",
+                                    "approved_by",
+                                ],
+                            },
+                            "hash": {"type": "string"},
+                        },
+                    },
+                    "description": "Graph edges to other entries.",
+                },
+            },
+            "required": ["event", "data", "actor"],
+        },
+    ),
+    # --- v3.1.1 Phase 3: Cross-project & system memory tools ---
+    Tool(
+        name="charter_xref_search",
+        description=(
+            "Search across ALL project chains and the global chain. "
+            "Filter by actor, event type, date range, or keyword. "
+            "Returns entries from every registered project — the "
+            "system-wide memory query."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "actor": {
+                    "type": "string",
+                    "enum": ["human", "ai", "collaborative"],
+                    "description": "Filter by actor type.",
+                },
+                "event_type": {
+                    "type": "string",
+                    "description": "Filter by event type.",
+                },
+                "since": {
+                    "type": "string",
+                    "description": "ISO 8601 start date.",
+                },
+                "until": {
+                    "type": "string",
+                    "description": "ISO 8601 end date.",
+                },
+                "keyword": {
+                    "type": "string",
+                    "description": "Keyword search in events and data.",
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Max results (default: 50).",
+                    "default": 50,
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_xref_resolve",
+        description=(
+            "Resolve a cross-project reference (project_hash:entry_hash) "
+            "to the actual chain entry. File paths change. Hashes don't."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "ref": {
+                    "type": "string",
+                    "description": "Cross-ref in project_hash:entry_hash format.",
+                },
+            },
+            "required": ["ref"],
+        },
+    ),
+    Tool(
+        name="charter_project_list",
+        description=(
+            "List all registered project chains with entry counts "
+            "and project names."
+        ),
+        inputSchema={"type": "object", "properties": {}, "required": []},
+    ),
+    Tool(
+        name="charter_project_register",
+        description=(
+            "Register a project directory for per-project chain tracking. "
+            "Creates a dedicated chain file and records it in the global chain."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_path": {
+                    "type": "string",
+                    "description": "Absolute path to the project directory.",
+                },
+                "project_name": {
+                    "type": "string",
+                    "description": "Human-readable project name.",
+                },
+            },
+            "required": ["project_path"],
+        },
+    ),
 ]
+
+# --- v3.2.0: Analytics tools (appended dynamically) ---
+try:
+    from charter.analytics.interface import get_analytics_mcp_tools
+    TOOLS.extend(get_analytics_mcp_tools())
+except ImportError:
+    pass  # analytics optional dependency not installed
 
 
 # ---------------------------------------------------------------------------
@@ -1110,8 +1358,191 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
         }
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
+    # --- v3.1.1: Graph handlers ---
+
+    elif name == "charter_graph_query":
+        from charter.graph import (
+            load_chain, query_by_actor, query_by_file,
+            query_by_event,
+        )
+        entries = load_chain()
+        actor = arguments.get("actor")
+        filepath = arguments.get("file")
+        event_type = arguments.get("event_type")
+        since = arguments.get("since")
+        limit = arguments.get("limit", 20)
+
+        if actor:
+            results = query_by_actor(
+                entries, actor, since=since,
+            )
+        elif filepath:
+            results = query_by_file(entries, filepath)
+        elif event_type:
+            results = query_by_event(
+                entries, event_type, since=since,
+            )
+        elif since:
+            results = [
+                e for e in entries
+                if e.get("timestamp", "") >= since
+            ]
+        else:
+            results = entries
+
+        results = results[-limit:]
+        return [TextContent(
+            type="text",
+            text=json.dumps(results, indent=2),
+        )]
+
+    elif name == "charter_graph_provenance":
+        from charter.graph import load_chain, get_provenance
+        entries = load_chain()
+        entry_hash = arguments.get("entry_hash", "")
+        chain = get_provenance(entries, entry_hash)
+        return [TextContent(
+            type="text",
+            text=json.dumps(chain, indent=2),
+        )]
+
+    elif name == "charter_graph_attribution":
+        from charter.graph import load_chain, attribution_summary
+        entries = load_chain()
+        since = arguments.get("since")
+        until = arguments.get("until")
+        summary = attribution_summary(
+            entries, since=since, until=until,
+        )
+        return [TextContent(
+            type="text",
+            text=json.dumps(summary, indent=2),
+        )]
+
+    elif name == "charter_graph_visualize":
+        from charter.graph import (
+            load_chain, to_mermaid, to_dot,
+        )
+        entries = load_chain()
+        fmt = arguments.get("format", "mermaid")
+        since = arguments.get("since")
+        max_entries = arguments.get("max_entries", 50)
+
+        filtered = entries
+        if since:
+            filtered = [
+                e for e in entries
+                if e.get("timestamp", "") >= since
+            ]
+
+        if fmt == "dot":
+            output = to_dot(filtered, max_entries)
+        else:
+            output = to_mermaid(filtered, max_entries)
+
+        return [TextContent(type="text", text=output)]
+
+    elif name == "charter_log":
+        event = arguments.get("event", "unknown")
+        data = arguments.get("data", {})
+        actor = arguments.get("actor", "collaborative")
+        edges = arguments.get("edges")
+        entry = append_to_chain(
+            event, data, actor=actor, edges=edges,
+        )
+        if not entry:
+            return [TextContent(
+                type="text",
+                text=json.dumps({
+                    "error": "No identity. Run charter init.",
+                }),
+            )]
+        return [TextContent(
+            type="text",
+            text=json.dumps(entry, indent=2),
+        )]
+
+    # --- v3.1.1 Phase 3: Cross-project handlers ---
+
+    elif name == "charter_xref_search":
+        from charter.cross_ref import search_across_projects
+        results = search_across_projects(
+            actor=arguments.get("actor"),
+            event_type=arguments.get("event_type"),
+            since=arguments.get("since"),
+            until=arguments.get("until"),
+            keyword=arguments.get("keyword"),
+            limit=arguments.get("limit", 50),
+        )
+        return [TextContent(
+            type="text",
+            text=json.dumps(results, indent=2),
+        )]
+
+    elif name == "charter_xref_resolve":
+        from charter.cross_ref import resolve_ref
+        ref = arguments.get("ref", "")
+        entry = resolve_ref(ref)
+        if not entry:
+            return [TextContent(
+                type="text",
+                text=json.dumps({"error": f"Not found: {ref}"}),
+            )]
+        return [TextContent(
+            type="text",
+            text=json.dumps(entry, indent=2),
+        )]
+
+    elif name == "charter_project_list":
+        from charter.identity import list_project_chains
+        projects = list_project_chains()
+        return [TextContent(
+            type="text",
+            text=json.dumps(projects, indent=2),
+        )]
+
+    elif name == "charter_project_register":
+        from charter.identity import register_project
+        path = arguments.get("project_path", ".")
+        name_arg = arguments.get("project_name")
+        result = register_project(path, project_name=name_arg)
+        if not result:
+            return [TextContent(
+                type="text",
+                text=json.dumps({
+                    "error": "Failed. Run charter init first.",
+                }),
+            )]
+        return [TextContent(
+            type="text",
+            text=json.dumps({
+                "project_hash": result,
+                "registered": True,
+            }, indent=2),
+        )]
+
+    # --- v3.2.0: Analytics handlers ---
+
+    elif name.startswith("charter_analytics_"):
+        try:
+            from charter.analytics.interface import handle_analytics_mcp_tool
+            result = handle_analytics_mcp_tool(name, arguments)
+            if result is not None:
+                return result
+        except ImportError:
+            return [TextContent(
+                type="text",
+                text=json.dumps({
+                    "error": "Analytics not available",
+                    "hint": "pip install charter-governance[analytics]",
+                }),
+            )]
+
     else:
-        return [TextContent(type="text", text=json.dumps({"error": f"Unknown tool: {name}"}))]
+        return [TextContent(
+            type="text",
+            text=json.dumps({"error": f"Unknown tool: {name}"}),
+        )]
 
 
 # ---------------------------------------------------------------------------

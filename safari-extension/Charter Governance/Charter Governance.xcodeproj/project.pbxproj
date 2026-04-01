@@ -1,0 +1,621 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		26674CAB2F55E353008B9726 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26674CAA2F55E353008B9726 /* AppDelegate.swift */; };
+		26674CAF2F55E353008B9726 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 26674CAD2F55E353008B9726 /* Main.html */; };
+		26674CB12F55E353008B9726 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 26674CB02F55E353008B9726 /* Icon.png */; };
+		26674CB32F55E353008B9726 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 26674CB22F55E353008B9726 /* Style.css */; };
+		26674CB52F55E353008B9726 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 26674CB42F55E353008B9726 /* Script.js */; };
+		26674CB72F55E353008B9726 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26674CB62F55E353008B9726 /* ViewController.swift */; };
+		26674CBA2F55E353008B9726 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26674CB82F55E353008B9726 /* Main.storyboard */; };
+		26674CBC2F55E354008B9726 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26674CBB2F55E354008B9726 /* Assets.xcassets */; };
+		26674CC32F55E355008B9726 /* Charter Governance Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 26674CC22F55E355008B9726 /* Charter Governance Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26674CC82F55E355008B9726 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26674CC72F55E355008B9726 /* SafariWebExtensionHandler.swift */; };
+		26674CDE2F55E355008B9726 /* options in Resources */ = {isa = PBXBuildFile; fileRef = 26674CD42F55E355008B9726 /* options */; };
+		26674CDF2F55E355008B9726 /* popup in Resources */ = {isa = PBXBuildFile; fileRef = 26674CD52F55E355008B9726 /* popup */; };
+		26674CE12F55E355008B9726 /* content in Resources */ = {isa = PBXBuildFile; fileRef = 26674CD72F55E355008B9726 /* content */; };
+		26674CE52F55E355008B9726 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 26674CDB2F55E355008B9726 /* icons */; };
+		26674CE62F55E355008B9726 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 26674CDC2F55E355008B9726 /* manifest.json */; };
+		26674CE72F55E355008B9726 /* src in Resources */ = {isa = PBXBuildFile; fileRef = 26674CDD2F55E355008B9726 /* src */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		26674CC42F55E355008B9726 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 26674C9F2F55E353008B9726 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26674CC12F55E355008B9726;
+			remoteInfo = "Charter Governance Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		26674CCF2F55E355008B9726 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				26674CC32F55E355008B9726 /* Charter Governance Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		26674CA72F55E353008B9726 /* Charter Governance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Charter Governance.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26674CAA2F55E353008B9726 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		26674CAE2F55E353008B9726 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		26674CB02F55E353008B9726 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		26674CB22F55E353008B9726 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		26674CB42F55E353008B9726 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		26674CB62F55E353008B9726 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		26674CB92F55E353008B9726 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		26674CBB2F55E354008B9726 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		26674CBD2F55E354008B9726 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26674CC22F55E355008B9726 /* Charter Governance Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Charter Governance Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26674CC72F55E355008B9726 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		26674CC92F55E355008B9726 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26674CD42F55E355008B9726 /* options */ = {isa = PBXFileReference; lastKnownFileType = folder; name = options; path = Resources/options; sourceTree = "<group>"; };
+		26674CD52F55E355008B9726 /* popup */ = {isa = PBXFileReference; lastKnownFileType = folder; name = popup; path = Resources/popup; sourceTree = "<group>"; };
+		26674CD72F55E355008B9726 /* content */ = {isa = PBXFileReference; lastKnownFileType = folder; name = content; path = Resources/content; sourceTree = "<group>"; };
+		26674CDB2F55E355008B9726 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = Resources/icons; sourceTree = "<group>"; };
+		26674CDC2F55E355008B9726 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
+		26674CDD2F55E355008B9726 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = Resources/src; sourceTree = "<group>"; };
+		26C166EC2F6B0D7D00DE5DB1 /* OLO_Build_Plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = OLO_Build_Plan.md; path = "/Users/macpro2021/OLO Builders/OLO_Build_Plan.md"; sourceTree = "<absolute>"; };
+		26C166ED2F6B0D9100DE5DB1 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		26674CA42F55E353008B9726 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26674CBF2F55E355008B9726 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		26674C9E2F55E353008B9726 = {
+			isa = PBXGroup;
+			children = (
+				26C166EC2F6B0D7D00DE5DB1 /* OLO_Build_Plan.md */,
+				26C166ED2F6B0D9100DE5DB1 /* File.txt */,
+				26674CA92F55E353008B9726 /* Charter Governance */,
+				26674CC62F55E355008B9726 /* Charter Governance Extension */,
+				26674CA82F55E353008B9726 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		26674CA82F55E353008B9726 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				26674CA72F55E353008B9726 /* Charter Governance.app */,
+				26674CC22F55E355008B9726 /* Charter Governance Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		26674CA92F55E353008B9726 /* Charter Governance */ = {
+			isa = PBXGroup;
+			children = (
+				26674CAA2F55E353008B9726 /* AppDelegate.swift */,
+				26674CB62F55E353008B9726 /* ViewController.swift */,
+				26674CB82F55E353008B9726 /* Main.storyboard */,
+				26674CBB2F55E354008B9726 /* Assets.xcassets */,
+				26674CBD2F55E354008B9726 /* Info.plist */,
+				26674CAC2F55E353008B9726 /* Resources */,
+			);
+			path = "Charter Governance";
+			sourceTree = "<group>";
+		};
+		26674CAC2F55E353008B9726 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				26674CAD2F55E353008B9726 /* Main.html */,
+				26674CB02F55E353008B9726 /* Icon.png */,
+				26674CB22F55E353008B9726 /* Style.css */,
+				26674CB42F55E353008B9726 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		26674CC62F55E355008B9726 /* Charter Governance Extension */ = {
+			isa = PBXGroup;
+			children = (
+				26674CD32F55E355008B9726 /* Resources */,
+				26674CC72F55E355008B9726 /* SafariWebExtensionHandler.swift */,
+				26674CC92F55E355008B9726 /* Info.plist */,
+			);
+			path = "Charter Governance Extension";
+			sourceTree = "<group>";
+		};
+		26674CD32F55E355008B9726 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				26674CD42F55E355008B9726 /* options */,
+				26674CD52F55E355008B9726 /* popup */,
+				26674CD72F55E355008B9726 /* content */,
+				26674CDB2F55E355008B9726 /* icons */,
+				26674CDC2F55E355008B9726 /* manifest.json */,
+				26674CDD2F55E355008B9726 /* src */,
+			);
+			name = Resources;
+			path = "Charter Governance Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		26674CA62F55E353008B9726 /* Charter Governance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26674CD02F55E355008B9726 /* Build configuration list for PBXNativeTarget "Charter Governance" */;
+			buildPhases = (
+				26674CA32F55E353008B9726 /* Sources */,
+				26674CA42F55E353008B9726 /* Frameworks */,
+				26674CA52F55E353008B9726 /* Resources */,
+				26674CCF2F55E355008B9726 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				26674CC52F55E355008B9726 /* PBXTargetDependency */,
+			);
+			name = "Charter Governance";
+			packageProductDependencies = (
+			);
+			productName = "Charter Governance";
+			productReference = 26674CA72F55E353008B9726 /* Charter Governance.app */;
+			productType = "com.apple.product-type.application";
+		};
+		26674CC12F55E355008B9726 /* Charter Governance Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26674CCC2F55E355008B9726 /* Build configuration list for PBXNativeTarget "Charter Governance Extension" */;
+			buildPhases = (
+				26674CBE2F55E355008B9726 /* Sources */,
+				26674CBF2F55E355008B9726 /* Frameworks */,
+				26674CC02F55E355008B9726 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Charter Governance Extension";
+			packageProductDependencies = (
+			);
+			productName = "Charter Governance Extension";
+			productReference = 26674CC22F55E355008B9726 /* Charter Governance Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		26674C9F2F55E353008B9726 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					26674CA62F55E353008B9726 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					26674CC12F55E355008B9726 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 26674CA22F55E353008B9726 /* Build configuration list for PBXProject "Charter Governance" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 26674C9E2F55E353008B9726;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 26674CA82F55E353008B9726 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				26674CA62F55E353008B9726 /* Charter Governance */,
+				26674CC12F55E355008B9726 /* Charter Governance Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		26674CA52F55E353008B9726 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26674CB12F55E353008B9726 /* Icon.png in Resources */,
+				26674CBA2F55E353008B9726 /* Main.storyboard in Resources */,
+				26674CB52F55E353008B9726 /* Script.js in Resources */,
+				26674CAF2F55E353008B9726 /* Main.html in Resources */,
+				26674CBC2F55E354008B9726 /* Assets.xcassets in Resources */,
+				26674CB32F55E353008B9726 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26674CC02F55E355008B9726 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26674CE52F55E355008B9726 /* icons in Resources */,
+				26674CDE2F55E355008B9726 /* options in Resources */,
+				26674CE62F55E355008B9726 /* manifest.json in Resources */,
+				26674CE12F55E355008B9726 /* content in Resources */,
+				26674CDF2F55E355008B9726 /* popup in Resources */,
+				26674CE72F55E355008B9726 /* src in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		26674CA32F55E353008B9726 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26674CB72F55E353008B9726 /* ViewController.swift in Sources */,
+				26674CAB2F55E353008B9726 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26674CBE2F55E355008B9726 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26674CC82F55E355008B9726 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		26674CC52F55E355008B9726 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 26674CC12F55E355008B9726 /* Charter Governance Extension */;
+			targetProxy = 26674CC42F55E355008B9726 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		26674CAD2F55E353008B9726 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				26674CAE2F55E353008B9726 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		26674CB82F55E353008B9726 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				26674CB92F55E353008B9726 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		26674CCA2F55E355008B9726 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		26674CCB2F55E355008B9726 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		26674CCD2F55E355008B9726 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Charter Governance Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Charter Governance Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.germpharm.Charter-Governance.Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		26674CCE2F55E355008B9726 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Charter Governance Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Charter Governance Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.germpharm.Charter-Governance.Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		26674CD12F55E355008B9726 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Charter Governance/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Charter Governance";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.germpharm.Charter-Governance";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		26674CD22F55E355008B9726 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Charter Governance/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Charter Governance";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.germpharm.Charter-Governance";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		26674CA22F55E353008B9726 /* Build configuration list for PBXProject "Charter Governance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26674CCA2F55E355008B9726 /* Debug */,
+				26674CCB2F55E355008B9726 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26674CCC2F55E355008B9726 /* Build configuration list for PBXNativeTarget "Charter Governance Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26674CCD2F55E355008B9726 /* Debug */,
+				26674CCE2F55E355008B9726 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26674CD02F55E355008B9726 /* Build configuration list for PBXNativeTarget "Charter Governance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26674CD12F55E355008B9726 /* Debug */,
+				26674CD22F55E355008B9726 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 26674C9F2F55E353008B9726 /* Project object */;
+}

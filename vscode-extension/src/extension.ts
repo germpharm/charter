@@ -11,7 +11,7 @@ import { promptForContext, resetContextPrompt } from "./contextManager";
 // Extension version — bump this when publishing
 // ---------------------------------------------------------------------------
 
-const EXTENSION_VERSION = "3.1.0";
+const EXTENSION_VERSION = "3.1.1";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -30,6 +30,7 @@ interface GovernanceState {
   charterPath: string | null;
   daemonActive: boolean;
   licenseTier: string | null;
+  auditLogActive: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -217,6 +218,7 @@ export function activate(context: vscode.ExtensionContext): void {
     charterPath: null,
     daemonActive: false,
     licenseTier: null,
+    auditLogActive: false,
   };
 
   // ---- Read configuration ----
@@ -243,13 +245,18 @@ export function activate(context: vscode.ExtensionContext): void {
       const tierLabel = state.licenseTier === "enterprise" ? " (Enterprise)"
         : state.licenseTier === "pro" ? " (Pro)"
         : "";
-      statusBarItem.text = `$(shield) GOVERNED${tierLabel}`;
+      // v3.1.1: Show logging status — Layer 0 requires active audit logging
+      const logLabel = state.auditLogActive ? "" : " $(warning) No Audit Log";
+      statusBarItem.text = `$(shield) GOVERNED${tierLabel}${logLabel}`;
+      const logTip = state.auditLogActive
+        ? "\nAudit logging: active"
+        : "\n⚠ charter_audits/ not found — Layer 0 requires active logging";
       statusBarItem.tooltip = state.charterPath
-        ? `Charter governance active${tierLabel}\n${state.charterPath}`
-        : `Charter governance active${tierLabel}`;
-      statusBarItem.backgroundColor = new vscode.ThemeColor(
-        "statusBarItem.prominentBackground"
-      );
+        ? `Charter governance active${tierLabel}${logTip}\n${state.charterPath}`
+        : `Charter governance active${tierLabel}${logTip}`;
+      statusBarItem.backgroundColor = state.auditLogActive
+        ? new vscode.ThemeColor("statusBarItem.prominentBackground")
+        : new vscode.ThemeColor("statusBarItem.warningBackground");
       statusBarItem.color = undefined;
     } else {
       statusBarItem.text = "$(alert) UNGOVERNED";
@@ -286,12 +293,21 @@ export function activate(context: vscode.ExtensionContext): void {
       const found = findCharterYaml(root);
       state.governed = found !== null;
       state.charterPath = found;
+      // v3.1.1: Check for charter_audits/ directory (Layer 0 requirement)
+      if (found) {
+        const charterDir = path.dirname(found);
+        const auditDir = path.join(charterDir, "charter_audits");
+        state.auditLogActive = fs.existsSync(auditDir);
+      } else {
+        state.auditLogActive = false;
+      }
       outputChannel.appendLine(
-        `[${new Date().toISOString()}] findCharterYaml result: ${found ?? "null"}`
+        `[${new Date().toISOString()}] findCharterYaml result: ${found ?? "null"}, auditLog: ${state.auditLogActive}`
       );
     } else {
       state.governed = false;
       state.charterPath = null;
+      state.auditLogActive = false;
     }
 
     render();

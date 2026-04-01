@@ -1,0 +1,135 @@
+OLO Builders Agentic Construction Intelligence Platform (AgaaS)
+Full Executable Project Plan v1.0
+Prepared for: Agentic Coder Team
+Date: March 18, 2026
+Consultant: Grok 4.20 (with Matthew’s full input)
+Status: Ready for technical review & immediate pushback
+1. Project Vision & Business Context
+We are building the world’s first true Agentic as a Service (AgaaS) platform for residential new-home construction (exactly as Jensen Huang described at GTC 2026).
+Core promise to OLO Builders:
+10× visibility + homeowner delight at ~1/10th the cost of traditional tools.
+Foremen and office staff do almost zero extra work. Agents handle schedule optimization, homeowner updates, risk flagging, and actions — every single one governed by CharterAgent.ai for immutable audit trails and full explainability.
+Commercial terms (for your awareness only):
+
+OLO pays one-time pilot implementation (~$8k).
+They receive perpetual, unlimited, self-hostable license + full source + admin keys for the entire franchise network.
+Ongoing AgaaS fee (recurring income): $79 flat per active build/month OR $499 flat per franchise location/month (we centrally host/run the agent swarm).
+We retain full IP of the Agentic Acceleration Engine + Charter layer.
+
+TheTrades integration is optional (carrot only).
+2. High-Level Architecture
+textOffice Layer (Next.js Dashboard)  
+          ↓ (events)  
+Agentic Acceleration Engine (CharterAgent.ai governed swarm – Python/FastAPI + LangGraph)  
+          ↓ (events)  
+Data/Event Layer (Supabase – REST + Realtime + Webhooks)  
+          ↔ Field PWA, TheTrades (optional), QuickBooks, NWS, Accela/Cloudpermit
+3. Technology Stack
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LayerTechnologyWhyField + Homeowner PortalNext.js 15 + React + PWA + TailwindSame stack as TheTrades, offline-firstBackend + AgentsPython 3.12 + FastAPI + LangGraphBest for agent orchestration & DAGsDatabase + RealtimeSupabase (PostgreSQL)Zero new infra, shared with TheTradesAI GovernanceCharterAgent.aiImmutable audit trails + rulesNotificationsTwilioSMS-first alertsVision/TranscriptionGrok Vision + Whisper-compatiblePhoto analysis + voiceHostingVercel (FE) + Railway/Fly.io (API/agents)Auto-scale, low ops
+4. Core Data Model (Supabase-ready)
+Key tables:
+
+jobs (plan_type, named_home e.g. “Whistling Pines”, critical_path)
+tasks (DAG nodes + dependencies + velocity)
+photos, blockers, checkins, inspections
+homeowner_agent_state (agent name, next photo prompts)
+agent_actions (every AI decision with Charter proof)
+
+5. Phase 1 MVP – 6 Weeks (Ship & Wow Trent)
+Goal: Live on Trent’s Salt Lake location with 3–5 concurrent builds.
+Must-ship features:
+
+Field PWA – GPS check-in/out, task complete, guided photo upload, voice blockers, full offline sync
+Office Dashboard – portfolio grid, job detail, Gantt with critical path, timeline feed
+Agentic Acceleration Engine baseline – DAG critical path, velocity tracking, delay propagation + cross-job impact, SMS alerts, Charter governance on every action
+Homeowner Portal (fully agentic) – Homeowner names the home at signing → named agent (“Piney”) auto-generates guided photo prompts for foreman, analyzes photos, writes updates in OLO voice, sends personalized email/SMS, public read-only portal link
+Full Inspection API integration (Accela + Cloudpermit for UT/ID/CO; fallback SMS form)
+Plan template import → auto-generate DAG
+
+Out of scope for Phase 1: budget tracking, weather, advanced materials, full optimizer, multi-tenancy.
+6-Week Delivery Schedule:
+
+Weeks 1-2: Supabase schema + auth + Field PWA skeleton
+Week 3: Office dashboard + critical path DAG
+Week 4: CharterAgent.ai integration + basic agent swarm
+Week 5: Homeowner Agent + photo prompts + automated updates
+Week 6: Inspection APIs + SMS alerts + real pilot data import + deployment
+
+6. Post-MVP Phases (for reference)
+Phase 2 (7-12): budget + weather + advanced agents
+Phase 3 (13-20): TheTrades bridge + open API + multi-tenancy
+Phase 4 (21+): ML calibration + prescriptive agents
+7. Security, Compliance & Offline
+
+Role-based access
+10-year photo/audit retention
+Full offline-first PWA
+Every agent action explainable via Charter
+
+8. Technical Pushback Questions (Please answer honestly)
+
+LangGraph + CharterAgent.ai the right orchestration choice, or prefer CrewAI/AutoGen?
+DAG recalc performance at scale — Supabase CTE ok or need Redis?
+Recommended vision model + cost for construction photo analysis?
+Any deliverability gotchas with branded agent emails?
+Inspection API stability in target states?
+Hosting cost concerns at 50+ builds?
+Anything missing from Phase 1 that would kill the “wow” demo?
+
+
+Copy everything above (including the headings) — it’s ready to go.
+Figma wireframe stub (still worth 15 minutes)
+If you want the team to have visual mocks before they code (highly recommended — removes all “what should this look like?” questions), just paste this single prompt into Figma’s AI or hand it to whoever does wireframes:
+“Create a clean wireframe file ‘OLO Builders AgaaS v1’. Navy primary, orange accent. Build these 6 frames:
+
+Field PWA mobile home (named home banner + AI photo prompt)
+Task complete flow with guided photo overlay
+Office portfolio grid with status cards
+Job detail with Gantt + timeline + agent chat
+Homeowner portal (named home, agent-written update, photos)
+Charter audit log table. Add red annotations for every agent action.”

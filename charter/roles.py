@@ -46,19 +46,50 @@ LAYER_0_INVARIANTS = [
     "Layer 0 invariants cannot be modified",
     "Identity signing key cannot be exported without dual signoff",
     "Chain integrity verification cannot be bypassed",
+    "Audit logging must be active during all AI-assisted work sessions",
+    # v3.1.1 — The Zeroth Law: always-on attribution
+    "Every state-changing interaction must produce a signed chain entry",
+    "Actor attribution (human/ai/collaborative) cannot be omitted",
+    "Chain gaps during active sessions are themselves violations",
+    "Graph edges between entries cannot be severed after signing",
 ]
 
 # Keyword patterns used by enforce_layer_0 to detect violations.
-# Each tuple is (compiled_regex, invariant_index, exception_pattern_or_None).
+# Each tuple is (compiled_regex, invariant_index, exception_pattern).
 _LAYER_0_PATTERNS = [
-    (re.compile(r"(disable|remove|delete)\s+audit", re.IGNORECASE), 0, None),
-    (re.compile(r"(remove|disable|delete)\s+kill", re.IGNORECASE), 1, None),
-    (re.compile(r"(modify|change)\s+layer\s*0", re.IGNORECASE), 2, None),
-    (re.compile(r"edit\s+invariant", re.IGNORECASE), 2, None),
-    (re.compile(r"export.*key", re.IGNORECASE), 3, re.compile(r"dual\s+signoff", re.IGNORECASE)),
-    (re.compile(r"extract.*seed", re.IGNORECASE), 3, re.compile(r"dual\s+signoff", re.IGNORECASE)),
-    (re.compile(r"bypass.*verification", re.IGNORECASE), 4, None),
-    (re.compile(r"skip.*integrity", re.IGNORECASE), 4, None),
+    (re.compile(r"(disable|remove|delete)\s+audit", re.IGNORECASE),
+     0, None),
+    (re.compile(r"(remove|disable|delete)\s+kill", re.IGNORECASE),
+     1, None),
+    (re.compile(r"(modify|change)\s+layer\s*0", re.IGNORECASE),
+     2, None),
+    (re.compile(r"edit\s+invariant", re.IGNORECASE),
+     2, None),
+    (re.compile(r"export.*key", re.IGNORECASE),
+     3, re.compile(r"dual\s+signoff", re.IGNORECASE)),
+    (re.compile(r"extract.*seed", re.IGNORECASE),
+     3, re.compile(r"dual\s+signoff", re.IGNORECASE)),
+    (re.compile(r"bypass.*verification", re.IGNORECASE),
+     4, None),
+    (re.compile(r"skip.*integrity", re.IGNORECASE),
+     4, None),
+    (re.compile(r"(skip|defer|delay|postpone)\s+audit\s+log",
+     re.IGNORECASE), 5, None),
+    (re.compile(r"(skip|defer|delay|postpone)\s+logging",
+     re.IGNORECASE), 5, None),
+    # v3.1.1 invariant enforcement patterns
+    (re.compile(r"(skip|disable|remove)\s+(hash|chain)\s+(entry|log)",
+     re.IGNORECASE), 6, None),
+    (re.compile(r"(skip|omit|remove)\s+actor", re.IGNORECASE),
+     7, None),
+    (re.compile(r"(remove|omit|strip)\s+attribution", re.IGNORECASE),
+     7, None),
+    (re.compile(r"(allow|ignore|accept)\s+(chain\s+)?gap",
+     re.IGNORECASE), 8, None),
+    (re.compile(r"(sever|delete|remove|strip)\s+(graph\s+)?edge",
+     re.IGNORECASE), 9, None),
+    (re.compile(r"(remove|break)\s+relationship", re.IGNORECASE),
+     9, None),
 ]
 
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head><title>Charter Icon Generator</title></head>
+<body>
+<h2>Charter Extension Icons</h2>
+<p>Right-click each canvas and "Save Image As..." to create the icon PNGs.</p>
+<div style="display:flex;gap:20px;align-items:end;">
+  <div><canvas id="c128" width="128" height="128"></canvas><br>128x128</div>
+  <div><canvas id="c48" width="48" height="48"></canvas><br>48x48</div>
+  <div><canvas id="c32" width="32" height="32"></canvas><br>32x32</div>
+  <div><canvas id="c16" width="16" height="16"></canvas><br>16x16</div>
+</div>
+<script>
+function drawIcon(canvas) {
+  const ctx = canvas.getContext('2d');
+  const s = canvas.width;
+  const cx = s / 2;
+  const cy = s / 2;
+
+  // Background circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, s * 0.45, 0, Math.PI * 2);
+  ctx.fillStyle = '#0f1117';
+  ctx.fill();
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth = Math.max(1, s * 0.03);
+  ctx.stroke();
+
+  // Diamond shape
+  const ds = s * 0.28;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - ds);
+  ctx.lineTo(cx + ds * 0.7, cy);
+  ctx.lineTo(cx, cy + ds);
+  ctx.lineTo(cx - ds * 0.7, cy);
+  ctx.closePath();
+  ctx.fillStyle = '#22c55e';
+  ctx.fill();
+}
+
+[128, 48, 32, 16].forEach(size => {
+  drawIcon(document.getElementById('c' + size));
+});
+</script>
+</body>
+</html>

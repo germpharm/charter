@@ -334,6 +334,125 @@ def main():
         help="Comma-separated constraint assumptions",
     )
 
+    # charter analytics
+    an_p = sub.add_parser(
+        "analytics",
+        help="Query and pattern discovery on governance chains",
+    )
+    an_p.add_argument(
+        "action",
+        choices=[
+            "sync", "rebuild", "status", "query",
+            "profile", "compare", "timeline", "flow", "summary", "search",
+            "sequences", "anomalies", "cohorts", "causes", "fingerprint",
+            "wolfram-status", "wolfram-causal", "wolfram-forecast",
+            "wolfram-communities", "wolfram-test", "wolfram-eval",
+            "ingest", "export",
+        ],
+        nargs="?",
+        default="status",
+        help="Analytics action (default: status)",
+    )
+    an_p.add_argument(
+        "sql",
+        nargs="?",
+        help="SQL query (for query action) or search term (for search)",
+    )
+    an_p.add_argument(
+        "--actor",
+        help="Actor name/prefix filter",
+    )
+    an_p.add_argument(
+        "--signer",
+        help="Signer hash prefix filter",
+    )
+    an_p.add_argument(
+        "--metric",
+        default="event_diversity",
+        help="Comparison metric (for compare action)",
+    )
+    an_p.add_argument(
+        "--period",
+        default="30d",
+        help="Time period: 7d, 30d, 90d, all (for timeline)",
+    )
+    an_p.add_argument(
+        "--granularity",
+        default="day",
+        choices=["hour", "day", "week", "month"],
+        help="Time granularity (for timeline)",
+    )
+    an_p.add_argument(
+        "--event",
+        help="Event type (for flow action)",
+    )
+    an_p.add_argument(
+        "--depth",
+        type=int,
+        default=2,
+        help="Sequence depth (for flow action, 1-5)",
+    )
+    an_p.add_argument(
+        "--min-support",
+        type=int,
+        default=2,
+        dest="min_support",
+        help="Minimum pattern support (for sequences)",
+    )
+    an_p.add_argument(
+        "--max-length",
+        type=int,
+        default=5,
+        dest="max_length",
+        help="Maximum pattern length (for sequences)",
+    )
+    an_p.add_argument(
+        "--lookback",
+        type=int,
+        default=7,
+        help="Lookback days (for anomalies)",
+    )
+    an_p.add_argument(
+        "--baseline",
+        type=int,
+        default=30,
+        help="Baseline days (for anomalies)",
+    )
+    an_p.add_argument(
+        "--window",
+        type=int,
+        default=5,
+        help="Causal window size (for causes)",
+    )
+    an_p.add_argument(
+        "--forecast-days",
+        type=int,
+        default=14,
+        dest="forecast_days",
+        help="Days to forecast (for wolfram-forecast)",
+    )
+    an_p.add_argument(
+        "--table-name",
+        dest="table_name",
+        help="Table name for dataset ingestion",
+    )
+    an_p.add_argument(
+        "--file-path",
+        dest="file_path",
+        help="File path for dataset ingestion",
+    )
+    an_p.add_argument(
+        "--format",
+        dest="export_format",
+        default="parquet",
+        choices=["parquet", "csv", "json"],
+        help="Export format (for export action)",
+    )
+    an_p.add_argument(
+        "--output",
+        help="Output file path (for export action)",
+    )
+
     # charter redteam
     rt_p = sub.add_parser(
         "redteam",
@@ -502,7 +621,9 @@ def main():
     sub.add_parser("license", help="Show current license status and tier")
 
     # charter upgrade
-    sub.add_parser("upgrade", help="Show upgrade options with payment links")
+    upg_p = sub.add_parser("upgrade", help="Show upgrade options with payment links")
+    upg_p.add_argument("--region", choices=["us", "in"],
+                       help="Pricing region (us=USD, in=INR). Default: us")
 
     # charter onboard
     onb_p = sub.add_parser("onboard", help="Enterprise onboarding wizard (Enterprise tier)")
@@ -515,6 +636,137 @@ def main():
         "--status",
         action="store_true",
         help="Show onboarding progress",
+    )
+
+    # charter provision
+    prov_p = sub.add_parser("provision", help="Provision Enterprise trial licenses for prospects")
+    prov_p.add_argument(
+        "action",
+        choices=["create", "list", "revoke"],
+        nargs="?",
+        default="create",
+        help="Provision action (default: create)",
+    )
+    prov_p.add_argument("--email", help="Prospect email (required for create/revoke)")
+    prov_p.add_argument("--name", help="Prospect name")
+    prov_p.add_argument("--company", help="Prospect company")
+    prov_p.add_argument("--trial", dest="trial_days", type=int, default=30,
+                        help="Trial duration in days (default: 30)")
+    prov_p.add_argument("--seats", type=int, default=1, help="Number of seats (default: 1)")
+    prov_p.add_argument("--notes", help="Notes about the prospect")
+    prov_p.add_argument("--tier", choices=["pro", "enterprise"], default="enterprise",
+                        help="License tier (default: enterprise)")
+    prov_p.add_argument("--region", choices=["us", "in"], default="us",
+                        help="Pricing region (us=USD, in=INR). Default: us")
+
+    # charter log (v3.1.1 — always-on hashing)
+    log_p = sub.add_parser(
+        "log",
+        help="Log an event to the hash chain (v3.1.1 always-on)",
+    )
+    log_p.add_argument(
+        "event_type",
+        help="Event type (e.g. code_committed, file_introduced)",
+    )
+    log_p.add_argument(
+        "--actor",
+        choices=["human", "ai", "collaborative"],
+        default="collaborative",
+        help="Who performed this action (default: collaborative)",
+    )
+    log_p.add_argument(
+        "--message", "-m",
+        help="Human-readable description of the event",
+    )
+    log_p.add_argument(
+        "--data-json",
+        help="JSON string of event data payload",
+    )
+    log_p.add_argument(
+        "--edge",
+        action="append",
+        help="Graph edge: TYPE:HASH (e.g. caused_by:a1b2c3)",
+    )
+
+    # charter graph (v3.1.1 — DAG queries)
+    graph_p = sub.add_parser(
+        "graph",
+        help="Query the chain as a graph (v3.1.1)",
+    )
+    graph_p.add_argument(
+        "action",
+        choices=[
+            "show", "actor", "file",
+            "provenance", "summary", "mermaid", "dot",
+        ],
+        nargs="?",
+        default="summary",
+        help="Graph action (default: summary)",
+    )
+    graph_p.add_argument(
+        "target",
+        nargs="?",
+        help="Hash, actor name, or file path",
+    )
+    graph_p.add_argument(
+        "--since",
+        help="Filter entries since date (ISO 8601)",
+    )
+
+    # charter hooks (v3.1.1 — always-on hashing)
+    hooks_p = sub.add_parser(
+        "hooks",
+        help="Install always-on hash chain hooks (v3.1.1)",
+    )
+    hooks_p.add_argument(
+        "action",
+        choices=["install", "uninstall", "status"],
+        nargs="?",
+        default="status",
+        help="Hook action (default: status)",
+    )
+    hooks_p.add_argument(
+        "--global",
+        dest="global_hooks",
+        action="store_true",
+        help="Apply to global git hooks",
+    )
+
+    # charter xref (v3.1.1 Phase 3 — cross-project)
+    xref_p = sub.add_parser(
+        "xref",
+        help="Cross-project chain queries (v3.1.1)",
+    )
+    xref_p.add_argument(
+        "action",
+        choices=["resolve", "search", "projects", "anchor"],
+        nargs="?",
+        default="projects",
+        help="Cross-ref action (default: projects)",
+    )
+    xref_p.add_argument("ref", nargs="?", help="Reference to resolve")
+    xref_p.add_argument("--actor", help="Filter by actor")
+    xref_p.add_argument("--since", help="Filter since date")
+    xref_p.add_argument("--keyword", help="Keyword search")
+    xref_p.add_argument("--path", help="Project path (for anchor)")
+
+    # charter project (v3.1.1 Phase 3)
+    proj_p = sub.add_parser(
+        "project",
+        help="Register and manage per-project chains (v3.1.1)",
+    )
+    proj_p.add_argument(
+        "action",
+        choices=["register", "list"],
+        help="Project action",
+    )
+    proj_p.add_argument("path", nargs="?", default=".", help="Project path")
+    proj_p.add_argument("--name", help="Project name")
+
+    # charter _last-human-hash (hidden — used by hooks)
+    sub.add_parser(
+        "_last-human-hash",
+        help=argparse.SUPPRESS,
     )
 
     # charter status
@@ -734,6 +986,29 @@ def _run_command(args, gate):
         gate("confidence")
         from charter.confidence import run_confidence
         run_confidence(args)
+    elif args.command == "analytics":
+        gate("analytics")
+        action = getattr(args, "action", "status")
+        if action in ("sync", "rebuild", "status", "query"):
+            from charter.analytics.indexer import run_analytics
+            run_analytics(args)
+        elif action in ("sequences", "anomalies", "cohorts",
+                        "causes", "fingerprint"):
+            from charter.analytics.patterns import run_patterns_cli
+            run_patterns_cli(args)
+        elif action == "export":
+            from charter.analytics.interface import run_export_cli
+            run_export_cli(args)
+        elif action.startswith("wolfram") or action == "ingest":
+            from charter.analytics.wolfram import run_wolfram_cli
+            run_wolfram_cli(args)
+        elif action == "search":
+            args.term = args.sql
+            from charter.analytics.query import run_query_cli
+            run_query_cli(args)
+        else:
+            from charter.analytics.query import run_query_cli
+            run_query_cli(args)
     elif args.command == "redteam":
         gate("redteam")
         from charter.redteam import run_redteam
@@ -784,9 +1059,135 @@ def _run_command(args, gate):
         gate("onboard")
         from charter.onboard import run_onboard
         run_onboard(args)
+    elif args.command == "provision":
+        from charter.licensing import run_provision
+        run_provision(args)
+    elif args.command == "log":
+        _run_log(args)
+    elif args.command == "graph":
+        from charter.graph import run_graph
+        run_graph(args)
+    elif args.command == "hooks":
+        from charter.hooks.git_hooks import run_hooks
+        run_hooks(args)
+    elif args.command == "xref":
+        from charter.cross_ref import run_cross_ref
+        run_cross_ref(args)
+    elif args.command == "project":
+        _run_project(args)
+    elif args.command == "_last-human-hash":
+        _run_last_human_hash()
     elif args.command == "status":
         from charter.status import run_status
         run_status(args)
     elif args.command == "update":
         from charter.update import run_update
         run_update(args)
+
+
+def _run_log(args):
+    """Handle charter log — lightweight chain append."""
+    import json as _json
+    from charter.identity import append_to_chain
+
+    event_type = args.event_type
+    actor = getattr(args, "actor", "collaborative")
+    message = getattr(args, "message", None)
+    data_json = getattr(args, "data_json", None)
+    edge_args = getattr(args, "edge", None)
+
+    # Build data payload
+    data = {}
+    if data_json:
+        try:
+            data = _json.loads(data_json)
+        except _json.JSONDecodeError:
+            print("Error: --data-json is not valid JSON")
+            return
+    if message:
+        data["description"] = message
+
+    # Parse graph edges (format: TYPE:HASH)
+    edges = None
+    if edge_args:
+        edges = []
+        for e in edge_args:
+            if ":" in e:
+                etype, ehash = e.split(":", 1)
+                edges.append({"type": etype, "hash": ehash})
+
+    # Filter out skip edges (from hook fallback)
+    if edges:
+        edges = [e for e in edges if e.get("hash") != "skip"]
+        if not edges:
+            edges = None
+
+    entry = append_to_chain(
+        event_type, data, actor=actor, edges=edges,
+    )
+
+    if entry:
+        h = entry["hash"][:16]
+        print(f"Logged: {event_type} ({actor}) [{h}...]")
+    else:
+        print("Failed. Run 'charter init' first.")
+
+
+def _run_project(args):
+    """Handle charter project — per-project chain management."""
+    import os
+    from charter.identity import register_project, list_project_chains
+
+    action = args.action
+    if action == "register":
+        path = getattr(args, "path", ".") or "."
+        name = getattr(args, "name", None)
+        result = register_project(path, project_name=name)
+        if result:
+            print(f"Project registered.")
+            print(f"  Hash:  {result[:24]}...")
+            print(f"  Path:  {os.path.abspath(path)}")
+            print(f"  Chain: ~/.charter/chains/{result}.jsonl")
+        else:
+            print("Failed. Run 'charter init' first.")
+    elif action == "list":
+        projects = list_project_chains()
+        if not projects:
+            print("No project chains. Use 'charter project register'.")
+            return
+        print(f"Project Chains ({len(projects)}):")
+        for p in projects:
+            name = p.get("project_name") or "unnamed"
+            print(f"  {name}")
+            print(f"    Hash:    {p['project_hash'][:24]}...")
+            print(f"    Entries: {p['entry_count']}")
+
+
+def _run_last_human_hash():
+    """Print the hash of the most recent human chain entry.
+
+    Used by Claude Code hooks to auto-link caused_by edges.
+    Prints just the hash (no newline formatting) for shell capture.
+    """
+    import os
+    import json as _json
+    from charter.identity import get_chain_path
+
+    chain_path = get_chain_path()
+    if not os.path.isfile(chain_path):
+        print("skip")
+        return
+
+    last_human_hash = None
+    with open(chain_path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    entry = _json.loads(line)
+                    if entry.get("actor") == "human":
+                        last_human_hash = entry.get("hash")
+                except _json.JSONDecodeError:
+                    pass
+
+    print(last_human_hash or "skip")
