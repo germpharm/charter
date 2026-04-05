@@ -195,6 +195,21 @@ For publication-grade statistical analysis, Charter bridges to Wolfram Language 
 
 All analytics work without Wolfram. Wolfram adds depth when available.
 
+## Charter KB — Governed Institutional Memory (v3.3)
+
+Charter KB adds a queryable wiki layer on top of the immutable hash chain. Turn raw audit events and project documents into structured, linked knowledge articles with full provenance. Obsidian-native frontend with Graph View and backlinks.
+
+```bash
+cd charter-kb && ./setup.sh    # One-command activation
+```
+
+- Dedicated wikis per project/domain (raw → wiki → output)
+- Every index, compile, and lint is automatically logged to the chain
+- Zero migration — existing v3.2 installations are unaffected
+- Hospital systems and auditors get clean answers instead of raw logs
+
+See [`charter-kb/README.md`](charter-kb/README.md) for full details.
+
 ## The Network
 
 By installing Charter, you join a network of people who believe AI should be governed by the humans who use it. Every governed project strengthens the standard. Every audit builds accountability.

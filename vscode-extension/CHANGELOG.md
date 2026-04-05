@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.3.0] - 2026-04-03
+
+### Added — Charter KB (Governed Institutional Memory)
+- **Charter KB module**: Optional wiki layer on top of the immutable hash chain and temporal graph
+- **7 project wikis**: Structured knowledge templates for osteo-density-international, germpharm, dartmouth-telepharmacy, the-trades, olo-builders, charter-governance, deal-intelligence
+- **Charter logger**: Every KB index, compile, and lint operation is automatically hashed and appended to the chain
+- **Obsidian-native frontend**: Graph View, backlinks, and Dataview queries over governed knowledge
+- **Raw/wiki/output architecture**: Full-fidelity raw document preservation with LLM-compiled wiki articles
+- **One-command activation**: `./setup.sh` creates the knowledge vault and installs the logger
+- **Zero migration**: Existing v3.2.0 installations continue unchanged; KB is opt-in
+
 ## [3.2.0] - 2026-03-31
 
 ### Added — Analytics Release

@@ -1,0 +1,5 @@
+# Charter KB Configuration
+logging:
+  enabled: true
+  chain_path: ~/.charter/chain.jsonl
+default_model: claude-supervisor
