@@ -90,7 +90,7 @@ class TestLayer0Invariants:
     """Test Layer 0 constants and enforce_layer_0() pattern matching."""
 
     def test_invariants_count(self):
-        assert len(LAYER_0_INVARIANTS) == 6
+        assert len(LAYER_0_INVARIANTS) == 10
 
     def test_invariants_are_strings(self):
         for inv in LAYER_0_INVARIANTS:

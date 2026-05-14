@@ -60,7 +60,7 @@ def _base_url_from_sse(sse_url):
     """Derive the base URL from an SSE URL by stripping the /sse suffix.
 
     Example:
-        http://100.95.120.54:8375/sse  ->  http://100.95.120.54:8375
+        http://matthews-mac-mini.tail4c700a.ts.net:8375/sse  ->  http://matthews-mac-mini.tail4c700a.ts.net:8375
         http://localhost:8375/sse       ->  http://localhost:8375
         http://host:8375               ->  http://host:8375  (unchanged)
     """
@@ -209,7 +209,7 @@ class Federation:
           nodes:
             - node_id: "abc123..."
               alias: "production-1"
-              sse_url: "http://100.95.120.54:8375/sse"
+              sse_url: "http://matthews-mac-mini.tail4c700a.ts.net:8375/sse"
             - node_id: "def456..."
               alias: "staging"
               sse_url: "http://localhost:8375/sse"

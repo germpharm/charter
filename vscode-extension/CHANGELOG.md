@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.0] - 2026-04-12
+
+### Added — Connectors, Self-Audit, Cross-Verification
+
+- **Connector layer (9 connectors)**: Gmail, Shopify, Google Calendar, Instagram (Meta Graph API v21.0), TikTok (Display API v2), YouTube (Data API v3), Stripe (REST API), Apple Messages (macOS chat.db), JSON Ingestion (HTTP/MCP endpoint)
+- **Connector contract v1.0**: Published schema for building custom connectors
+- **Bias-detection-by-absence**: Three detectors — missing expected events, relationship silences, unused tools. CLI: `charter analytics absence`
+- **Absence declarations in manifests**: Section 2 renders absences alongside positive pattern declarations across all 4 platform adapters
+- **Chain actor-attribution fix**: `get_active_actor()` helper, ConnectorBase defaults actor on every event. Backfill migration: 48% of chain now attributed (9,090/18,919 entries)
+- **Cross-verification**: `charter cross-verify publish / witness / list / check` — worker-to-company tamper evidence via Merkle root attestations
+- **23 real absence declarations** on production chain across 3 subtypes (missing events, relationship silences, unused tools)
+- **Total MCP tools**: 60+ (up from 55)
+
 ## [3.3.0] - 2026-04-03
 
 ### Added — Charter KB (Governed Institutional Memory)

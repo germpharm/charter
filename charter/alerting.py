@@ -50,6 +50,9 @@ KNOWN_EVENTS = frozenset({
     "ai_tool_ungoverned",
     "retention_applied",
     "alert_test",
+    # DSCSA supply chain events
+    "suspect_product_detected",
+    "illegitimate_product_confirmed",
 })
 
 # Default timeout (seconds) for outbound HTTP requests.
@@ -191,7 +194,7 @@ class AlertDispatcher:
                 "sent": sent,
                 "failed": failed,
                 "timestamp": _now_iso(),
-            })
+            }, actor="ai")
         except Exception:
             pass  # alerting must never crash the system
 

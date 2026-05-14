@@ -24,8 +24,8 @@ from charter.redteam import (
 
 
 class TestBatteryCategories:
-    def test_has_six_categories(self):
-        assert len(BATTERY_CATEGORIES) == 6
+    def test_has_seven_categories(self):
+        assert len(BATTERY_CATEGORIES) == 7
 
     def test_expected_categories_present(self):
         expected = [
@@ -35,6 +35,7 @@ class TestBatteryCategories:
             "threshold_erosion",
             "identity_spoofing",
             "audit_evasion",
+            "fairness_bias",
         ]
         assert BATTERY_CATEGORIES == expected
 
@@ -110,7 +111,7 @@ class TestRedTeamScenario:
 class TestBuiltinScenarios:
     def test_builtin_count(self):
         scenarios = _get_builtin_scenarios()
-        assert len(scenarios) == 12
+        assert len(scenarios) == 16
 
     def test_all_are_redteam_scenarios(self):
         for s in _get_builtin_scenarios():

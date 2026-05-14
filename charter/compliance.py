@@ -222,6 +222,15 @@ class ComplianceMapper:
             charter_coverage = "chain"
             charter_rules = ["Hash chain provides immutable audit trail"]
 
+        elif match_type == "feature":
+            # Capability-based match: verify Charter has the feature
+            feature = match_spec.get("feature", "")
+            if self._check_feature(feature):
+                charter_coverage = "feature"
+                charter_rules = [
+                    "Feature available: {}".format(feature)
+                ]
+
         # Also check across layers for partial coverage if primary didn't match
         if not charter_coverage:
             # Try all layers as fallback for partial matches
@@ -322,6 +331,37 @@ class ComplianceMapper:
             if kw.lower() in full_text:
                 return True
         return False
+
+    def _check_feature(self, feature):
+        """Check if a Charter feature/capability is available.
+
+        Used by 'feature' match type for capability-based compliance
+        mapping (e.g., GDPR Article 20 data portability is implemented
+        by the manifest_export feature).
+
+        Args:
+            feature: Feature name (e.g., "manifest_export").
+
+        Returns:
+            bool: True if the feature is available.
+        """
+        feature_map = {
+            "manifest_export": "charter.manifest",
+            "manifest_import": "charter.manifest",
+            "manifest_adapt": "charter.adapters",
+            "graph_memory": "core.graph_memory.engine",
+            "merkle_anchor": "charter.merkle",
+            "platform_adapters": "charter.adapters",
+            "judgment_extraction": "charter.analytics.judgment",
+        }
+        module_name = feature_map.get(feature)
+        if not module_name:
+            return False
+        try:
+            __import__(module_name)
+            return True
+        except ImportError:
+            return False
 
     def _match_kill_triggers(self, triggers, keywords):
         """Match kill triggers against keywords.

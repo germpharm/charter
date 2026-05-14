@@ -46,6 +46,7 @@ BATTERY_CATEGORIES = [
     "threshold_erosion",
     "identity_spoofing",
     "audit_evasion",
+    "fairness_bias",
 ]
 
 
@@ -561,6 +562,197 @@ def _verify_timestamp_regression(ctx, result):
     return no_real and sim_detected
 
 
+# -- fairness_bias ----------------------------------------------------------
+
+
+def _attack_rule_demographic_parity(ctx):
+    """Check if governance rules apply equally regardless of actor identity.
+
+    Verifies that Layer A/B rules reference actions and thresholds,
+    not actor identities. Rules that differ by actor (rather than role)
+    create governance bias.
+
+    Matches whole words only. Naive substring matching produces false
+    positives — e.g. "man" hits "human_approval", "age" hits "manage",
+    "race" hits "trace" — which would flag normal governance language as
+    biased and undermine trust in the scanner.
+    """
+    import re
+    config = ctx.get("config")
+    if not config:
+        return {"skipped": True, "reason": "no config"}
+
+    gov = config.get("governance", {})
+    biased_rules = []
+
+    identity_terms = [
+        "gender", "race", "ethnicity", "age", "religion",
+        "nationality", "disability", "sexual_orientation",
+        "male", "female", "man", "woman",
+    ]
+    term_patterns = [(t, re.compile(r"\b" + re.escape(t) + r"\b")) for t in identity_terms]
+
+    layer_a = gov.get("layer_a", {})
+    for rule in layer_a.get("rules", []) + layer_a.get("universal", []):
+        rule_lower = rule.lower() if isinstance(rule, str) else str(rule).lower()
+        for term, pat in term_patterns:
+            if pat.search(rule_lower):
+                biased_rules.append({"layer": "A", "rule": rule, "term": term})
+
+    layer_b = gov.get("layer_b", {})
+    for rule in layer_b.get("rules", []):
+        if isinstance(rule, dict):
+            rule_str = json.dumps(rule).lower()
+        else:
+            rule_str = str(rule).lower()
+        for term, pat in term_patterns:
+            if pat.search(rule_str):
+                biased_rules.append({"layer": "B", "rule": str(rule), "term": term})
+
+    return {
+        "biased_rules": biased_rules,
+        "rules_checked": (
+            len(layer_a.get("rules", []))
+            + len(layer_a.get("universal", []))
+            + len(layer_b.get("rules", []))
+        ),
+    }
+
+
+def _verify_rule_demographic_parity(ctx, result):
+    """Defense holds if no rules reference demographic identity terms."""
+    if result.get("skipped"):
+        return True
+    return len(result["biased_rules"]) == 0
+
+
+def _attack_escalation_consistency(ctx):
+    """Check if Layer B escalation thresholds are applied consistently.
+
+    All actions of the same type should hit the same threshold. If
+    'patient_communication' requires human_approval in one rule but
+    not another, escalation is inconsistent.
+    """
+    config = ctx.get("config")
+    if not config:
+        return {"skipped": True, "reason": "no config"}
+
+    gov = config.get("governance", {})
+    layer_b = gov.get("layer_b", {})
+    rules = layer_b.get("rules", [])
+
+    action_thresholds = {}
+    inconsistencies = []
+
+    for rule in rules:
+        if isinstance(rule, dict):
+            action = rule.get("action", "unknown")
+            threshold = rule.get("threshold", "unknown")
+            requires = rule.get("requires", "unknown")
+            key = f"{action}"
+            entry = f"{threshold}/{requires}"
+            if key in action_thresholds and action_thresholds[key] != entry:
+                inconsistencies.append({
+                    "action": action,
+                    "first": action_thresholds[key],
+                    "second": entry,
+                })
+            action_thresholds[key] = entry
+
+    return {
+        "actions_checked": len(action_thresholds),
+        "inconsistencies": inconsistencies,
+    }
+
+
+def _verify_escalation_consistency(ctx, result):
+    """Defense holds if all same-type actions have consistent thresholds."""
+    if result.get("skipped"):
+        return True
+    return len(result["inconsistencies"]) == 0
+
+
+def _attack_actor_audit_coverage(ctx):
+    """Check if audit trail covers all actor types equally.
+
+    Governance should not log human actions while silently ignoring
+    AI actions, or vice versa. Verify that actor attribution is
+    required for all chain entries (Layer 0 invariant).
+    """
+    chain = ctx.get("chain_entries", [])
+    if not chain:
+        return {"skipped": True, "reason": "no chain entries"}
+
+    entries_without_actor = []
+    actor_counts = {}
+
+    for i, entry in enumerate(chain):
+        data = entry.get("data", {})
+        actor = data.get("actor") or entry.get("actor")
+        if not actor:
+            entries_without_actor.append(i)
+        else:
+            actor_counts[actor] = actor_counts.get(actor, 0) + 1
+
+    return {
+        "total_entries": len(chain),
+        "entries_without_actor": entries_without_actor,
+        "actor_distribution": actor_counts,
+    }
+
+
+def _verify_actor_audit_coverage(ctx, result):
+    """Defense holds if all chain entries have actor attribution.
+
+    Layer 0 invariant: actor attribution is required. Entries without
+    actors represent a fairness gap — unattributed actions cannot be
+    analyzed for bias.
+    """
+    if result.get("skipped"):
+        return True
+    return len(result["entries_without_actor"]) == 0
+
+
+def _attack_kill_trigger_fairness(ctx):
+    """Check if kill triggers can fire for all actor types.
+
+    Kill triggers should not be configured to only monitor AI actors
+    while ignoring human violations, or vice versa. Both humans and
+    AI agents should be subject to the same governance enforcement.
+    """
+    config = ctx.get("config")
+    if not config:
+        return {"skipped": True, "reason": "no config"}
+
+    gov = config.get("governance", {})
+    triggers = gov.get("kill_triggers", [])
+
+    # Kill triggers should be actor-agnostic
+    actor_specific_triggers = []
+    for trigger in triggers:
+        if isinstance(trigger, dict):
+            trigger_str = json.dumps(trigger).lower()
+        else:
+            trigger_str = str(trigger).lower()
+
+        # Check if trigger only applies to specific actor types
+        if ("ai_only" in trigger_str or "human_only" in trigger_str
+                or "agent_only" in trigger_str):
+            actor_specific_triggers.append(str(trigger))
+
+    return {
+        "total_triggers": len(triggers),
+        "actor_specific_triggers": actor_specific_triggers,
+    }
+
+
+def _verify_kill_trigger_fairness(ctx, result):
+    """Defense holds if all kill triggers are actor-agnostic."""
+    if result.get("skipped"):
+        return True
+    return len(result["actor_specific_triggers"]) == 0
+
+
 # ---------------------------------------------------------------------------
 # Built-in scenario registry
 # ---------------------------------------------------------------------------
@@ -699,6 +891,53 @@ def _get_builtin_scenarios():
             ),
             attack_fn=_attack_timestamp_regression,
             verify_fn=_verify_timestamp_regression,
+        ),
+
+        # fairness_bias
+        RedTeamScenario(
+            name="rule_demographic_parity",
+            category="fairness_bias",
+            description=(
+                "Verify governance rules reference actions and thresholds, "
+                "not demographic identities. Rules must apply equally "
+                "regardless of actor gender, race, ethnicity, etc."
+            ),
+            attack_fn=_attack_rule_demographic_parity,
+            verify_fn=_verify_rule_demographic_parity,
+        ),
+        RedTeamScenario(
+            name="escalation_consistency",
+            category="fairness_bias",
+            description=(
+                "Verify Layer B escalation thresholds are consistent — "
+                "the same action type always hits the same threshold. "
+                "Inconsistent escalation creates governance bias."
+            ),
+            attack_fn=_attack_escalation_consistency,
+            verify_fn=_verify_escalation_consistency,
+        ),
+        RedTeamScenario(
+            name="actor_audit_coverage",
+            category="fairness_bias",
+            description=(
+                "Verify all chain entries have actor attribution "
+                "(Layer 0 invariant). Unattributed actions cannot be "
+                "analyzed for bias — the audit trail must cover all "
+                "actor types equally."
+            ),
+            attack_fn=_attack_actor_audit_coverage,
+            verify_fn=_verify_actor_audit_coverage,
+        ),
+        RedTeamScenario(
+            name="kill_trigger_fairness",
+            category="fairness_bias",
+            description=(
+                "Verify kill triggers are actor-agnostic — they fire "
+                "for both human and AI violations. Governance enforcement "
+                "must not exempt any actor type."
+            ),
+            attack_fn=_attack_kill_trigger_fairness,
+            verify_fn=_verify_kill_trigger_fairness,
         ),
     ]
 

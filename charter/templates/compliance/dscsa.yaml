@@ -1,0 +1,290 @@
+standard: dscsa
+name: "DSCSA — Drug Supply Chain Security Act"
+description: "Maps Charter governance to DSCSA requirements for pharmaceutical product tracing, verification, record retention, and supply chain integrity (21 USC 360eee et seq.)"
+
+controls:
+  # =========================================================================
+  # Title II, Section 582 — Product Tracing Requirements
+  # =========================================================================
+
+  # --- Transaction Documentation (582(b)-(d)) ---
+
+  - id: "582(b)(1)"
+    name: "Transaction Information — Manufacturer"
+    description: "Manufacturers must provide transaction information (TI) including product name, strength, dosage form, NDC, container size, quantity, lot number, transaction date, and shipment date to each subsequent trading partner"
+    match:
+      type: "chain"
+      keywords: ["transaction", "record", "audit", "trail"]
+    recommendation: "Hash chain records every transaction event with timestamp, actor, and signed payload — extends to TI data capture with DSCSA event schema"
+
+  - id: "582(c)(1)"
+    name: "Transaction Information — Wholesale Distributor"
+    description: "Wholesale distributors must provide and receive TI, TS, and TH before or at time of each transaction"
+    match:
+      type: "layer_b"
+      action: "financial_transaction"
+      keywords: ["transaction", "authorization", "approval"]
+    recommendation: "Add Layer B pharmaceutical_transaction rule requiring verification before distribution — gate on TI/TS completeness"
+
+  - id: "582(d)(1)"
+    name: "Transaction Information — Dispenser"
+    description: "Dispensers (hospital pharmacies) must capture and maintain TI, TS for each transaction received"
+    match:
+      type: "chain"
+      keywords: ["record", "audit", "trail", "log"]
+    recommendation: "Hash chain captures receipt events with full TI payload — configure DSCSA event type for dispenser receipt"
+
+  # --- Transaction Statement (582(b)(2)-(d)(2)) ---
+
+  - id: "582(b)(2)"
+    name: "Transaction Statement — Authorized Trading Partner Certification"
+    description: "Seller must certify: authorized trading partner status, received product from authorized entity, received proper TI/TS from prior owner, did not knowingly ship suspect/counterfeit products, maintained compliant systems, did not provide false TI"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "evidence", "impersonate"]
+    recommendation: "Layer A constraints against fabrication and impersonation map to TS certification integrity — add domain rule: Never certify transaction statement without verified trading partner status"
+
+  - id: "582(b)(3)"
+    name: "Transaction History"
+    description: "Complete chain of custody record showing all prior transactions from manufacturer to current holder"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record"]
+    recommendation: "Hash chain IS a transaction history by design — each entry links to predecessor via previous_hash, providing cryptographic chain of custody"
+
+  # --- Verification (582(b)(4)-(d)(4)) ---
+
+  - id: "582(b)(4)(A)"
+    name: "Verification — Suspect Product Investigation"
+    description: "Trading partners must have systems to determine whether a product in their possession is a suspect product and quarantine it pending investigation"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "deviation", "conflict"]
+    recommendation: "Configure kill trigger: suspect_product_detected — immediately halt distribution and initiate quarantine workflow"
+
+  - id: "582(b)(4)(B)"
+    name: "Verification — Manufacturer Response"
+    description: "Manufacturer must respond to verification requests for product identifiers within 24 hours, confirming whether serial number was assigned by them"
+    match:
+      type: "layer_b"
+      action: "data_access"
+      keywords: ["access", "data", "verification"]
+    recommendation: "Add Layer B verification_response rule with 24-hour SLA threshold — Charter analytics can query chain by serial number in seconds"
+
+  - id: "582(c)(4)"
+    name: "Verification — Distributor Obligations"
+    description: "Wholesale distributors must verify product identifiers for suspect products and respond to verification requests from trading partners"
+    match:
+      type: "layer_b"
+      keywords: ["verification", "access", "authorization", "data"]
+    recommendation: "Add Layer B product_verification rule — gate on product identifier match against chain records before distribution"
+
+  - id: "582(d)(4)"
+    name: "Verification — Dispenser Obligations"
+    description: "Dispensers must have systems to verify product identifiers and quarantine suspect products"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "deviation"]
+    recommendation: "Kill trigger on suspect product detection halts dispensing workflow — quarantine event logged to chain"
+
+  # --- Illegitimate Product (582(b)(4)(C)-(D)) ---
+
+  - id: "582(b)(4)(C)"
+    name: "Illegitimate Product — Notification (24-Hour)"
+    description: "Upon determining a product is illegitimate, trading partner must notify FDA and all immediate trading partners within 24 hours"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict"]
+    recommendation: "Configure kill trigger: illegitimate_product_confirmed — triggers immediate alert to FDA notification workflow and all trading partner channels within 24-hour window"
+
+  - id: "582(b)(4)(D)"
+    name: "Illegitimate Product — Disposition"
+    description: "Illegitimate products must be quarantined, dispositioned (return or destruction), and all actions documented"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record"]
+    recommendation: "Chain records quarantine, investigation, and disposition events with full attribution — immutable evidence trail for regulatory review"
+
+  # =========================================================================
+  # Section 582(g) — Enhanced Drug Distribution Security (EDDS)
+  # =========================================================================
+
+  - id: "582(g)(1)(A)"
+    name: "Electronic Interoperable System"
+    description: "Trading partners must exchange TI and TS through an electronic, interoperable system at package level"
+    match:
+      type: "feature"
+      feature: "manifest_export"
+      keywords: ["interoperable", "electronic", "exchange"]
+    recommendation: "Charter manifest export + JSON connector provide interoperable data exchange — extend with EPCIS event format for GS1 compliance"
+
+  - id: "582(g)(1)(B)"
+    name: "Package-Level Product Tracing"
+    description: "Systems must be capable of tracing products at the package level using product identifiers (GTIN + serial number + lot + expiration)"
+    match:
+      type: "chain"
+      keywords: ["trace", "record", "audit", "trail"]
+    recommendation: "Hash chain supports package-level events — add DSCSA product identifier schema (GTIN, serial, lot, expiration) to chain event data model"
+
+  - id: "582(g)(1)(C)"
+    name: "Product Identifier Verification at Package Level"
+    description: "Systems must verify product identifiers at the individual package level, not just lot level"
+    match:
+      type: "layer_b"
+      keywords: ["verification", "access", "data"]
+    recommendation: "Add Layer B package_verification rule — verify GTIN + serial against manufacturer chain before acceptance into inventory"
+
+  # =========================================================================
+  # Section 582(g)(2) — FDA Request Response
+  # =========================================================================
+
+  - id: "582(g)(2)"
+    name: "FDA Information Request — One Business Day Response"
+    description: "Trading partners must be capable of responding to FDA requests for transaction information within one business day"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record"]
+    recommendation: "Charter graph_query + analytics engine (DuckDB) can filter by product, date, actor, event type in seconds — generates FDA-ready reports from chain data"
+
+  # =========================================================================
+  # Section 581 — Definitions and Product Identifier Requirements
+  # =========================================================================
+
+  - id: "581(14)"
+    name: "Product Identifier — Standardized Numerical Identifier"
+    description: "Product identifier must include NDC/GTIN, serial number, lot number, and expiration date encoded in 2D Data Matrix barcode per GS1 standards"
+    match:
+      type: "chain"
+      keywords: ["record", "data", "identifier"]
+    recommendation: "Chain event schema must capture four data elements (GTIN, serial, lot, expiration) — add barcode parsing integration for 2D Data Matrix scanning"
+
+  - id: "581(20)"
+    name: "Suspect Product Definition and Detection"
+    description: "Product is suspect if there is reasonable belief it may be counterfeit, diverted, stolen, intentionally adulterated, or subject to fraudulent transaction"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "deviation"]
+    recommendation: "Configure suspect_product_detected kill trigger with defined criteria — counterfeit, diverted, stolen, adulterated, fraudulent indicators"
+
+  - id: "581(9)"
+    name: "Illegitimate Product Definition and Response"
+    description: "Product is illegitimate when there is credible evidence it IS counterfeit, diverted, stolen, intentionally adulterated, or subject to fraudulent transaction"
+    match:
+      type: "kill_triggers"
+      keywords: ["ethics", "compliance", "conflict"]
+    recommendation: "Configure illegitimate_product_confirmed kill trigger — escalation from suspect with credible evidence threshold"
+
+  # =========================================================================
+  # Section 582(b)(3)-(d)(3) — Record Retention (6 Years)
+  # =========================================================================
+
+  - id: "582(b)(3)(A)"
+    name: "Record Retention — Six Years Electronic"
+    description: "All trading partners must retain TI, TS, TH, investigation records, and disposition records for minimum six years in electronic format"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record", "log"]
+    recommendation: "Hash chain is append-only by design — records persist indefinitely. Configure retention policy for 6-year minimum with Merkle tree archival for efficient long-term verification"
+
+  - id: "582(b)(3)(B)"
+    name: "Record Searchability and Retrievability"
+    description: "Records must be searchable by product identifier (GTIN, serial, lot), transaction date, and trading partner — retrievable within one business day"
+    match:
+      type: "feature"
+      feature: "graph_memory"
+      keywords: ["search", "query", "retrieve"]
+    recommendation: "Charter analytics engine (DuckDB) + graph_query provide sub-second search by any field — add DSCSA-specific indexes for GTIN, serial, lot, trading partner"
+
+  - id: "582(b)(3)(C)"
+    name: "Record Immutability and Audit Trail"
+    description: "Records cannot be altered after creation — modification timestamps and user attribution required"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "tamper", "record"]
+    recommendation: "Hash chain entries are cryptographically linked (HMAC-SHA256) — any alteration breaks the chain. Merkle proofs provide O(log n) tamper detection. This is Charter's core architecture."
+
+  # =========================================================================
+  # Section 582(b)(4)(E)-(F) — Authorized Trading Partner
+  # =========================================================================
+
+  - id: "582(b)(4)(E)"
+    name: "Authorized Trading Partner Verification"
+    description: "Wholesale distributors must verify trading partner authorization (valid FDA registration or state pharmacy license) before initial transaction"
+    match:
+      type: "layer_b"
+      keywords: ["authorization", "approval", "access"]
+    recommendation: "Add Layer B trading_partner_verification rule — gate on ATP status check (FDA registration / state license) before any transaction. Integrate with Open Credentialing Initiative (OCI) standards"
+
+  - id: "582(b)(4)(F)"
+    name: "ATP Credential Retention"
+    description: "Trading partner licenses, permits, and verification records must be retained for six years"
+    match:
+      type: "chain"
+      keywords: ["record", "audit", "trail"]
+    recommendation: "ATP verification events logged to chain with credential snapshots — append-only retention exceeds 6-year minimum"
+
+  # =========================================================================
+  # Section 582(e) — Returns and Saleable Returns
+  # =========================================================================
+
+  - id: "582(e)(1)"
+    name: "Saleable Returns Processing"
+    description: "Returns that are re-entered into commerce must have product identifiers verified before redistribution"
+    match:
+      type: "layer_b"
+      keywords: ["verification", "authorization", "approval"]
+    recommendation: "Add Layer B saleable_return rule — require product identifier re-verification and chain event logging before return product enters distribution"
+
+  # =========================================================================
+  # Cross-Cutting: Data Integrity and Supply Chain Security
+  # =========================================================================
+
+  - id: "DSCSA-INT-1"
+    name: "Supply Chain Data Integrity"
+    description: "All transaction data must maintain integrity across trading partner boundaries — no unauthorized alteration, no fabrication of pedigree"
+    match:
+      type: "layer_a"
+      keywords: ["fabricate", "data", "evidence", "conceal", "alter", "destroy"]
+    recommendation: "Layer A universal constraints (never fabricate, never conceal, never alter audit trail) directly enforce DSCSA data integrity requirements"
+
+  - id: "DSCSA-INT-2"
+    name: "Multi-Entity Supply Chain Governance"
+    description: "Manufacturer, distributor, and dispenser must each maintain compliant systems that interoperate across organizational boundaries"
+    match:
+      type: "feature"
+      feature: "manifest_export"
+      keywords: ["federation", "interoperable", "exchange"]
+    recommendation: "Charter federation enables multi-entity governance — each trading partner runs sovereign Charter node, exchanges Merkle roots for cross-verification without exposing chain contents"
+
+  - id: "DSCSA-INT-3"
+    name: "Counterfeit Detection and Prevention"
+    description: "Systems must support detection of counterfeit, diverted, stolen, or adulterated products through serialization verification"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "deviation", "ethics"]
+    recommendation: "Kill triggers for suspect_product_detected and illegitimate_product_confirmed provide automated counterfeit response — combine with serial number verification against manufacturer chain"
+
+  - id: "DSCSA-INT-4"
+    name: "Recall and Investigation Support"
+    description: "Systems must support rapid identification of affected products during recalls using lot number, serial number, and transaction history"
+    match:
+      type: "chain"
+      keywords: ["audit", "trail", "record"]
+    recommendation: "Charter graph_query filters by lot, serial, date range in seconds — chain provenance traces product from current holder back to manufacturer"
+
+  - id: "DSCSA-INT-5"
+    name: "Compliance Deviation Monitoring"
+    description: "Continuous monitoring for DSCSA compliance deviations — missing TI, expired ATP credentials, overdue verifications, incomplete transaction records"
+    match:
+      type: "kill_triggers"
+      keywords: ["compliance", "deviation", "friction"]
+    recommendation: "Configure compliance_deviation kill trigger with DSCSA-specific criteria — missing TI, unverified ATP, overdue verification responses"
+
+  - id: "DSCSA-INT-6"
+    name: "SIEM and Security Operations Integration"
+    description: "DSCSA compliance events must be accessible to hospital security operations centers and compliance monitoring systems"
+    match:
+      type: "feature"
+      feature: "manifest_export"
+      keywords: ["export", "integration", "security"]
+    recommendation: "Charter SIEM export (CEF/JSON/syslog) pipes DSCSA events to existing Splunk, Datadog, QRadar, or rsyslog infrastructure — zero migration required"

@@ -6,7 +6,10 @@ import hashlib
 import datetime
 from pathlib import Path
 
-CHAIN = Path.home() / ".charter" / "chain.jsonl"
+# KB events go to a sidecar log; writing directly to the Charter
+# identity chain corrupts its index/previous_hash bookkeeping.
+# See knowledge/tools/charter_logger.py for the same redirect.
+CHAIN = Path.home() / ".charter" / "kb_log.jsonl"
 CHAIN.parent.mkdir(parents=True, exist_ok=True)
 
 

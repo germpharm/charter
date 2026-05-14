@@ -399,4 +399,4 @@ class TestKnownEvents:
         assert "compliance_deviation" in KNOWN_EVENTS
 
     def test_total_event_count(self):
-        assert len(KNOWN_EVENTS) == 12
+        assert len(KNOWN_EVENTS) == 14

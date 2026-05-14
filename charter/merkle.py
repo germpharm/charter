@@ -61,7 +61,7 @@ class MerkleTree:
         - Serialization to/from JSON
     """
 
-    def __init__(self, leaves: list[str]):
+    def __init__(self, leaves: "list[str]"):
         """Build a Merkle tree from leaf hashes.
 
         Args:
@@ -85,7 +85,7 @@ class MerkleTree:
         """Number of levels in the tree (including leaves)."""
         return len(self._levels)
 
-    def _build(self, leaves: list[str]) -> list[list[str]]:
+    def _build(self, leaves: "list[str]") -> list["list[str]"]:
         """Build all levels of the tree bottom-up.
 
         Returns a list of levels. Level 0 = leaves, last level = [root].
@@ -106,7 +106,7 @@ class MerkleTree:
 
         return levels
 
-    def get_proof(self, index: int) -> list[dict]:
+    def get_proof(self, index: int) -> "list[dict]":
         """Generate an inclusion proof for the leaf at the given index.
 
         Returns a list of proof steps. Each step has:
@@ -146,7 +146,7 @@ class MerkleTree:
         return proof
 
     @staticmethod
-    def verify_proof(leaf_hash: str, proof: list[dict], expected_root: str) -> bool:
+    def verify_proof(leaf_hash: str, proof: "list[dict]", expected_root: str) -> bool:
         """Verify that a leaf hash is included in the tree with the given root.
 
         Args:
@@ -209,12 +209,51 @@ def get_batch_index_path() -> str:
 
 
 def load_batch_index() -> dict:
-    """Load the batch index. Returns dict mapping batch_id to metadata."""
+    """Load the batch index. Returns dict mapping batch_id to metadata.
+
+    The index records which chain entries have already been rolled into
+    a Merkle tree. Two trackers exist:
+
+    - last_chain_index (legacy): the largest chain entry index that
+      has been batched. Kept for backward compatibility with cross_verify
+      attestations and CLI status reporting.
+    - batched_hashes (current): set of every chain entry hash that has
+      been batched, persisted as a list. Hash-based tracking is the
+      authoritative source of truth because chain entry indices are
+      not globally unique on a chain that has been contaminated by
+      foreign writers (see tools/charter_migration/migrate_chain.py
+      for the historical incident that motivated this).
+
+    On first load, batched_hashes is backfilled from existing batch
+    tree files so the legacy index can be migrated transparently.
+    """
     path = get_batch_index_path()
     if not os.path.isfile(path):
-        return {"batches": [], "last_chain_index": -1}
+        return {
+            "batches": [],
+            "last_chain_index": -1,
+            "batched_hashes": [],
+        }
     with open(path) as f:
-        return json.load(f)
+        data = json.load(f)
+    if "batched_hashes" not in data:
+        # Backfill from on-disk batch tree files. Each tree's leaves
+        # are exactly the chain entry hashes for that batch.
+        backfilled = []
+        for batch in data.get("batches", []):
+            tree_path = os.path.join(
+                get_merkle_dir(), f"{batch['batch_id']}.json"
+            )
+            if not os.path.isfile(tree_path):
+                continue
+            try:
+                with open(tree_path) as tf:
+                    tree_data = json.load(tf)
+                backfilled.extend(tree_data.get("leaves", []))
+            except (json.JSONDecodeError, OSError):
+                continue
+        data["batched_hashes"] = backfilled
+    return data
 
 
 def save_batch_index(index: dict):
@@ -228,7 +267,7 @@ def batch_chain_entries(
     chain_path: str,
     batch_size: int = 256,
     min_entries: int = 16,
-) -> dict | None:
+) -> "dict | None":
     """Roll unbatched chain entries into a new Merkle tree.
 
     Args:
@@ -251,10 +290,17 @@ def batch_chain_entries(
 
     # Load batch index
     batch_idx = load_batch_index()
-    last_batched = batch_idx["last_chain_index"]
+    batched_hashes = set(batch_idx.get("batched_hashes", []))
 
-    # Find unbatched entries
-    unbatched = [e for e in entries if e.get("index", 0) > last_batched]
+    # Find unbatched entries — by hash, not by index. Index can collide
+    # across runs on a chain that has been contaminated by foreign
+    # writers (see migrate_chain.py). Hash is the only stable identity.
+    # Skip entries that don't have a `hash` field (foreign entries that
+    # somehow slipped past quarantine).
+    unbatched = [
+        e for e in entries
+        if e.get("hash") and e["hash"] not in batched_hashes
+    ]
 
     if len(unbatched) < min_entries:
         return None
@@ -289,55 +335,92 @@ def batch_chain_entries(
     with open(tree_path, "w") as f:
         json.dump(tree.to_dict(), f, indent=2)
 
-    # Update batch index
+    # Update batch index. Hash-based tracking is authoritative; the
+    # legacy last_chain_index is updated only if the new value is larger
+    # so it never moves backwards on a chain with index resets.
     batch_idx["batches"].append(batch_meta)
-    batch_idx["last_chain_index"] = last_index
+    if last_index > batch_idx.get("last_chain_index", -1):
+        batch_idx["last_chain_index"] = last_index
+    batched_hashes_list = batch_idx.get("batched_hashes", [])
+    batched_hashes_list.extend(leaves)
+    batch_idx["batched_hashes"] = batched_hashes_list
     save_batch_index(batch_idx)
 
     return batch_meta
 
 
-def generate_proof(chain_index: int) -> dict | None:
+def generate_proof(chain_index=None, entry_hash=None) -> "dict | None":
     """Generate a Merkle proof for a specific chain entry.
 
     Args:
-        chain_index: The chain entry index to prove.
+        chain_index: The chain entry index to prove. Used as a hint
+            for selecting the candidate batch by chain_range.
+        entry_hash: The chain entry hash. When provided, this is the
+            authoritative selector — every batch tree is searched for
+            this hash. Use this on contaminated chains where index
+            values are not unique. If both are provided, hash wins.
 
     Returns:
         Dict with the proof, batch metadata, and verification instructions.
         None if the entry hasn't been batched yet.
     """
+    if chain_index is None and entry_hash is None:
+        return None
+
     batch_idx = load_batch_index()
 
-    # Find which batch contains this chain index
     target_batch = None
-    for batch in batch_idx["batches"]:
-        start, end = batch["chain_range"]
-        if start <= chain_index <= end:
-            target_batch = batch
-            break
+    leaf_index = None
 
-    if not target_batch:
-        return None
-
-    # Load the tree
-    tree_path = os.path.join(get_merkle_dir(), f"{target_batch['batch_id']}.json")
-    if not os.path.isfile(tree_path):
-        return None
-
-    with open(tree_path) as f:
-        tree_data = json.load(f)
+    if entry_hash is not None:
+        # Hash-based lookup: open each batch tree and check its leaves.
+        # Walk batches newest-first so a later rebatch wins over an
+        # older orphaned one (relevant if the same entry was somehow
+        # batched twice during recovery).
+        for batch in reversed(batch_idx.get("batches", [])):
+            tree_path = os.path.join(
+                get_merkle_dir(), f"{batch['batch_id']}.json"
+            )
+            if not os.path.isfile(tree_path):
+                continue
+            try:
+                with open(tree_path) as f:
+                    tree_data = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                continue
+            leaves = tree_data.get("leaves", [])
+            if entry_hash in leaves:
+                target_batch = batch
+                leaf_index = leaves.index(entry_hash)
+                break
+        if not target_batch:
+            return None
+    else:
+        # Legacy index-based lookup
+        for batch in batch_idx.get("batches", []):
+            start, end = batch["chain_range"]
+            if start <= chain_index <= end:
+                target_batch = batch
+                break
+        if not target_batch:
+            return None
+        tree_path = os.path.join(
+            get_merkle_dir(), f"{target_batch['batch_id']}.json"
+        )
+        if not os.path.isfile(tree_path):
+            return None
+        with open(tree_path) as f:
+            tree_data = json.load(f)
+        leaf_index = chain_index - target_batch["chain_range"][0]
 
     tree = MerkleTree.from_dict(tree_data)
-
-    # The leaf index within the batch
-    leaf_index = chain_index - target_batch["chain_range"][0]
 
     # Generate proof
     proof_path = tree.get_proof(leaf_index)
 
     return {
-        "chain_index": chain_index,
+        "chain_index": chain_index if chain_index is not None
+                       else target_batch["chain_range"][0] + leaf_index,
         "batch_id": target_batch["batch_id"],
         "merkle_root": tree.root,
         "leaf_hash": tree.leaves[leaf_index],
@@ -406,7 +489,7 @@ def verify_chain_entry(chain_index: int, entry_hash: str) -> dict:
 # Cross-node verification
 # ---------------------------------------------------------------------------
 
-def create_exchange_proof(chain_index: int, chain_path: str = None) -> dict | None:
+def create_exchange_proof(chain_index: int, chain_path: str = None) -> "dict | None":
     """Create a proof package suitable for sending to another node.
 
     This is what Dartmouth Health sends to BCBS when a claim is disputed.

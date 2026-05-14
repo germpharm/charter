@@ -1,0 +1,246 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "charter": "https://schema.charteragent.ai/manifest/v1#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "ContextManifest": "charter:ContextManifest",
+    "GraphSnapshot": "charter:GraphSnapshot",
+    "Entity": "charter:Entity",
+    "Relationship": "charter:Relationship",
+    "Interaction": "charter:Interaction",
+    "DecisionLog": "charter:DecisionLog",
+    "PatternDeclaration": "charter:PatternDeclaration",
+    "GovernanceProfile": "charter:GovernanceProfile",
+    "JudgmentProfile": "charter:JudgmentProfile",
+
+    "version": {
+      "@id": "charter:version",
+      "@type": "xsd:string"
+    },
+    "scope": {
+      "@id": "charter:scope",
+      "@type": "xsd:string"
+    },
+    "generated_at": {
+      "@id": "charter:generated_at",
+      "@type": "xsd:dateTime"
+    },
+    "identity": {
+      "@id": "charter:identity",
+      "@type": "@id"
+    },
+    "public_id": {
+      "@id": "charter:public_id",
+      "@type": "xsd:string"
+    },
+    "alias": {
+      "@id": "charter:alias",
+      "@type": "xsd:string"
+    },
+    "chain_hash": {
+      "@id": "charter:chain_hash",
+      "@type": "xsd:string"
+    },
+    "chain_length": {
+      "@id": "charter:chain_length",
+      "@type": "xsd:integer"
+    },
+    "verified": {
+      "@id": "charter:verified",
+      "@type": "xsd:boolean"
+    },
+    "graph_snapshot": {
+      "@id": "charter:graph_snapshot",
+      "@type": "@id"
+    },
+    "entities": {
+      "@id": "charter:entities",
+      "@container": "@list"
+    },
+    "relationships": {
+      "@id": "charter:relationships",
+      "@container": "@list"
+    },
+    "interactions": {
+      "@id": "charter:interactions",
+      "@container": "@list"
+    },
+    "name": "schema:name",
+    "email": "schema:email",
+    "entity_type": {
+      "@id": "charter:entity_type",
+      "@type": "xsd:string"
+    },
+    "context": {
+      "@id": "charter:context",
+      "@type": "xsd:string"
+    },
+    "community": {
+      "@id": "charter:community",
+      "@type": "xsd:integer"
+    },
+    "source_id": {
+      "@id": "charter:source_id",
+      "@type": "xsd:string"
+    },
+    "target_id": {
+      "@id": "charter:target_id",
+      "@type": "xsd:string"
+    },
+    "rel_type": {
+      "@id": "charter:rel_type",
+      "@type": "xsd:string"
+    },
+    "interaction_type": {
+      "@id": "charter:interaction_type",
+      "@type": "xsd:string"
+    },
+    "weight": {
+      "@id": "charter:weight",
+      "@type": "xsd:decimal"
+    },
+    "occurred_at": {
+      "@id": "charter:occurred_at",
+      "@type": "xsd:dateTime"
+    },
+    "decision_log": {
+      "@id": "charter:decision_log",
+      "@container": "@list"
+    },
+    "event": {
+      "@id": "charter:event",
+      "@type": "xsd:string"
+    },
+    "timestamp": {
+      "@id": "charter:timestamp",
+      "@type": "xsd:dateTime"
+    },
+    "actor": {
+      "@id": "charter:actor",
+      "@type": "xsd:string"
+    },
+    "outcomes": {
+      "@id": "charter:outcomes",
+      "@container": "@list"
+    },
+    "pattern_declarations": {
+      "@id": "charter:pattern_declarations",
+      "@type": "@id"
+    },
+    "declarations": {
+      "@id": "charter:declarations",
+      "@container": "@list"
+    },
+    "statement": {
+      "@id": "charter:statement",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "charter:declaration_type",
+      "@type": "xsd:string"
+    },
+    "governance_profile": {
+      "@id": "charter:governance_profile",
+      "@type": "@id"
+    },
+    "domain": {
+      "@id": "charter:domain",
+      "@type": "xsd:string"
+    },
+    "layer_a": {
+      "@id": "charter:layer_a",
+      "@type": "@id"
+    },
+    "layer_b": {
+      "@id": "charter:layer_b",
+      "@container": "@list"
+    },
+    "layer_c": {
+      "@id": "charter:layer_c",
+      "@type": "@id"
+    },
+    "universal": {
+      "@id": "charter:universal",
+      "@container": "@list"
+    },
+    "rules": {
+      "@id": "charter:rules",
+      "@container": "@list"
+    },
+    "kill_triggers": {
+      "@id": "charter:kill_triggers",
+      "@container": "@list"
+    },
+    "compliance_frameworks": {
+      "@id": "charter:compliance_frameworks",
+      "@container": "@list"
+    },
+    "judgment_profile": {
+      "@id": "charter:judgment_profile",
+      "@type": "@id"
+    },
+    "statements": {
+      "@id": "charter:statements",
+      "@container": "@list"
+    },
+    "signature": {
+      "@id": "charter:signature",
+      "@type": "xsd:string"
+    },
+    "role": {
+      "@id": "charter:role",
+      "@type": "@id"
+    }
+  },
+
+  "@graph": [
+    {
+      "@id": "charter:ContextManifest",
+      "@type": "schema:DataDownload",
+      "schema:name": "Charter Context Manifest",
+      "schema:description": "Portable professional intelligence layer. Captures identity, relationship graph, decision history, behavioral patterns, judgment profile, and governance rules in a structured machine-readable format. Implements GDPR Article 20 (Right to Data Portability).",
+      "schema:version": "1.0",
+      "schema:license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "schema:encodingFormat": "application/ld+json",
+      "schema:creator": {
+        "@type": "schema:Organization",
+        "schema:name": "Charter",
+        "schema:url": "https://charteragent.ai"
+      }
+    },
+    {
+      "@id": "charter:scope",
+      "schema:description": "Manifest scope. One of: 'individual' (personal portability), 'institutional' (company knowledge retention), 'role' (de-personalized role manifest)."
+    },
+    {
+      "@id": "charter:identity",
+      "schema:description": "Pseudonymous Charter identity with public_id, alias, chain_hash anchor, and verification status. The chain_hash provides a tamper-evident link to the source chain."
+    },
+    {
+      "@id": "charter:graph_snapshot",
+      "schema:description": "Bi-temporal property graph of entities, relationships, and interactions. Supports JSON-LD compatible serialization with @context and @type."
+    },
+    {
+      "@id": "charter:decision_log",
+      "schema:description": "Decision events extracted from the Charter hash chain. Each entry includes the event type, timestamp, actor, and optionally linked outcomes (decision-outcome pairs for judgment reconstruction)."
+    },
+    {
+      "@id": "charter:pattern_declarations",
+      "schema:description": "Deterministic natural-language statements derived from behavioral fingerprint, sequence mining, and anomaly detection. NOT LLM-generated. Reproducible from quantitative source metrics."
+    },
+    {
+      "@id": "charter:judgment_profile",
+      "schema:description": "Layer 3 of the Context Manifest model. Reconstructs the 'why' behind decisions from decision-outcome pairs over time. Includes outcome rate, decision diversity, and governance engagement metrics."
+    },
+    {
+      "@id": "charter:governance_profile",
+      "schema:description": "Charter governance config: Layer A hard constraints, Layer B gradient decisions, Layer C self-audit, kill triggers, and compliance framework mappings."
+    },
+    {
+      "@id": "charter:signature",
+      "schema:description": "HMAC-SHA256 signature of the manifest content (excluding the signature field itself), keyed by the source identity's private seed. Same identity verification only. Cross-instance verification requires Merkle anchor or federation trust path."
+    }
+  ]
+}

@@ -6,6 +6,8 @@ import os
 import time
 import secrets
 
+from charter.paths import chain_write_lock, get_charter_home
+
 
 IDENTITY_DIR = ".charter"
 IDENTITY_FILE = "identity.json"
@@ -13,9 +15,14 @@ CHAIN_FILE = "chain.jsonl"
 
 
 def get_identity_dir():
-    """Get the .charter directory in user's home."""
-    home = os.path.expanduser("~")
-    return os.path.join(home, IDENTITY_DIR)
+    """Get the active Charter home directory.
+
+    Resolves through `charter.paths.get_charter_home()` so multi-tenant
+    deployments can scope each request to a tenant-specific directory
+    via ContextVar without changing the rest of the codebase. Single-tenant
+    local installs see exactly the same path as before (~/.charter).
+    """
+    return get_charter_home()
 
 
 def get_identity_path():
@@ -78,6 +85,7 @@ def register_project(project_path, project_name=None):
                 "project_name": project_name or os.path.basename(abs_path),
             },
             "actor": "collaborative",
+            "actor_id": get_active_actor(),
             "previous_hash": "0" * 64,
         }
         genesis["hash"] = hash_entry(genesis)
@@ -166,13 +174,23 @@ def create_identity(alias=None):
     with open(get_identity_path(), "w") as f:
         json.dump(identity, f, indent=2)
 
-    # Initialize the hash chain with genesis entry
+    # Initialize the hash chain with genesis entry. Must include `signer`,
+    # `actor`, and `actor_id` so the v3.4.0 walk-backwards guard in
+    # append_to_chain (which skips entries lacking the Charter schema to
+    # avoid linking to foreign writers) recognizes the genesis as our own.
+    # Without these fields, every new user's chain would be stuck at
+    # index 0 — append_to_chain would skip the genesis, default to
+    # previous_hash="0"*64 and index=0, and the next entry would
+    # overwrite the chain head.
     genesis = {
         "index": 0,
         "timestamp": identity["created_at"],
         "event": "identity_created",
         "data": {"public_id": public_id, "alias": identity["alias"]},
+        "actor": "human",
+        "actor_id": identity["alias"],
         "previous_hash": "0" * 64,
+        "signer": public_id,
     }
     genesis["hash"] = hash_entry(genesis)
 
@@ -222,12 +240,82 @@ def sign_data(data, private_seed):
 VALID_ACTORS = ("human", "ai", "collaborative")
 
 
+def get_active_actor():
+    """Return a stable identifier for whoever is currently running Charter.
+
+    The returned string is the operator-level identity id used by the
+    analytics layer (events.actor_id) to attribute work back to a real
+    person across the 3-value chain `actor` enum (human/ai/collaborative).
+
+    Resolution order:
+        1. If real_identity is verified and has a `name`, return the
+           lowercased first token (e.g. "Matthew Maughan" -> "matthew").
+           This is the human-readable handle the bias-detection module
+           and most CLI flags use.
+        2. Otherwise return the alias from identity.json (e.g.
+           "node-93921f61"), which is stable across the lifetime of the
+           identity even before verification.
+        3. If no identity exists at all, return "unknown".
+
+    This helper is intentionally cheap — it reads identity.json on every
+    call so a single long-lived process picks up identity changes
+    (verification, alias updates) without restart.
+    """
+    identity = load_identity()
+    if not identity:
+        return "unknown"
+    real = identity.get("real_identity") or {}
+    name = real.get("name") if isinstance(real, dict) else None
+    if name:
+        first = str(name).strip().split()[0] if str(name).strip() else ""
+        if first:
+            return first.lower()
+    alias = identity.get("alias")
+    if alias:
+        return alias
+    pub = identity.get("public_id") or ""
+    return "node-{}".format(pub[:8]) if pub else "unknown"
+
+
+# Sentinel used to distinguish "caller passed None explicitly" (or not at
+# all) from "caller passed a real value". When we see _ACTOR_UNSET we
+# know the call site never specified actor and we should both default
+# to "collaborative" AND emit a regression warning so the gap surfaces
+# in the next session.
+_ACTOR_UNSET = object()
+
+
+def _warn_unattributed_append(event):
+    """Print a one-line stderr warning when a write site forgets actor.
+
+    Non-fatal — never raises. The point is to make the regression
+    visible to whoever is running Charter so the call site gets a
+    proper actor= argument added in a follow-up edit. We rate-limit
+    by event-type so a connector emitting 10k events of the same
+    kind doesn't flood the terminal.
+    """
+    import sys
+    seen = getattr(_warn_unattributed_append, "_seen", None)
+    if seen is None:
+        seen = set()
+        _warn_unattributed_append._seen = seen
+    if event in seen:
+        return
+    seen.add(event)
+    sys.stderr.write(
+        "[charter] WARNING: append_to_chain('{}') called without "
+        "actor= — defaulting to 'collaborative'. This is a Layer 0 "
+        "regression and the call site should be updated.\n".format(event)
+    )
+
+
 def append_to_chain(event, data, auto_batch=True,
                     confidence=None, evidence_basis=None,
                     constraint_assumptions=None,
                     revision_of=None, revision_reason=None,
-                    actor=None, edges=None,
-                    project_path=None):
+                    actor=_ACTOR_UNSET, edges=None,
+                    project_path=None,
+                    actor_id=None):
     """Append a new entry to the hash chain.
 
     If auto_batch is True and enough unbatched entries have accumulated,
@@ -256,26 +344,31 @@ def append_to_chain(event, data, auto_batch=True,
     """
     # v3.1.1: Actor attribution is a Layer 0 invariant.
     # Default to "collaborative" for backward compatibility,
-    # but callers should always specify explicitly.
+    # but callers should always specify explicitly. The
+    # _ACTOR_UNSET sentinel lets us tell the difference between
+    # "caller passed None" and "caller didn't pass actor at all"
+    # so the regression warning fires only on the latter.
+    if actor is _ACTOR_UNSET:
+        _warn_unattributed_append(event)
+        actor = "collaborative"
     if actor is None:
         actor = "collaborative"
     if actor not in VALID_ACTORS:
         actor = "collaborative"
+
+    # v3.1.2: actor_id is the operator-level identity (e.g., "matt")
+    # that produced this entry. Layer 0 enum stays a 3-value role,
+    # actor_id carries the richer who-did-this label that downstream
+    # analytics (bias-detection-by-absence) needs to attribute work
+    # back to a specific person across multi-tenant chains. Defaults
+    # to the active identity from identity.json so every new entry
+    # is attributed without requiring callers to thread the value.
+    if actor_id is None:
+        actor_id = get_active_actor()
     chain_path = get_project_chain_path(project_path)
     identity = load_identity()
     if not identity:
         return None
-
-    # Read last entry to get previous hash
-    last_hash = "0" * 64
-    index = 0
-    if os.path.isfile(chain_path):
-        with open(chain_path) as f:
-            lines = f.readlines()
-            if lines:
-                last_entry = json.loads(lines[-1])
-                last_hash = last_entry.get("hash", "0" * 64)
-                index = last_entry.get("index", 0) + 1
 
     # Enrich data with confidence metadata if provided
     if confidence or evidence_basis or constraint_assumptions or revision_of:
@@ -291,37 +384,74 @@ def append_to_chain(event, data, auto_batch=True,
         if revision_reason:
             data["_revision_reason"] = revision_reason
 
-    entry = {
-        "index": index,
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "event": event,
-        "data": data,
-        "actor": actor,
-        "previous_hash": last_hash,
-        "signer": identity["public_id"],
-    }
+    # Hold an advisory lock around the read-modify-write so concurrent writers
+    # (multi-tenant workers, a Mini sync job overlapping a live append) cannot
+    # interleave. The tail read MUST be inside the lock — otherwise two writers
+    # compute the same previous_hash and double-write at the same index. The
+    # lock file lives next to the chain and inherits its tenant scope.
+    with chain_write_lock(chain_path):
+        # Read last entry to get previous hash. Walk backwards to skip any
+        # foreign entries that lack the Charter schema (no `index`,
+        # `previous_hash`, or `signer`). Defensive: if a parallel writer ever
+        # appends to chain.jsonl with its own format, our chain still links
+        # cleanly to the most recent legitimate Charter entry instead of
+        # taking a foreign hash as previous_hash and resetting the index
+        # counter to 1. See tools/charter_migration/migrate_chain.py for the
+        # historical incident that motivated this guard.
+        last_hash = "0" * 64
+        index = 0
+        if os.path.isfile(chain_path):
+            with open(chain_path) as f:
+                lines = f.readlines()
+            for raw in reversed(lines):
+                raw = raw.strip()
+                if not raw:
+                    continue
+                try:
+                    candidate = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                if (
+                    "index" in candidate
+                    and "previous_hash" in candidate
+                    and "signer" in candidate
+                ):
+                    last_hash = candidate.get("hash", "0" * 64)
+                    index = candidate.get("index", 0) + 1
+                    break
 
-    # v3.1.1: Graph edges — immutable relationships between entries.
-    # Included in hash computation so they cannot be altered after signing.
-    if edges:
-        _VALID_EDGE_TYPES = ("caused_by", "revision_of", "input_to", "part_of", "approved_by")
-        validated_edges = []
-        for edge in edges:
-            if isinstance(edge, dict) and edge.get("type") in _VALID_EDGE_TYPES and edge.get("hash"):
-                validated_edges.append({"type": edge["type"], "hash": edge["hash"]})
-        if validated_edges:
-            entry["_edges"] = validated_edges
+        entry = {
+            "index": index,
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "event": event,
+            "data": data,
+            "actor": actor,
+            "actor_id": actor_id,
+            "previous_hash": last_hash,
+            "signer": identity["public_id"],
+        }
 
-    entry["hash"] = hash_entry(entry)
-    entry["signature"] = sign_data(entry, identity["private_seed"])
+        # v3.1.1: Graph edges — immutable relationships between entries.
+        # Included in hash computation so they cannot be altered after signing.
+        if edges:
+            _VALID_EDGE_TYPES = ("caused_by", "revision_of", "input_to", "part_of", "approved_by")
+            validated_edges = []
+            for edge in edges:
+                if isinstance(edge, dict) and edge.get("type") in _VALID_EDGE_TYPES and edge.get("hash"):
+                    validated_edges.append({"type": edge["type"], "hash": edge["hash"]})
+            if validated_edges:
+                entry["_edges"] = validated_edges
 
-    with open(chain_path, "a") as f:
-        f.write(json.dumps(entry) + "\n")
+        entry["hash"] = hash_entry(entry)
+        entry["signature"] = sign_data(entry, identity["private_seed"])
 
-    # Update contribution count
-    identity["contributions"] = index
-    with open(get_identity_path(), "w") as f:
-        json.dump(identity, f, indent=2)
+        with open(chain_path, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+
+        # Update contribution count
+        identity["contributions"] = index
+        with open(get_identity_path(), "w") as f:
+            json.dump(identity, f, indent=2)
 
     # Auto-batch into Merkle tree when threshold is reached
     if auto_batch:

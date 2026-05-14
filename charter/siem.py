@@ -39,8 +39,10 @@ _HOSTNAME = socket.gethostname()
 # CEF severity mapping (0-10 scale, 10 = most severe)
 _CEF_SEVERITY = {
     "kill_trigger_fired": 10,
+    "illegitimate_product_confirmed": 10,
     "chain_integrity_failure": 9,
     "layer_0_violation_blocked": 9,
+    "suspect_product_detected": 8,
     "arbitration_divergence_detected": 7,
     "redteam_scenario_failed": 7,
     "identity_verified": 3,
@@ -50,8 +52,10 @@ _CEF_SEVERITY_DEFAULT = 5
 # Datadog status mapping
 _DATADOG_STATUS = {
     "kill_trigger_fired": "error",
+    "illegitimate_product_confirmed": "error",
     "chain_integrity_failure": "error",
     "layer_0_violation_blocked": "error",
+    "suspect_product_detected": "warn",
     "arbitration_divergence_detected": "warn",
     "redteam_scenario_failed": "warn",
 }
@@ -61,11 +65,13 @@ _DATADOG_STATUS_DEFAULT = "info"
 #   0=emergency, 1=alert, 2=critical, 3=error, 4=warning,
 #   5=notice, 6=informational, 7=debug
 _SYSLOG_SEVERITY = {
-    "kill_trigger_fired": 2,         # critical
-    "chain_integrity_failure": 3,    # error
-    "layer_0_violation_blocked": 3,  # error
-    "arbitration_divergence_detected": 4,  # warning
-    "redteam_scenario_failed": 4,    # warning
+    "kill_trigger_fired": 2,                # critical
+    "illegitimate_product_confirmed": 2,    # critical
+    "chain_integrity_failure": 3,           # error
+    "layer_0_violation_blocked": 3,         # error
+    "suspect_product_detected": 3,          # error
+    "arbitration_divergence_detected": 4,   # warning
+    "redteam_scenario_failed": 4,           # warning
 }
 _SYSLOG_SEVERITY_DEFAULT = 6  # informational
 

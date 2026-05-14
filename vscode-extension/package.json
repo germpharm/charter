@@ -2,7 +2,7 @@
   "name": "charter-governance",
   "displayName": "Charter — AI Governance & Safety for Claude, GPT, Copilot",
   "description": "AI governance for every project. Auto-enforces hard constraints, compliance rules, and self-audit on AI agents (Claude, GPT, Copilot, Gemini). Free tier forever. Pro/Enterprise tiers for RBAC, SIEM, federation. Open source.",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "publisher": "germpharm",
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -83,6 +83,62 @@
       {
         "command": "charterGovernance.newContext",
         "title": "Charter: New Context"
+      },
+      {
+        "command": "charter.connectors.list",
+        "title": "Charter: List Connectors"
+      },
+      {
+        "command": "charter.connectors.run",
+        "title": "Charter: Run Connector"
+      },
+      {
+        "command": "charter.connectors.info",
+        "title": "Charter: Connector Details"
+      },
+      {
+        "command": "charter.analytics.absence",
+        "title": "Charter: Bias Detection by Absence"
+      },
+      {
+        "command": "charter.analytics.summary",
+        "title": "Charter: Analytics Summary"
+      },
+      {
+        "command": "charter.crossVerify.publish",
+        "title": "Charter: Publish Attestation"
+      },
+      {
+        "command": "charter.crossVerify.witness",
+        "title": "Charter: Witness Attestation"
+      },
+      {
+        "command": "charter.crossVerify.list",
+        "title": "Charter: List Cross-Verifications"
+      },
+      {
+        "command": "charter.crossVerify.check",
+        "title": "Charter: Check Manifest"
+      },
+      {
+        "command": "charter.manifest.export",
+        "title": "Charter: Export Manifest"
+      },
+      {
+        "command": "charter.manifest.verify",
+        "title": "Charter: Verify Manifest"
+      },
+      {
+        "command": "charter.manifest.adapt",
+        "title": "Charter: Adapt Manifest for Platform"
+      },
+      {
+        "command": "charter.identity.show",
+        "title": "Charter: Show Identity"
+      },
+      {
+        "command": "charter.chain.integrity",
+        "title": "Charter: Check Chain Integrity"
       }
     ],
     "configuration": {

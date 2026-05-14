@@ -345,6 +345,7 @@ def main():
             "sync", "rebuild", "status", "query",
             "profile", "compare", "timeline", "flow", "summary", "search",
             "sequences", "anomalies", "cohorts", "causes", "fingerprint",
+            "absence",
             "wolfram-status", "wolfram-causal", "wolfram-forecast",
             "wolfram-communities", "wolfram-test", "wolfram-eval",
             "ingest", "export",
@@ -451,6 +452,22 @@ def main():
     an_p.add_argument(
         "--output",
         help="Output file path (for export action)",
+    )
+    an_p.add_argument(
+        "--json",
+        action="store_true",
+        dest="json",
+        help="Emit raw JSON (for absence action)",
+    )
+    an_p.add_argument(
+        "--underused-threshold",
+        type=float,
+        default=None,
+        dest="underused_threshold",
+        help=(
+            "Underused-event threshold for absence action "
+            "(fraction of total activity, default 0.001 = 0.1%%)"
+        ),
     )
 
     # charter redteam
@@ -763,6 +780,156 @@ def main():
     proj_p.add_argument("path", nargs="?", default=".", help="Project path")
     proj_p.add_argument("--name", help="Project name")
 
+    # charter connectors (platform-specific data ingestion)
+    conn_p = sub.add_parser(
+        "connectors",
+        help=(
+            "Run platform connectors to ingest data into Charter "
+            "(Gmail, Shopify, Google Calendar, JSON ingestion)"
+        ),
+    )
+    conn_p.add_argument(
+        "action",
+        choices=["list", "info", "run"],
+        help="Connectors action",
+    )
+    conn_p.add_argument(
+        "--connector", "-c",
+        help="Connector name (e.g. gmail, shopify, google_calendar)",
+    )
+    conn_p.add_argument(
+        "--config",
+        help=(
+            "Connector config as JSON string OR path to a JSON file "
+            "containing the config"
+        ),
+    )
+    conn_p.add_argument(
+        "--account",
+        help="Account name (shortcut for --config)",
+    )
+    conn_p.add_argument(
+        "--query",
+        help="Search query (shortcut for --config)",
+    )
+    conn_p.add_argument(
+        "--resource",
+        help=(
+            "Resource type for resource-based connectors "
+            "like Shopify"
+        ),
+    )
+    conn_p.add_argument(
+        "--input-file", "-i",
+        help="Input file path (for json_ingestion connector)",
+    )
+    conn_p.add_argument(
+        "--json-payload",
+        help=(
+            "Inline JSON payload for json_ingestion connector. "
+            "Either a full {\"events\": [...]} object or a bare "
+            "JSON array of events."
+        ),
+    )
+    conn_p.add_argument(
+        "--since",
+        help="ISO 8601 timestamp filter",
+    )
+    conn_p.add_argument(
+        "--limit",
+        type=int,
+        help="Maximum number of records to ingest",
+    )
+    conn_p.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Fetch data but don't write to the chain",
+    )
+    conn_p.add_argument(
+        "--handle",
+        help=(
+            "Filter by counterparty handle (apple_messages: phone "
+            "number or Apple ID email)"
+        ),
+    )
+    conn_p.add_argument(
+        "--chat",
+        help=(
+            "Filter by chat identifier (apple_messages: a "
+            "'chat...' group chat ID or a recipient handle)"
+        ),
+    )
+    conn_p.add_argument(
+        "--until",
+        help="Upper-bound ISO 8601 timestamp (apple_messages)",
+    )
+    conn_p.add_argument(
+        "--verbose",
+        action="store_true",
+        help=(
+            "Print message content during the run "
+            "(apple_messages — off by default for privacy)"
+        ),
+    )
+
+    # charter cross-verify (federated tamper-evidence)
+    cv_p = sub.add_parser(
+        "cross-verify",
+        help=(
+            "Cross-verification — workers publish Merkle roots "
+            "to a witness (company) for tamper-evidence"
+        ),
+    )
+    cv_p.add_argument(
+        "action",
+        choices=["publish", "witness", "list", "check"],
+        help="Cross-verification action",
+    )
+    cv_p.add_argument(
+        "path", nargs="?",
+        help="Attestation or manifest file path",
+    )
+    cv_p.add_argument(
+        "--output", "-o",
+        help="Output file path (for publish)",
+    )
+
+    # charter manifest (Context Manifest — portable professional intelligence)
+    manifest_p = sub.add_parser(
+        "manifest",
+        help="Export, verify, or import a Context Manifest (professional intelligence portability)",
+    )
+    manifest_p.add_argument(
+        "action",
+        choices=["export", "verify", "import",
+                 "role-export", "adapt", "contextualize",
+                 "anchor", "verify-anchor", "schema"],
+        help="Manifest action",
+    )
+    manifest_p.add_argument(
+        "--scope",
+        choices=["individual", "institutional", "role"],
+        default="individual",
+        help="Manifest scope (default: individual)",
+    )
+    manifest_p.add_argument("--context", help="Context filter (e.g. dartmouth)")
+    manifest_p.add_argument("--since", help="ISO date filter (e.g. 2025-01-01)")
+    manifest_p.add_argument("--output", "-o", help="Output file path")
+    manifest_p.add_argument(
+        "--platform",
+        choices=["claude", "openai", "xai", "rag"],
+        help="Target platform (for adapt)",
+    )
+    manifest_p.add_argument("--role", help="Role name (for role-export)")
+    manifest_p.add_argument(
+        "path", nargs="?",
+        help="Manifest file path (verify/import/adapt/contextualize)",
+    )
+    manifest_p.add_argument(
+        "--input", "-i",
+        help="Input manifest file (alternative to positional path)",
+    )
+
     # charter _last-human-hash (hidden — used by hooks)
     sub.add_parser(
         "_last-human-hash",
@@ -780,6 +947,22 @@ def main():
     if args.command is None:
         parser.print_help()
         sys.exit(0)
+
+    # v3.1.2: surface the active actor at process start so chain
+    # entries written during this session are traceable to a
+    # specific operator. Quiet for one-shot read commands that
+    # don't write to the chain (status, version, audit show).
+    _SILENT_COMMANDS = {"identity", "status", "audit"}
+    if args.command not in _SILENT_COMMANDS:
+        try:
+            from charter.identity import get_active_actor
+            active = get_active_actor()
+            if active and active != "unknown":
+                sys.stderr.write(
+                    "[charter] active actor: {}\n".format(active)
+                )
+        except Exception:
+            pass
 
     # Import license gating
     from charter.licensing import gate, LicenseError
@@ -996,6 +1179,9 @@ def _run_command(args, gate):
                         "causes", "fingerprint"):
             from charter.analytics.patterns import run_patterns_cli
             run_patterns_cli(args)
+        elif action == "absence":
+            from charter.analytics.absence import run_absence_cli
+            run_absence_cli(args)
         elif action == "export":
             from charter.analytics.interface import run_export_cli
             run_export_cli(args)
@@ -1083,6 +1269,15 @@ def _run_command(args, gate):
     elif args.command == "update":
         from charter.update import run_update
         run_update(args)
+    elif args.command == "manifest":
+        from charter.manifest import run_manifest
+        run_manifest(args)
+    elif args.command == "cross-verify":
+        from charter.cross_verify import run_cross_verify
+        run_cross_verify(args)
+    elif args.command == "connectors":
+        from charter.connectors.cli_handler import run_connectors
+        run_connectors(args)
 
 
 def _run_log(args):

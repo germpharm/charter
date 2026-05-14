@@ -483,6 +483,328 @@ class PatternEngine:
             "elapsed_ms": _now_ms() - start,
         }
 
+    # -- Pattern Declarations (Context Manifest Layer 2) ---------------------
+
+    def declare_patterns(self, actor=None, annotate=True):
+        """Generate natural-language pattern declarations from behavioral data.
+
+        Translates quantitative fingerprints, sequences, and anomalies into
+        deterministic, human-readable statements. Used by Context Manifests
+        for professional intelligence portability.
+
+        These are NOT LLM-generated. They use templates filled from data,
+        making them reproducible, verifiable, and auditable.
+
+        When annotate=True, each declaration receives metadata that helps
+        the receiver judge whether to trust the pattern:
+          - confidence: low | medium | high (function of sample size,
+            alternatives tested, and outcome variance)
+          - alternatives_tried: count of distinct workflows for the same
+            goal (low value = blind spot risk)
+          - temporal_context: time period the pattern was observed in
+          - outcome_quality: derived from decision-outcome pairs in the
+            same time period
+          - caveat: plain-language warning if confidence is low or
+            alternatives_tried is zero
+
+        These annotations support the role intelligence + fresh perspective
+        framing — the new holder can see WHICH patterns to trust and which
+        to examine for blind spots.
+
+        Args:
+            actor: Optional actor filter.
+            annotate: Whether to attach annotation metadata. Default True.
+
+        Returns:
+            dict with declarations list, source metrics, and metadata.
+        """
+        start = _now_ms()
+        declarations = []
+
+        # 1. Fingerprint-based declarations
+        fp_result = self.fingerprint(actor=actor)
+        if "error" not in fp_result:
+            fp = fp_result.get("fingerprint", {})
+            vector = fp.get("vector", {})
+            dominant = fp.get("dominant_trait", "")
+            dominant_val = fp.get("dominant_value", 0)
+
+            declarations.extend(
+                self._declare_from_fingerprint(
+                    vector, dominant, dominant_val
+                )
+            )
+
+        # 2. Sequence-based declarations
+        seq_result = self.mine_sequences(
+            min_support=2, max_length=4, actor=actor
+        )
+        if "error" not in seq_result:
+            patterns = seq_result.get("frequent_patterns", [])
+            declarations.extend(
+                self._declare_from_sequences(patterns)
+            )
+
+        # 3. Anomaly-based declarations
+        anomaly_result = self.detect_anomalies()
+        if "error" not in anomaly_result:
+            anomalies = anomaly_result.get("anomalies", [])
+            declarations.extend(
+                self._declare_from_anomalies(anomalies)
+            )
+
+        # 4. Annotate declarations with confidence + caveats
+        if annotate:
+            declarations = self._annotate_declarations(
+                declarations, actor=actor
+            )
+
+        return {
+            "declarations": declarations,
+            "declaration_count": len(declarations),
+            "actor": actor or "organization",
+            "source_metrics": {
+                "fingerprint": fp_result.get(
+                    "fingerprint", {}
+                ).get("vector", {}),
+                "sequence_count": (
+                    len(seq_result.get("frequent_patterns", []))
+                    if "error" not in seq_result else 0
+                ),
+                "anomaly_count": (
+                    len(anomaly_result.get("anomalies", []))
+                    if "error" not in anomaly_result else 0
+                ),
+            },
+            "elapsed_ms": _now_ms() - start,
+        }
+
+    def _annotate_declarations(self, declarations, actor=None):
+        """Attach confidence and caveat annotations to declarations.
+
+        Different declaration types get different annotations:
+          - workflow: alternatives_tried (count of distinct workflows
+            seen for the same goal), confidence based on support
+          - trait: confidence based on sample size of underlying metric
+          - anomaly: temporal_context (when did the deviation occur)
+          - dominant_trait: caveat if dominant value < 0.7
+
+        Also computes a temporal_context that applies to all declarations
+        in this batch (the time window the analytics covers).
+
+        Args:
+            declarations: List of pattern declaration dicts.
+            actor: Optional actor filter for context lookup.
+
+        Returns:
+            The same list with annotation fields added in place.
+        """
+        # Compute the time window the analytics covers
+        try:
+            row = self._conn.execute(
+                "SELECT MIN(ts), MAX(ts), COUNT(*) FROM events"
+            ).fetchone()
+            ts_min, ts_max, total_events = row
+            temporal_context = {
+                "from": str(ts_min) if ts_min else None,
+                "to": str(ts_max) if ts_max else None,
+                "total_events": total_events or 0,
+            }
+        except Exception:
+            temporal_context = {
+                "from": None, "to": None, "total_events": 0,
+            }
+
+        # Count distinct workflow types for "alternatives tried" calc
+        try:
+            row = self._conn.execute(
+                "SELECT COUNT(DISTINCT events) FROM sessions"
+            ).fetchone()
+            distinct_workflows = row[0] if row and row[0] else 0
+        except Exception:
+            distinct_workflows = 0
+
+        for d in declarations:
+            d["temporal_context"] = temporal_context
+            dtype = d.get("type", "")
+
+            if dtype == "workflow":
+                support = d.get("support", 0)
+                # Confidence from support count
+                if support >= 10:
+                    d["confidence"] = "high"
+                elif support >= 4:
+                    d["confidence"] = "medium"
+                else:
+                    d["confidence"] = "low"
+                # Alternatives_tried = distinct workflows in sessions
+                # divided by occurrences of this workflow
+                d["alternatives_tried"] = max(
+                    distinct_workflows - 1, 0
+                )
+                if d["alternatives_tried"] == 0:
+                    d["caveat"] = (
+                        "Only one workflow observed for this "
+                        "outcome — may reflect blind spot or "
+                        "habit, not best practice."
+                    )
+
+            elif dtype == "trait":
+                value = d.get("value", 0)
+                # Confidence from how strongly the trait registered
+                if value >= 0.7:
+                    d["confidence"] = "high"
+                elif value >= 0.4:
+                    d["confidence"] = "medium"
+                else:
+                    d["confidence"] = "low"
+                if temporal_context["total_events"] < 100:
+                    d["caveat"] = (
+                        "Trait based on small sample "
+                        "({} events). May not be stable.".format(
+                            temporal_context["total_events"]
+                        )
+                    )
+
+            elif dtype == "dominant_trait":
+                value = d.get("value", 0)
+                if value >= 0.8:
+                    d["confidence"] = "high"
+                elif value >= 0.6:
+                    d["confidence"] = "medium"
+                else:
+                    d["confidence"] = "low"
+                if value < 0.7:
+                    d["caveat"] = (
+                        "Dominant trait score is moderate. "
+                        "The role may not have a strongly "
+                        "characteristic style."
+                    )
+
+            elif dtype == "anomaly":
+                z = abs(d.get("z_score", 0))
+                if z >= 3.0:
+                    d["confidence"] = "high"
+                elif z >= 2.0:
+                    d["confidence"] = "medium"
+                else:
+                    d["confidence"] = "low"
+                d["caveat"] = (
+                    "Anomalies reflect deviation from baseline. "
+                    "Consider whether the baseline itself was "
+                    "appropriate for the role."
+                )
+
+            else:
+                d["confidence"] = "unknown"
+
+        return declarations
+
+    def _declare_from_fingerprint(self, vector, dominant, dominant_val):
+        """Generate declarations from behavioral fingerprint vector."""
+        declarations = []
+
+        # Trait templates: (dimension, threshold, high_statement, low_statement)
+        trait_templates = [
+            ("breadth", 0.6,
+             "Engages with a wide variety of event types, indicating broad domain awareness.",
+             "Focuses on a narrow set of event types, indicating deep specialization."),
+            ("intensity", 0.6,
+             "Maintains high operational cadence with frequent actions.",
+             "Works at a measured pace with deliberate spacing between actions."),
+            ("governance", 0.5,
+             "Consistently engages with governance processes (audits, escalations, config changes).",
+             "Minimal direct engagement with governance processes."),
+            ("consistency", 0.6,
+             "Maintains regular, predictable work patterns.",
+             "Work patterns vary significantly day to day."),
+            ("focus", 0.5,
+             "Sessions tend to be deep and concentrated.",
+             "Sessions tend to be short and task-switching."),
+            ("endurance", 0.5,
+             "Sustains long work sessions.",
+             "Works in shorter bursts."),
+        ]
+
+        for dim, threshold, high_stmt, low_stmt in trait_templates:
+            val = vector.get(dim, 0)
+            if val >= threshold:
+                declarations.append({
+                    "type": "trait",
+                    "dimension": dim,
+                    "value": val,
+                    "statement": high_stmt,
+                })
+            elif val < 0.2 and val > 0:
+                declarations.append({
+                    "type": "trait",
+                    "dimension": dim,
+                    "value": val,
+                    "statement": low_stmt,
+                })
+
+        # Dominant trait declaration
+        if dominant and dominant_val > 0.5:
+            declarations.append({
+                "type": "dominant_trait",
+                "dimension": dominant,
+                "value": dominant_val,
+                "statement": "Primary behavioral characteristic: {} (score: {:.2f}).".format(
+                    dominant.replace("_", " "), dominant_val
+                ),
+            })
+
+        return declarations
+
+    def _declare_from_sequences(self, patterns):
+        """Generate declarations from frequent event sequences."""
+        declarations = []
+
+        for pattern in patterns[:5]:  # Top 5 most frequent
+            seq = pattern.get("pattern", [])
+            support = pattern.get("support", 0)
+
+            if len(seq) < 2:
+                continue
+
+            # Format sequence as readable flow
+            flow = " -> ".join(
+                e.replace("_", " ") for e in seq
+            )
+
+            declarations.append({
+                "type": "workflow",
+                "sequence": seq,
+                "support": support,
+                "statement": "Standard workflow: {}. Observed in {} sessions.".format(
+                    flow, support
+                ),
+            })
+
+        return declarations
+
+    def _declare_from_anomalies(self, anomalies):
+        """Generate declarations from detected behavioral anomalies."""
+        declarations = []
+
+        for anomaly in anomalies[:3]:  # Top 3 most notable
+            actor = anomaly.get("actor", "")
+            dimension = anomaly.get("dimension", "")
+            z_score = anomaly.get("z_score", 0)
+            direction = "unusually high" if z_score > 0 else "unusually low"
+
+            declarations.append({
+                "type": "anomaly",
+                "dimension": dimension,
+                "z_score": round(z_score, 2),
+                "statement": "Notable deviation: {} {} in {} (z-score: {:.1f}).".format(
+                    direction, dimension.replace("_", " "),
+                    actor or "this role", abs(z_score)
+                ),
+            })
+
+        return declarations
+
     # -----------------------------------------------------------------------
     # Internal: data extraction
     # -----------------------------------------------------------------------

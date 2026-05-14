@@ -49,6 +49,16 @@ controls:
       keywords: ["delete", "data", "human", "approval"]
     recommendation: "Add Layer B rule requiring human_approval before deleting personal data records"
 
+  # Right to Data Portability (Article 20)
+  - id: "GDPR-Art20"
+    name: "Right to Data Portability"
+    description: "Data subjects have the right to receive personal data concerning them in a structured, commonly used and machine-readable format and have the right to transmit that data to another controller without hindrance"
+    match:
+      type: "feature"
+      feature: "manifest_export"
+      keywords: ["portability", "export", "manifest", "structured", "machine-readable"]
+    recommendation: "Charter Context Manifest (charter manifest export) implements Article 20 data portability. Exports a signed JSON-LD document containing identity, relationship graph, decision history, behavioral patterns, and governance profile in a structured machine-readable format. Supports cross-controller transmission via charter manifest import. Platform adapters (claude, openai, xai, rag) provide format conversion for receiving systems."
+
   # Data Protection by Design (Article 25)
   - id: "GDPR-Art25"
     name: "Data Protection by Design and by Default"

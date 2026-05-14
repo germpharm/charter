@@ -13,7 +13,7 @@ Architecture:
                                       ├── HypothesisTest / LocationTest
                                       └── Custom Wolfram Language expressions
 
-The engine runs on grandcentral (Mac Mini, 100.95.120.54) via SSH,
+The engine runs on grandcentral (Mac Mini, matthews-mac-mini.tail4c700a.ts.net) via SSH,
 or locally if wolframscript is available on the current machine.
 
 Usage:
@@ -40,8 +40,8 @@ from charter.analytics.indexer import Indexer, _now_ms, _get_analytics_dir
 # Configuration
 # ---------------------------------------------------------------------------
 
-# Grandcentral (Mac Mini) Tailscale IP
-REMOTE_HOST = "100.95.120.54"
+# Grandcentral (Mac Mini) Tailscale MagicDNS hostname (stable across re-registrations)
+REMOTE_HOST = "matthews-mac-mini.tail4c700a.ts.net"
 REMOTE_USER = "grandcentral"
 
 # Timeout for Wolfram computations (seconds)

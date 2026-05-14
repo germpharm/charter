@@ -1,0 +1,89 @@
+# Charter AI Impact Assessment Template — General
+# Maps to NIST AI RMF MAP-1.1, MAP-2.1, MAP-5.1 and EU AI Act Article 9
+# Usage: charter impact-assessment --domain general
+
+domain: general
+version: "1.0"
+framework_references:
+  - NIST AI RMF 1.0 (MAP-1.1, MAP-2.1, MAP-5.1, GOVERN-1.3)
+  - EU AI Act Article 9 (Risk Management System)
+  - ISO/IEC 42001:2023
+
+system_description:
+  questions:
+    - What is the intended purpose of this AI system?
+    - What decisions does it support or automate?
+    - Who are the end users?
+    - What data does it access, process, or generate?
+    - What is the deployment environment?
+
+risk_classification:
+  questions:
+    - Does this system make decisions that affect people's rights or opportunities?
+    - Could a malfunction cause harm (financial, reputational, physical, emotional)?
+    - Does it operate autonomously or with human oversight?
+    - Does it process personal or sensitive data?
+    - Is it used in a regulated industry?
+  risk_levels:
+    critical: "System makes autonomous decisions affecting rights, safety, or significant resources"
+    high: "System supports consequential decisions with human review"
+    medium: "System processes sensitive data for operational purposes"
+    low: "System handles non-sensitive administrative tasks"
+
+impact_analysis:
+  operational:
+    - What happens if the AI provides incorrect output?
+    - What happens if the AI is unavailable?
+    - Are there manual fallback procedures?
+    - Who is affected by AI errors (employees, customers, public)?
+  data_privacy:
+    - What personal data does the system process?
+    - Is data processing lawful (consent, contract, legitimate interest)?
+    - How is personal data protected in transit and at rest?
+    - What is the data retention period?
+  equity_and_bias:
+    - Does the system perform equally across user demographics?
+    - Are there groups that could be disadvantaged?
+    - How is fairness validated?
+    - Are there accessibility requirements?
+  reputational:
+    - What is the reputational impact of an AI error?
+    - How are AI-generated outputs reviewed before external distribution?
+    - Is the use of AI disclosed to affected parties?
+
+governance_controls:
+  layer_a_mapping:
+    - "Never violate applicable law"
+    - "Never fabricate data, citations, or evidence"
+    - "Never conceal, alter, or destroy the audit trail"
+    - "Never impersonate a real person"
+    - "Never send external communications without human approval"
+  layer_b_mapping:
+    - "financial_transaction → requires human_approval"
+    - "external_communication → requires human_approval"
+    - "data_access (sensitive) → requires human_review"
+    - "code_deployment (production) → requires human_approval"
+  kill_triggers:
+    - "Ethical gradient acceleration → stop and alert"
+    - "Audit friction → stop and alert"
+    - "Conscience conflict → stop and alert"
+
+mitigation_plan:
+  questions:
+    - For each identified risk, what mitigation is in place?
+    - What residual risk remains after mitigation?
+    - Who is responsible for monitoring each risk?
+    - What is the review frequency?
+    - What triggers a reassessment?
+
+sign_off:
+  roles_required:
+    - System owner or project lead
+    - IT/security representative
+    - Legal or compliance representative (if applicable)
+  attestation: |
+    By signing this assessment, the undersigned confirm that:
+    1. The AI system has been evaluated against the criteria above.
+    2. Identified risks have documented mitigation plans.
+    3. Charter governance controls (Layer A/B/C) are in place and active.
+    4. This assessment will be reviewed at the frequency specified above.

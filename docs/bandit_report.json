@@ -1,0 +1,3025 @@
+{
+  "errors": [],
+  "generated_at": "2026-04-02T17:37:13Z",
+  "metrics": {
+    "_totals": {
+      "CONFIDENCE.HIGH": 72,
+      "CONFIDENCE.LOW": 3,
+      "CONFIDENCE.MEDIUM": 28,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 61,
+      "SEVERITY.MEDIUM": 42,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 18833,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 2,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/__main__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 3,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/alerting.py": {
+      "CONFIDENCE.HIGH": 4,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 2,
+      "SEVERITY.MEDIUM": 2,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 432,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 9,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/indexer.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 556,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/interface.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 1,
+      "CONFIDENCE.MEDIUM": 1,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 2,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 644,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/patterns.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 7,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 7,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 891,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/query.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 10,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 10,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 788,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/analytics/wolfram.py": {
+      "CONFIDENCE.HIGH": 8,
+      "CONFIDENCE.LOW": 2,
+      "CONFIDENCE.MEDIUM": 9,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 8,
+      "SEVERITY.MEDIUM": 11,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1169,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/arbitration.py": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 2,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 458,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/audit.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 242,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/bootstrap.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 205,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/cli.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1065,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/compliance.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 549,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/confidence.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 225,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/config.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 124,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/context.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 358,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/cross_ref.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 236,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/daemon/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/daemon/detector.py": {
+      "CONFIDENCE.HIGH": 13,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 13,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 296,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/daemon/injector.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 96,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/daemon/service.py": {
+      "CONFIDENCE.HIGH": 12,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 12,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 359,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/dispute.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 498,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/federation.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 1,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 509,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/generate.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 165,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/graph.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 358,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/hooks/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 5,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/hooks/claude_code.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 159,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/hooks/git_hooks.py": {
+      "CONFIDENCE.HIGH": 7,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 7,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 247,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/identity.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 508,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/init_cmd.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 118,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/join.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 214,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/licensing.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 628,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/mcp_server/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 1,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 1,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1458,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/mcp_server/__main__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 4,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/mcp_server/local_model.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 1,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 73,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/merkle.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 385,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/network.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 257,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/onboard.py": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 2,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 368,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/redteam.py": {
+      "CONFIDENCE.HIGH": 3,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 3,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 982,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/retention.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 153,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/roles.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 684,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/siem.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 302,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/stamp.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 401,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/status.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 64,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/team.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 529,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/timestamp.py": {
+      "CONFIDENCE.HIGH": 7,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 6,
+      "SEVERITY.MEDIUM": 1,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 339,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/update.py": {
+      "CONFIDENCE.HIGH": 3,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 2,
+      "SEVERITY.MEDIUM": 1,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 71,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/verify.py": {
+      "CONFIDENCE.HIGH": 3,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 3,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 338,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/web/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "charter/web/app.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 307,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "194             })\n195         except Exception:\n196             pass  # alerting must never crash the system\n197 \n",
+      "col_offset": 8,
+      "end_col_offset": 16,
+      "filename": "charter/alerting.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 195,
+      "line_range": [
+        195,
+        196
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "240             )\n241             urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT)\n242             return True\n",
+      "col_offset": 12,
+      "end_col_offset": 62,
+      "filename": "charter/alerting.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 241,
+      "line_range": [
+        241
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "350             )\n351             urllib.request.urlopen(req, timeout=_HTTP_TIMEOUT)\n352             return True\n",
+      "col_offset": 12,
+      "end_col_offset": 62,
+      "filename": "charter/alerting.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 351,
+      "line_range": [
+        351
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "415         })\n416     except Exception:\n417         pass  # chain logging is non-critical\n418 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/alerting.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 416,
+      "line_range": [
+        416,
+        417
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "641         else:\n642             sql = f\"SELECT * FROM {source}\"\n643             table_name = source\n",
+      "col_offset": 20,
+      "end_col_offset": 34,
+      "filename": "charter/analytics/interface.py",
+      "issue_confidence": "LOW",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 642,
+      "line_range": [
+        642
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "676         row_count = conn.execute(\n677             f\"SELECT COUNT(*) FROM ({sql})\"\n678         ).fetchone()[0]\n",
+      "col_offset": 14,
+      "end_col_offset": 36,
+      "filename": "charter/analytics/interface.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 677,
+      "line_range": [
+        677
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "499 \n500         rows = self._conn.execute(f\"\"\"\n501             SELECT session_id, events FROM sessions\n502             {where} ORDER BY session_id\n503         \"\"\", params).fetchall()\n504 \n",
+      "col_offset": 38,
+      "end_col_offset": 12,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 500,
+      "line_range": [
+        500,
+        501,
+        502,
+        503
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "524 \n525         rows = self._conn.execute(f\"\"\"\n526             SELECT\n527                 {group_col} as grp,\n528                 COUNT(*) as volume,\n529                 COUNT(DISTINCT event) as diversity,\n530                 COUNT(DISTINCT DATE_TRUNC('day', ts)) as active_days,\n531                 SUM(CASE WHEN event IN (\n532                     'audit_generated', 'governance_generated',\n533                     'governance_config_changed', 'alert_dispatched'\n534                 ) THEN 1 ELSE 0 END) as governance_events,\n535                 MIN(ts) as first_ts,\n536                 MAX(ts) as last_ts\n537             FROM events\n538             GROUP BY {group_col}\n539         \"\"\").fetchall()\n540 \n",
+      "col_offset": 38,
+      "end_col_offset": 16,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 525,
+      "line_range": [
+        525,
+        526,
+        527,
+        528,
+        529,
+        530,
+        531,
+        532,
+        533,
+        534,
+        535,
+        536,
+        537,
+        538,
+        539
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "550             # Average gap between consecutive events\n551             avg_gap = self._conn.execute(f\"\"\"\n552                 SELECT AVG(gap) FROM (\n553                     SELECT EPOCH(LEAD(ts) OVER (ORDER BY idx)) - EPOCH(ts) as gap\n554                     FROM events WHERE {group_col} = ?\n555                 ) WHERE gap IS NOT NULL AND gap > 0 AND gap < 86400\n556             \"\"\", [grp]).fetchone()[0]\n557 \n",
+      "col_offset": 45,
+      "end_col_offset": 38,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 551,
+      "line_range": [
+        551,
+        552,
+        553,
+        554,
+        555,
+        556
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "558             # Peak hour\n559             peak = self._conn.execute(f\"\"\"\n560                 SELECT EXTRACT(HOUR FROM ts) as h, COUNT(*) as c\n561                 FROM events WHERE {group_col} = ?\n562                 GROUP BY h ORDER BY c DESC LIMIT 1\n563             \"\"\", [grp]).fetchone()\n564 \n",
+      "col_offset": 42,
+      "end_col_offset": 34,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 559,
+      "line_range": [
+        559,
+        560,
+        561,
+        562,
+        563
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "596 \n597         rows = self._conn.execute(f\"\"\"\n598             SELECT\n599                 COALESCE(actor, 'unattributed') as actor,\n600                 COUNT(*) as volume,\n601                 COUNT(DISTINCT event) as diversity,\n602                 COUNT(DISTINCT DATE_TRUNC('day', ts)) as active_days,\n603                 SUM(CASE WHEN event IN (\n604                     'audit_generated', 'governance_generated',\n605                     'governance_config_changed', 'alert_dispatched'\n606                 ) THEN 1 ELSE 0 END) as governance_events\n607             FROM events\n608             WHERE {where}\n609             GROUP BY actor\n610         \"\"\").fetchall()\n611 \n",
+      "col_offset": 38,
+      "end_col_offset": 18,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 597,
+      "line_range": [
+        597,
+        598,
+        599,
+        600,
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "624         \"\"\"Detect event types that appeared or disappeared.\"\"\"\n625         baseline_events = set(r[0] for r in self._conn.execute(f\"\"\"\n626             SELECT DISTINCT event FROM events\n627             WHERE ts >= CURRENT_TIMESTAMP - INTERVAL '{baseline_days + lookback_days} days'\n628               AND ts < CURRENT_TIMESTAMP - INTERVAL '{lookback_days} days'\n629         \"\"\").fetchall())\n630 \n",
+      "col_offset": 67,
+      "end_col_offset": 54,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 625,
+      "line_range": [
+        625,
+        626,
+        627,
+        628,
+        629
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "630 \n631         recent_events = set(r[0] for r in self._conn.execute(f\"\"\"\n632             SELECT DISTINCT event FROM events\n633             WHERE ts >= CURRENT_TIMESTAMP - INTERVAL '{lookback_days} days'\n634         \"\"\").fetchall())\n635 \n",
+      "col_offset": 65,
+      "end_col_offset": 54,
+      "filename": "charter/analytics/patterns.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 631,
+      "line_range": [
+        631,
+        632,
+        633,
+        634
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "79         # Basic counts\n80         row = self._conn.execute(f\"\"\"\n81             SELECT\n82                 COUNT(*) as total_events,\n83                 COUNT(DISTINCT event) as unique_events,\n84                 MIN(ts) as first_seen,\n85                 MAX(ts) as last_seen,\n86                 ANY_VALUE(COALESCE(actor, 'unattributed')) as actor_value,\n87                 ANY_VALUE(signer) as signer\n88             FROM events\n89             {where}\n90         \"\"\", params).fetchone()\n91 \n",
+      "col_offset": 37,
+      "end_col_offset": 12,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 80,
+      "line_range": [
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "97         # Active days\n98         active_days = self._conn.execute(f\"\"\"\n99             SELECT COUNT(DISTINCT DATE_TRUNC('day', ts))\n100             FROM events {where}\n101         \"\"\", params).fetchone()[0]\n102 \n",
+      "col_offset": 45,
+      "end_col_offset": 24,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 98,
+      "line_range": [
+        98,
+        99,
+        100,
+        101
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "103         # Event type breakdown\n104         event_breakdown = self._conn.execute(f\"\"\"\n105             SELECT event, COUNT(*) as cnt,\n106                    ROUND(COUNT(*) * 100.0 / {total_events}, 1) as pct\n107             FROM events {where}\n108             GROUP BY event ORDER BY cnt DESC\n109         \"\"\", params).fetchall()\n110 \n",
+      "col_offset": 49,
+      "end_col_offset": 44,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 104,
+      "line_range": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "135         # Activity by hour of day\n136         hourly = self._conn.execute(f\"\"\"\n137             SELECT EXTRACT(HOUR FROM ts) as hour, COUNT(*) as cnt\n138             FROM events {where}\n139             GROUP BY EXTRACT(HOUR FROM ts)\n140             ORDER BY hour\n141         \"\"\", params).fetchall()\n142 \n",
+      "col_offset": 40,
+      "end_col_offset": 24,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 136,
+      "line_range": [
+        136,
+        137,
+        138,
+        139,
+        140,
+        141
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "143         # Activity by day of week (0=Mon, 6=Sun)\n144         daily = self._conn.execute(f\"\"\"\n145             SELECT EXTRACT(DOW FROM ts) as dow, COUNT(*) as cnt\n146             FROM events {where}\n147             GROUP BY EXTRACT(DOW FROM ts)\n148             ORDER BY dow\n149         \"\"\", params).fetchall()\n150 \n",
+      "col_offset": 39,
+      "end_col_offset": 24,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 144,
+      "line_range": [
+        144,
+        145,
+        146,
+        147,
+        148,
+        149
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "151         # Recent activity (last 20 events)\n152         recent = self._conn.execute(f\"\"\"\n153             SELECT idx, ts, event,\n154                    SUBSTRING(data_json, 1, 80) as data_preview\n155             FROM events {where}\n156             ORDER BY idx DESC LIMIT 20\n157         \"\"\", params).fetchall()\n158 \n",
+      "col_offset": 40,
+      "end_col_offset": 24,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 152,
+      "line_range": [
+        152,
+        153,
+        154,
+        155,
+        156,
+        157
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "260 \n261         rows = self._conn.execute(f\"\"\"\n262             WITH ranked AS ({metric_sql[metric]})\n263             SELECT actor, value FROM ranked\n264             ORDER BY value DESC\n265             LIMIT {top_n}\n266         \"\"\").fetchall()\n267 \n",
+      "col_offset": 38,
+      "end_col_offset": 28,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 261,
+      "line_range": [
+        261,
+        262,
+        263,
+        264,
+        265,
+        266
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "343         # Overall volume by time bucket\n344         buckets = self._conn.execute(f\"\"\"\n345             SELECT DATE_TRUNC('{trunc}', ts) as bucket, COUNT(*) as cnt\n346             FROM events {where_clause}\n347             GROUP BY DATE_TRUNC('{trunc}', ts)\n348             ORDER BY bucket\n349         \"\"\", params).fetchall()\n350 \n",
+      "col_offset": 41,
+      "end_col_offset": 31,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 344,
+      "line_range": [
+        344,
+        345,
+        346,
+        347,
+        348,
+        349
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "351         # Event type breakdown per bucket (top 5 event types)\n352         top_events = self._conn.execute(f\"\"\"\n353             SELECT event FROM events {where_clause}\n354             GROUP BY event ORDER BY COUNT(*) DESC LIMIT 5\n355         \"\"\", params).fetchall()\n356         top_event_names = [r[0] for r in top_events]\n",
+      "col_offset": 44,
+      "end_col_offset": 37,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 352,
+      "line_range": [
+        352,
+        353,
+        354,
+        355
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "366 \n367             rows = self._conn.execute(f\"\"\"\n368                 SELECT DATE_TRUNC('{trunc}', ts) as bucket, COUNT(*) as cnt\n369                 FROM events {evt_where}\n370                 GROUP BY DATE_TRUNC('{trunc}', ts)\n371                 ORDER BY bucket\n372             \"\"\", evt_params).fetchall()\n373             type_breakdown[evt] = [\n",
+      "col_offset": 42,
+      "end_col_offset": 35,
+      "filename": "charter/analytics/query.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 367,
+      "line_range": [
+        367,
+        368,
+        369,
+        370,
+        371,
+        372
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "31 import shutil\n32 import subprocess\n33 import tempfile\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 32,
+      "line_range": [
+        32
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "170         )\n171         result = subprocess.run(\n172             [\"ssh\", \"-o\", \"ConnectTimeout=5\", \"-o\", \"BatchMode=yes\",\n173              remote_target, check_cmd],\n174             capture_output=True, text=True, timeout=10,\n175         )\n176         if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 171,
+      "line_range": [
+        171,
+        172,
+        173,
+        174,
+        175
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "170         )\n171         result = subprocess.run(\n172             [\"ssh\", \"-o\", \"ConnectTimeout=5\", \"-o\", \"BatchMode=yes\",\n173              remote_target, check_cmd],\n174             capture_output=True, text=True, timeout=10,\n175         )\n176         if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 171,
+      "line_range": [
+        171,
+        172,
+        173,
+        174,
+        175
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "197     remote_filename = os.path.basename(local_path)\n198     remote_path = f\"/tmp/charter_{remote_filename}\"\n199 \n",
+      "col_offset": 20,
+      "end_col_offset": 33,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 377,
+        "link": "https://cwe.mitre.org/data/definitions/377.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Probable insecure usage of temp file/directory.",
+      "line_number": 198,
+      "line_range": [
+        198
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b108_hardcoded_tmp_directory.html",
+      "test_id": "B108",
+      "test_name": "hardcoded_tmp_directory"
+    },
+    {
+      "code": "200     try:\n201         result = subprocess.run(\n202             [\"scp\", \"-o\", \"ConnectTimeout=10\", \"-o\", \"BatchMode=yes\",\n203              local_path, f\"{connection['host']}:{remote_path}\"],\n204             capture_output=True, text=True, timeout=30,\n205         )\n206         if result.returncode == 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 201,
+      "line_range": [
+        201,
+        202,
+        203,
+        204,
+        205
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "200     try:\n201         result = subprocess.run(\n202             [\"scp\", \"-o\", \"ConnectTimeout=10\", \"-o\", \"BatchMode=yes\",\n203              local_path, f\"{connection['host']}:{remote_path}\"],\n204             capture_output=True, text=True, timeout=30,\n205         )\n206         if result.returncode == 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 201,
+      "line_range": [
+        201,
+        202,
+        203,
+        204,
+        205
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "270         if mode == \"local\":\n271             result = subprocess.run(\n272                 [connection[\"path\"], \"-code\", code],\n273                 capture_output=True, text=True, timeout=timeout,\n274             )\n275         elif mode == \"remote\":\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 271,
+      "line_range": [
+        271,
+        272,
+        273,
+        274
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "277             escaped = code.replace(\"'\", \"'\\\\''\")\n278             result = subprocess.run(\n279                 [\"ssh\", \"-o\", \"ConnectTimeout=10\", \"-o\", \"BatchMode=yes\",\n280                  connection[\"host\"],\n281                  f\"{connection['path']} -code '{escaped}'\"],\n282                 capture_output=True, text=True, timeout=timeout,\n283             )\n284         else:\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 278,
+      "line_range": [
+        278,
+        279,
+        280,
+        281,
+        282,
+        283
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "277             escaped = code.replace(\"'\", \"'\\\\''\")\n278             result = subprocess.run(\n279                 [\"ssh\", \"-o\", \"ConnectTimeout=10\", \"-o\", \"BatchMode=yes\",\n280                  connection[\"host\"],\n281                  f\"{connection['path']} -code '{escaped}'\"],\n282                 capture_output=True, text=True, timeout=timeout,\n283             )\n284         else:\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 278,
+      "line_range": [
+        278,
+        279,
+        280,
+        281,
+        282,
+        283
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "670 \n671         rows = self._conn.execute(f\"\"\"\n672             SELECT actor, {col} as value\n673             FROM sessions\n674             WHERE {col} IS NOT NULL\n675             ORDER BY actor\n676         \"\"\").fetchall()\n677 \n",
+      "col_offset": 38,
+      "end_col_offset": 26,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 671,
+      "line_range": [
+        671,
+        672,
+        673,
+        674,
+        675,
+        676
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "794             self._conn,\n795             f\"\"\"SELECT DATE_TRUNC('{trunc}', ts) as period,\n796                        COUNT(*) as count\n797                 FROM events\n798                 GROUP BY DATE_TRUNC('{trunc}', ts)\n799                 ORDER BY period\"\"\",\n800             filename=f\"timeseries_{metric}_{trunc}.csv\",\n",
+      "col_offset": 16,
+      "end_col_offset": 35,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "LOW",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 795,
+      "line_range": [
+        795,
+        796,
+        797,
+        798,
+        799
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1044             self._conn.execute(\n1045                 f\"CREATE TABLE {name} AS SELECT * FROM read_csv_auto('{path}')\"\n1046             )\n",
+      "col_offset": 18,
+      "end_col_offset": 31,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1045,
+      "line_range": [
+        1045
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1048             count = self._conn.execute(\n1049                 f\"SELECT COUNT(*) FROM {name}\"\n1050             ).fetchone()[0]\n",
+      "col_offset": 18,
+      "end_col_offset": 39,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1049,
+      "line_range": [
+        1049
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1073             self._conn.execute(\n1074                 f\"CREATE TABLE {name} AS \"\n1075                 f\"SELECT * FROM read_json_auto('{path}')\"\n1076             )\n",
+      "col_offset": 18,
+      "end_col_offset": 31,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1074,
+      "line_range": [
+        1074,
+        1075
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1078             count = self._conn.execute(\n1079                 f\"SELECT COUNT(*) FROM {name}\"\n1080             ).fetchone()[0]\n",
+      "col_offset": 18,
+      "end_col_offset": 39,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1079,
+      "line_range": [
+        1079
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1122             self._conn.execute(\n1123                 f\"SELECT COUNT(*) FROM {outcome_table}\"\n1124             ).fetchone()\n",
+      "col_offset": 18,
+      "end_col_offset": 39,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1123,
+      "line_range": [
+        1123
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1131         window_seconds = time_window_hours * 3600\n1132         linked = self._conn.execute(f\"\"\"\n1133             SELECT\n1134                 e.idx, e.ts as event_ts, e.event, e.actor,\n1135                 o.{join_column} as outcome_ts,\n1136                 o.{outcome_column} as outcome_value,\n1137                 ABS(EPOCH(e.ts) - EPOCH(CAST(o.{join_column} AS TIMESTAMP)))\n1138                     as gap_seconds\n1139             FROM events e\n1140             CROSS JOIN {outcome_table} o\n1141             WHERE ABS(EPOCH(e.ts) - EPOCH(CAST(o.{join_column} AS TIMESTAMP)))\n1142                   < {window_seconds}\n1143             ORDER BY gap_seconds\n1144             LIMIT 1000\n1145         \"\"\").fetchall()\n1146 \n",
+      "col_offset": 40,
+      "end_col_offset": 18,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1132,
+      "line_range": [
+        1132,
+        1133,
+        1134,
+        1135,
+        1136,
+        1137,
+        1138,
+        1139,
+        1140,
+        1141,
+        1142,
+        1143,
+        1144,
+        1145
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1154         # Per-event-type outcome stats\n1155         event_outcomes = self._conn.execute(f\"\"\"\n1156             WITH linked AS (\n1157                 SELECT\n1158                     e.event,\n1159                     o.{outcome_column} as outcome,\n1160                     ROW_NUMBER() OVER (\n1161                         PARTITION BY e.idx\n1162                         ORDER BY ABS(EPOCH(e.ts) - EPOCH(CAST(o.{join_column} AS TIMESTAMP)))\n1163                     ) as rn\n1164                 FROM events e\n1165                 CROSS JOIN {outcome_table} o\n1166                 WHERE ABS(EPOCH(e.ts) - EPOCH(CAST(o.{join_column} AS TIMESTAMP)))\n1167                       < {window_seconds}\n1168             )\n1169             SELECT event,\n1170                    COUNT(*) as linked_count,\n1171                    ROUND(AVG(CAST(outcome AS DOUBLE)), 2) as avg_outcome,\n1172                    ROUND(MIN(CAST(outcome AS DOUBLE)), 2) as min_outcome,\n1173                    ROUND(MAX(CAST(outcome AS DOUBLE)), 2) as max_outcome\n1174             FROM linked\n1175             WHERE rn = 1\n1176             GROUP BY event\n1177             ORDER BY avg_outcome DESC\n1178         \"\"\").fetchall()\n1179 \n",
+      "col_offset": 48,
+      "end_col_offset": 22,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1155,
+      "line_range": [
+        1155,
+        1156,
+        1157,
+        1158,
+        1159,
+        1160,
+        1161,
+        1162,
+        1163,
+        1164,
+        1165,
+        1166,
+        1167,
+        1168,
+        1169,
+        1170,
+        1171,
+        1172,
+        1173,
+        1174,
+        1175,
+        1176,
+        1177,
+        1178
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "1460     print()\n1461     print(f\"  Query with: charter analytics query \"\n1462           f\"\\\"SELECT * FROM {r['table']} LIMIT 10\\\"\")\n",
+      "col_offset": 12,
+      "end_col_offset": 28,
+      "filename": "charter/analytics/wolfram.py",
+      "issue_confidence": "LOW",
+      "issue_cwe": {
+        "id": 89,
+        "link": "https://cwe.mitre.org/data/definitions/89.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible SQL injection vector through string-based query construction.",
+      "line_number": 1461,
+      "line_range": [
+        1461,
+        1462
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b608_hardcoded_sql_expressions.html",
+      "test_id": "B608",
+      "test_name": "hardcoded_sql_expressions"
+    },
+    {
+      "code": "210         try:\n211             with urllib.request.urlopen(req, timeout=120) as resp:\n212                 result = json.loads(resp.read())\n",
+      "col_offset": 17,
+      "end_col_offset": 57,
+      "filename": "charter/arbitration.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 211,
+      "line_range": [
+        211
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "383         req = urllib.request.Request(url, method=\"GET\")\n384         with urllib.request.urlopen(req, timeout=5) as resp:\n385             if resp.status == 200:\n",
+      "col_offset": 13,
+      "end_col_offset": 51,
+      "filename": "charter/arbitration.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 384,
+      "line_range": [
+        384
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "46                     text_blob += \" \" + fh.read(4096).lower()\n47             except Exception:\n48                 pass\n49 \n",
+      "col_offset": 12,
+      "end_col_offset": 20,
+      "filename": "charter/bootstrap.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 47,
+      "line_range": [
+        47,
+        48
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "122             })\n123         except Exception:\n124             pass  # Chain recording is non-critical; never block config save\n125 \n",
+      "col_offset": 8,
+      "end_col_offset": 16,
+      "filename": "charter/config.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 123,
+      "line_range": [
+        123,
+        124
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "12 import platform\n13 import subprocess\n14 import time\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 13,
+      "line_range": [
+        13
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "162         try:\n163             result = subprocess.run(\n164                 [\"ps\", \"-eo\", \"pid,comm\"],\n165                 capture_output=True, text=True, timeout=10,\n166             )\n167             for line in result.stdout.strip().splitlines()[1:]:\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 163,
+      "line_range": [
+        163,
+        164,
+        165,
+        166
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "162         try:\n163             result = subprocess.run(\n164                 [\"ps\", \"-eo\", \"pid,comm\"],\n165                 capture_output=True, text=True, timeout=10,\n166             )\n167             for line in result.stdout.strip().splitlines()[1:]:\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 163,
+      "line_range": [
+        163,
+        164,
+        165,
+        166
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "179         try:\n180             result = subprocess.run(\n181                 [\"tasklist\", \"/FO\", \"CSV\", \"/NH\"],\n182                 capture_output=True, text=True, timeout=10,\n183             )\n184             for line in result.stdout.strip().splitlines():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 180,
+      "line_range": [
+        180,
+        181,
+        182,
+        183
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "179         try:\n180             result = subprocess.run(\n181                 [\"tasklist\", \"/FO\", \"CSV\", \"/NH\"],\n182                 capture_output=True, text=True, timeout=10,\n183             )\n184             for line in result.stdout.strip().splitlines():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 180,
+      "line_range": [
+        180,
+        181,
+        182,
+        183
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "216     try:\n217         result = subprocess.run(\n218             [\"osascript\", \"-e\",\n219              'tell application \"System Events\" to get name of every process whose name is \"Safari\"'],\n220             capture_output=True, text=True, timeout=3,\n221         )\n222         if \"Safari\" in result.stdout:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 217,
+      "line_range": [
+        217,
+        218,
+        219,
+        220,
+        221
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "216     try:\n217         result = subprocess.run(\n218             [\"osascript\", \"-e\",\n219              'tell application \"System Events\" to get name of every process whose name is \"Safari\"'],\n220             capture_output=True, text=True, timeout=3,\n221         )\n222         if \"Safari\" in result.stdout:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 217,
+      "line_range": [
+        217,
+        218,
+        219,
+        220,
+        221
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "222         if \"Safari\" in result.stdout:\n223             result = subprocess.run(\n224                 [\"osascript\", \"-e\",\n225                  'tell application \"Safari\" to get URL of every tab of every window'],\n226             capture_output=True, text=True, timeout=5,\n227             )\n228             if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 223,
+      "line_range": [
+        223,
+        224,
+        225,
+        226,
+        227
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "222         if \"Safari\" in result.stdout:\n223             result = subprocess.run(\n224                 [\"osascript\", \"-e\",\n225                  'tell application \"Safari\" to get URL of every tab of every window'],\n226             capture_output=True, text=True, timeout=5,\n227             )\n228             if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 223,
+      "line_range": [
+        223,
+        224,
+        225,
+        226,
+        227
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "234     try:\n235         result = subprocess.run(\n236             [\"osascript\", \"-e\",\n237              'tell application \"System Events\" to get name of every process whose name is \"Google Chrome\"'],\n238             capture_output=True, text=True, timeout=3,\n239         )\n240         if \"Google Chrome\" in result.stdout:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 235,
+      "line_range": [
+        235,
+        236,
+        237,
+        238,
+        239
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "234     try:\n235         result = subprocess.run(\n236             [\"osascript\", \"-e\",\n237              'tell application \"System Events\" to get name of every process whose name is \"Google Chrome\"'],\n238             capture_output=True, text=True, timeout=3,\n239         )\n240         if \"Google Chrome\" in result.stdout:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 235,
+      "line_range": [
+        235,
+        236,
+        237,
+        238,
+        239
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "240         if \"Google Chrome\" in result.stdout:\n241             result = subprocess.run(\n242                 [\"osascript\", \"-e\",\n243                  'tell application \"Google Chrome\" to get URL of every tab of every window'],\n244                 capture_output=True, text=True, timeout=5,\n245             )\n246             if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 241,
+      "line_range": [
+        241,
+        242,
+        243,
+        244,
+        245
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "240         if \"Google Chrome\" in result.stdout:\n241             result = subprocess.run(\n242                 [\"osascript\", \"-e\",\n243                  'tell application \"Google Chrome\" to get URL of every tab of every window'],\n244                 capture_output=True, text=True, timeout=5,\n245             )\n246             if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 21,
+      "end_col_offset": 13,
+      "filename": "charter/daemon/detector.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 241,
+      "line_range": [
+        241,
+        242,
+        243,
+        244,
+        245
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "124                                 })\n125                             except Exception:\n126                                 pass\n127 \n",
+      "col_offset": 28,
+      "end_col_offset": 36,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 125,
+      "line_range": [
+        125,
+        126
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "138                                     )\n139                                 except Exception:\n140                                     pass\n141             except Exception:\n",
+      "col_offset": 32,
+      "end_col_offset": 40,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 139,
+      "line_range": [
+        139,
+        140
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "140                                     pass\n141             except Exception:\n142                 pass\n143 \n",
+      "col_offset": 12,
+      "end_col_offset": 20,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 141,
+      "line_range": [
+        141,
+        142
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "159                             })\n160                         except Exception:\n161                             pass\n162 \n",
+      "col_offset": 24,
+      "end_col_offset": 32,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 160,
+      "line_range": [
+        160,
+        161
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "172                                 )\n173                             except Exception:\n174                                 pass\n175 \n",
+      "col_offset": 28,
+      "end_col_offset": 36,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 173,
+      "line_range": [
+        173,
+        174
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "178                         apply_retention_policy(self._config)\n179                     except Exception:\n180                         pass\n181             except Exception:\n",
+      "col_offset": 20,
+      "end_col_offset": 28,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 179,
+      "line_range": [
+        179,
+        180
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "180                         pass\n181             except Exception:\n182                 pass\n183 \n",
+      "col_offset": 12,
+      "end_col_offset": 20,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 181,
+      "line_range": [
+        181,
+        182
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "242                             )\n243                         except Exception:\n244                             pass\n245                     except Exception:\n",
+      "col_offset": 24,
+      "end_col_offset": 32,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 243,
+      "line_range": [
+        243,
+        244
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "244                             pass\n245                     except Exception:\n246                         pass\n247 \n",
+      "col_offset": 20,
+      "end_col_offset": 28,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 245,
+      "line_range": [
+        245,
+        246
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "248                 last_known_count = current_count\n249             except Exception:\n250                 pass\n251 \n",
+      "col_offset": 12,
+      "end_col_offset": 20,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 249,
+      "line_range": [
+        249,
+        250
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "308         })\n309     except Exception:\n310         pass\n311 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 309,
+      "line_range": [
+        309,
+        310
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "317             append_to_chain(\"daemon_stopped\", {})\n318         except Exception:\n319             pass\n320         print(\"\\nDaemon stopped.\")\n",
+      "col_offset": 8,
+      "end_col_offset": 16,
+      "filename": "charter/daemon/service.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 318,
+      "line_range": [
+        318,
+        319
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "169                 merkle_proofs[str(idx)] = proof\n170     except Exception:\n171         pass  # Merkle proofs are supplementary; proceed without them\n172 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/dispute.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 170,
+      "line_range": [
+        170,
+        171
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "81         req.add_header(\"Accept\", \"application/json\")\n82         with urllib.request.urlopen(req, timeout=timeout) as resp:\n83             body = resp.read().decode(\"utf-8\")\n",
+      "col_offset": 13,
+      "end_col_offset": 57,
+      "filename": "charter/federation.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 82,
+      "line_range": [
+        82
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "15 import stat\n16 import subprocess\n17 \n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 16,
+      "line_range": [
+        16
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "77         cwd = path or os.getcwd()\n78         result = subprocess.run(\n79             [\"git\", \"rev-parse\", \"--git-dir\"],\n80             capture_output=True, text=True, cwd=cwd,\n81         )\n82         if result.returncode != 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 78,
+      "line_range": [
+        78,
+        79,
+        80,
+        81
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "77         cwd = path or os.getcwd()\n78         result = subprocess.run(\n79             [\"git\", \"rev-parse\", \"--git-dir\"],\n80             capture_output=True, text=True, cwd=cwd,\n81         )\n82         if result.returncode != 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 78,
+      "line_range": [
+        78,
+        79,
+        80,
+        81
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "93     \"\"\"Get or create the global git hooks directory.\"\"\"\n94     result = subprocess.run(\n95         [\"git\", \"config\", \"--global\", \"core.hooksPath\"],\n96         capture_output=True, text=True,\n97     )\n98     if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 13,
+      "end_col_offset": 5,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 94,
+      "line_range": [
+        94,
+        95,
+        96,
+        97
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "93     \"\"\"Get or create the global git hooks directory.\"\"\"\n94     result = subprocess.run(\n95         [\"git\", \"config\", \"--global\", \"core.hooksPath\"],\n96         capture_output=True, text=True,\n97     )\n98     if result.returncode == 0 and result.stdout.strip():\n",
+      "col_offset": 13,
+      "end_col_offset": 5,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 94,
+      "line_range": [
+        94,
+        95,
+        96,
+        97
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "171         # Set global hooks path\n172         subprocess.run(\n173             [\"git\", \"config\", \"--global\", \"core.hooksPath\", hooks_dir],\n174             capture_output=True,\n175         )\n176     else:\n",
+      "col_offset": 8,
+      "end_col_offset": 9,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 172,
+      "line_range": [
+        172,
+        173,
+        174,
+        175
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "171         # Set global hooks path\n172         subprocess.run(\n173             [\"git\", \"config\", \"--global\", \"core.hooksPath\", hooks_dir],\n174             capture_output=True,\n175         )\n176     else:\n",
+      "col_offset": 8,
+      "end_col_offset": 9,
+      "filename": "charter/hooks/git_hooks.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 172,
+      "line_range": [
+        172,
+        173,
+        174,
+        175
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "334             )\n335         except Exception:\n336             pass  # Merkle batching is non-critical; never block chain append\n337 \n",
+      "col_offset": 8,
+      "end_col_offset": 16,
+      "filename": "charter/identity.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 335,
+      "line_range": [
+        335,
+        336
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "499         append_to_chain(event, data, auto_batch=False)\n500     except Exception:\n501         pass  # Don't fail activation if chain logging fails\n502 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/licensing.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 500,
+      "line_range": [
+        500,
+        501
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "1603 \n1604     uvicorn.run(app, host=\"0.0.0.0\", port=port)\n1605 \n",
+      "col_offset": 26,
+      "end_col_offset": 35,
+      "filename": "charter/mcp_server/__init__.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 605,
+        "link": "https://cwe.mitre.org/data/definitions/605.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Possible binding to all interfaces.",
+      "line_number": 1604,
+      "line_range": [
+        1604
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b104_hardcoded_bind_all_interfaces.html",
+      "test_id": "B104",
+      "test_name": "hardcoded_bind_all_interfaces"
+    },
+    {
+      "code": "62     try:\n63         with urlopen(req, context=ctx, timeout=180) as resp:\n64             result = json.loads(resp.read())\n",
+      "col_offset": 13,
+      "end_col_offset": 51,
+      "filename": "charter/mcp_server/local_model.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 63,
+      "line_range": [
+        63
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "112         }, auto_batch=False)\n113     except Exception:\n114         pass\n115 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/onboard.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 113,
+      "line_range": [
+        113,
+        114
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "288                     print(f\"  {standard.upper()}: {covered}/{total} controls covered ({pct:.0f}%)\")\n289                 except Exception:\n290                     pass\n291             print()\n",
+      "col_offset": 16,
+      "end_col_offset": 24,
+      "filename": "charter/onboard.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 289,
+      "line_range": [
+        289,
+        290
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "1123         })\n1124     except Exception:\n1125         pass  # Chain recording is non-critical\n1126 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/redteam.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 1124,
+      "line_range": [
+        1124,
+        1125
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "1139         })\n1140     except Exception:\n1141         pass\n1142 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/redteam.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 1140,
+      "line_range": [
+        1140,
+        1141
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "1151         })\n1152     except Exception:\n1153         pass\n1154 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/redteam.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 1152,
+      "line_range": [
+        1152,
+        1153
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "187         })\n188     except Exception:\n189         pass  # retention logging is non-critical\n190 \n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/retention.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 188,
+      "line_range": [
+        188,
+        189
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "31 import os\n32 import subprocess\n33 import tempfile\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 32,
+      "line_range": [
+        32
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "57     try:\n58         result = subprocess.run(\n59             [\"which\", \"openssl\"], capture_output=True, text=True, timeout=5\n60         )\n61         if result.returncode == 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 58,
+      "line_range": [
+        58,
+        59,
+        60
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "57     try:\n58         result = subprocess.run(\n59             [\"which\", \"openssl\"], capture_output=True, text=True, timeout=5\n60         )\n61         if result.returncode == 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 58,
+      "line_range": [
+        58,
+        59,
+        60
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "62             return result.stdout.strip()\n63     except Exception:\n64         pass\n65     return None\n",
+      "col_offset": 4,
+      "end_col_offset": 12,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 703,
+        "link": "https://cwe.mitre.org/data/definitions/703.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Try, Except, Pass detected.",
+      "line_number": 63,
+      "line_range": [
+        63,
+        64
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b110_try_except_pass.html",
+      "test_id": "B110",
+      "test_name": "try_except_pass"
+    },
+    {
+      "code": "87     try:\n88         result = subprocess.run(\n89             [\n90                 openssl, \"ts\", \"-query\",\n91                 \"-data\", hash_path,\n92                 \"-no_nonce\",\n93                 \"-sha256\",\n94                 \"-out\", query_path,\n95             ],\n96             capture_output=True, text=True, timeout=10,\n97         )\n98         if result.returncode != 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 88,
+      "line_range": [
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "131         )\n132         resp = urllib.request.urlopen(req, timeout=timeout)\n133         if resp.status == 200:\n",
+      "col_offset": 15,
+      "end_col_offset": 59,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 132,
+      "line_range": [
+        132
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "153     try:\n154         result = subprocess.run(\n155             [openssl, \"ts\", \"-reply\", \"-in\", resp_path, \"-text\"],\n156             capture_output=True, text=True, timeout=10,\n157         )\n158         if result.returncode != 0:\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "charter/timestamp.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 154,
+      "line_range": [
+        154,
+        155,
+        156,
+        157
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "3 import json\n4 import subprocess\n5 import sys\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "charter/update.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 4,
+      "line_range": [
+        4
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "18         req = urllib.request.Request(PYPI_URL, headers={\"Accept\": \"application/json\"})\n19         with urllib.request.urlopen(req, timeout=5) as resp:\n20             data = json.loads(resp.read().decode())\n",
+      "col_offset": 13,
+      "end_col_offset": 51,
+      "filename": "charter/update.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 19,
+      "line_range": [
+        19
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "82     print(f\"\\nUpgrading charter-governance to v{latest}...\")\n83     result = subprocess.run(\n84         [sys.executable, \"-m\", \"pip\", \"install\", \"--upgrade\", \"charter-governance\"],\n85         capture_output=True,\n86         text=True,\n87     )\n88 \n",
+      "col_offset": 13,
+      "end_col_offset": 5,
+      "filename": "charter/update.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 83,
+      "line_range": [
+        83,
+        84,
+        85,
+        86,
+        87
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "140     try:\n141         with urllib.request.urlopen(req, context=SSL_CONTEXT) as resp:\n142             result = json.loads(resp.read().decode())\n",
+      "col_offset": 13,
+      "end_col_offset": 61,
+      "filename": "charter/verify.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 141,
+      "line_range": [
+        141
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "166         try:\n167             with urllib.request.urlopen(link_req, context=SSL_CONTEXT) as link_resp:\n168                 link_result = json.loads(link_resp.read().decode())\n",
+      "col_offset": 17,
+      "end_col_offset": 70,
+      "filename": "charter/verify.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 167,
+      "line_range": [
+        167
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "207     try:\n208         with urllib.request.urlopen(req, context=SSL_CONTEXT) as resp:\n209             result = json.loads(resp.read().decode())\n",
+      "col_offset": 13,
+      "end_col_offset": 61,
+      "filename": "charter/verify.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 22,
+        "link": "https://cwe.mitre.org/data/definitions/22.html"
+      },
+      "issue_severity": "MEDIUM",
+      "issue_text": "Audit url open for permitted schemes. Allowing use of file:/ or custom schemes is often unexpected.",
+      "line_number": 208,
+      "line_range": [
+        208
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.1/blacklists/blacklist_calls.html#b310-urllib-urlopen",
+      "test_id": "B310",
+      "test_name": "blacklist"
+    }
+  ]
+}

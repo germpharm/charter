@@ -20,7 +20,7 @@ import time
 
 from charter.config import load_config
 from charter.daemon.detector import detect_ai_tools, get_summary
-from charter.identity import load_identity, append_to_chain
+from charter.identity import load_identity, append_to_chain, get_chain_path
 from charter.alerting import AlertDispatcher, load_alerting_config
 from charter.audit import (
     generate_audit_report,
@@ -121,7 +121,7 @@ class CharterDaemon:
                                     "tool": tool["name"],
                                     "vendor": tool["vendor"],
                                     "governable": tool["governable"],
-                                })
+                                }, actor="ai")
                             except Exception:
                                 pass
 
@@ -190,7 +190,6 @@ class CharterDaemon:
         have been created recently. If a gap is detected, logs a
         chain_gap_detected event — the gap itself becomes evidence.
         """
-        import os
         chain_path = get_chain_path()
         last_known_count = 0
         if os.path.isfile(chain_path):
@@ -305,7 +304,7 @@ def run_serve(args):
             "scan_interval": interval,
             "audit_frequency": daemon._audit_freq_label,
             "retention": retention_status,
-        })
+        }, actor="ai")
     except Exception:
         pass
 
@@ -314,7 +313,7 @@ def run_serve(args):
     except KeyboardInterrupt:
         daemon.stop()
         try:
-            append_to_chain("daemon_stopped", {})
+            append_to_chain("daemon_stopped", {}, actor="ai")
         except Exception:
             pass
         print("\nDaemon stopped.")

@@ -923,6 +923,113 @@ TOOLS = [
             "required": ["project_path"],
         },
     ),
+    # --- Context Manifest tools (professional intelligence portability) ---
+    Tool(
+        name="charter_manifest_export",
+        description=(
+            "Generate a Context Manifest — a portable snapshot of professional "
+            "intelligence including identity, relationship graph, decision history, "
+            "behavioral patterns, and governance profile. Used for institutional "
+            "knowledge retention (company-facing) and professional intelligence "
+            "portability (individual-facing)."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "scope": {
+                    "type": "string",
+                    "enum": ["individual", "institutional", "role"],
+                    "description": "Manifest scope. 'individual' for personal portability, 'institutional' for company knowledge retention, 'role' for role-scoped export.",
+                    "default": "individual",
+                },
+                "context": {
+                    "type": "string",
+                    "description": "Optional context filter (e.g. 'dartmouth', 'personal').",
+                },
+                "since": {
+                    "type": "string",
+                    "description": "Optional ISO date filter for interactions and decisions (e.g. '2025-01-01').",
+                },
+            },
+            "required": [],
+        },
+    ),
+    Tool(
+        name="charter_manifest_verify",
+        description=(
+            "Verify a Context Manifest's integrity. Checks version compatibility, "
+            "required fields, signature validity, and internal consistency."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "manifest": {
+                    "type": "object",
+                    "description": "The Context Manifest JSON object to verify.",
+                },
+            },
+            "required": ["manifest"],
+        },
+    ),
+    Tool(
+        name="charter_manifest_import",
+        description=(
+            "Import a Context Manifest from another Charter user. Verifies integrity "
+            "and records the import in the local chain. Used when onboarding someone "
+            "whose professional intelligence was exported from another system."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "manifest": {
+                    "type": "object",
+                    "description": "The Context Manifest JSON object to import.",
+                },
+            },
+            "required": ["manifest"],
+        },
+    ),
+    Tool(
+        name="charter_connector_json_ingest",
+        description=(
+            "Ingest a payload of normalized JSON events via the "
+            "json_ingestion connector. Accepts the same payload format "
+            "as the file-based connector and the HTTP endpoint. "
+            "Each event becomes a chain entry; entities are added to "
+            "the graph memory. Returns a ConnectorResult summary."
+        ),
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "payload": {
+                    "type": "object",
+                    "description": (
+                        "JSON object with an 'events' key whose value "
+                        "is a list of event dicts. Each event must have "
+                        "event_type and data; may also have actor, "
+                        "timestamp, and entities. See the Charter "
+                        "connector contract for the full schema."
+                    ),
+                },
+                "since": {
+                    "type": "string",
+                    "description": "Optional ISO 8601 timestamp filter.",
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Optional max events to ingest.",
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "description": (
+                        "If true, validate the payload but do not "
+                        "write to the chain."
+                    ),
+                },
+            },
+            "required": ["payload"],
+        },
+    ),
 ]
 
 # --- v3.2.0: Analytics tools (appended dynamically) ---
@@ -977,7 +1084,11 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
     elif name == "charter_append_chain":
         event = arguments.get("event", "unknown")
         data = arguments.get("data", {})
-        entry = append_to_chain(event, data)
+        # Default to "collaborative" since charter_append_chain is
+        # invoked by an AI assistant on behalf of a human operator —
+        # the human asked, the AI executed. Callers may override.
+        actor = arguments.get("actor", "collaborative")
+        entry = append_to_chain(event, data, actor=actor)
         if not entry:
             return [TextContent(type="text", text=json.dumps({"error": "No identity found. Cannot append to chain."}))]
         return [TextContent(type="text", text=json.dumps(entry, indent=2))]
@@ -1171,6 +1282,7 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
                 "evidence_basis": evidence_basis,
                 "constraint_assumptions": assumptions,
             },
+            actor="collaborative",
         )
         if not entry:
             return [TextContent(type="text", text=json.dumps({"error": "No identity found."}))]
@@ -1521,6 +1633,67 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
             }, indent=2),
         )]
 
+    # --- Context Manifest handlers ---
+
+    elif name == "charter_manifest_export":
+        from charter.manifest import create_manifest
+        scope = arguments.get("scope", "individual")
+        context = arguments.get("context")
+        since = arguments.get("since")
+        manifest = create_manifest(
+            scope=scope, context_name=context, since=since,
+        )
+        # Summarize for readability
+        gs = manifest.get("graph_snapshot", {}).get("stats", {})
+        pd = manifest.get("pattern_declarations", {})
+        dl = manifest.get("decision_log", [])
+        summary = {
+            "scope": manifest.get("scope"),
+            "identity": manifest.get("identity", {}).get("alias", ""),
+            "entities": gs.get("entity_count", 0),
+            "relationships": gs.get("relationship_count", 0),
+            "interactions": gs.get("interaction_count", 0),
+            "decisions": len(dl),
+            "patterns": pd.get("declaration_count", 0),
+            "signed": bool(manifest.get("signature")),
+            "generated_at": manifest.get("generated_at", ""),
+        }
+        return [TextContent(
+            type="text",
+            text=json.dumps({
+                "summary": summary,
+                "manifest": manifest,
+            }, indent=2, default=str),
+        )]
+
+    elif name == "charter_manifest_verify":
+        from charter.manifest import verify_manifest
+        manifest = arguments.get("manifest", {})
+        result = verify_manifest(manifest)
+        return [TextContent(
+            type="text",
+            text=json.dumps(result, indent=2),
+        )]
+
+    elif name == "charter_manifest_import":
+        from charter.manifest import verify_manifest
+        from charter.identity import append_to_chain
+        manifest = arguments.get("manifest", {})
+        verification = verify_manifest(manifest)
+        append_to_chain("manifest_imported", {
+            "scope": manifest.get("scope", ""),
+            "source_identity": manifest.get("identity", {}).get("public_id", "")[:16],
+            "entity_count": manifest.get("graph_snapshot", {}).get("stats", {}).get("entity_count", 0),
+            "valid": verification["valid"],
+        }, actor="collaborative")
+        return [TextContent(
+            type="text",
+            text=json.dumps({
+                "imported": True,
+                "verification": verification,
+            }, indent=2),
+        )]
+
     # --- v3.2.0: Analytics handlers ---
 
     elif name.startswith("charter_analytics_"):
@@ -1537,6 +1710,17 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
                     "hint": "pip install charter-governance[analytics]",
                 }),
             )]
+
+    elif name == "charter_connector_json_ingest":
+        from charter.connectors.json_ingestion import ingest_payload
+        payload = arguments.get("payload")
+        since = arguments.get("since")
+        limit = arguments.get("limit")
+        dry_run = arguments.get("dry_run", False)
+        result = ingest_payload(
+            payload, since=since, limit=limit, dry_run=dry_run,
+        )
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
     else:
         return [TextContent(
@@ -1566,6 +1750,8 @@ def run_sse(port: int = 8375):
     from starlette.responses import JSONResponse
     import uvicorn
 
+    from charter.connectors.json_ingestion import ingest_payload
+
     sse = SseServerTransport("/messages/")
 
     async def handle_sse(request):
@@ -1587,11 +1773,48 @@ def run_sse(port: int = 8375):
         status = _get_status_data()
         return JSONResponse({"status": "ok", "charter": status})
 
+    async def handle_json_ingest(request):
+        # Localhost-only guard. Future iteration: API key auth for remote.
+        client_host = request.client.host if request.client else ""
+        if client_host not in ("127.0.0.1", "::1", "localhost"):
+            return JSONResponse(
+                {"ok": False, "error": "forbidden: localhost only"},
+                status_code=403,
+            )
+        try:
+            payload = await request.json()
+        except Exception as e:
+            return JSONResponse(
+                {"ok": False, "error": "invalid JSON: {}".format(e)},
+                status_code=400,
+            )
+        since = request.query_params.get("since")
+        limit_param = request.query_params.get("limit")
+        try:
+            limit = int(limit_param) if limit_param else None
+        except ValueError:
+            return JSONResponse(
+                {"ok": False, "error": "limit must be an integer"},
+                status_code=400,
+            )
+        dry_run = request.query_params.get("dry_run") in ("1", "true", "yes")
+
+        result = ingest_payload(
+            payload, since=since, limit=limit, dry_run=dry_run,
+        )
+        status_code = 200 if result.get("ok") else 422
+        return JSONResponse(result, status_code=status_code)
+
     app = Starlette(
         routes=[
             Route("/health", health),
             Route("/sse", handle_sse),
             Route("/messages/", handle_messages, methods=["POST"]),
+            Route(
+                "/connectors/json_ingestion",
+                handle_json_ingest,
+                methods=["POST"],
+            ),
         ],
     )
 
@@ -1600,6 +1823,7 @@ def run_sse(port: int = 8375):
     print(f"  Port: {port}")
     print(f"  Health: http://localhost:{port}/health")
     print(f"  SSE: http://localhost:{port}/sse")
+    print(f"  JSON ingest: http://localhost:{port}/connectors/json_ingestion (localhost only)")
 
     uvicorn.run(app, host="0.0.0.0", port=port)
 

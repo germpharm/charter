@@ -6,12 +6,19 @@ import { bootstrap, bootstrapWithDomain } from "./bootstrap";
 import { ALL_DOMAINS, Domain } from "./types";
 import { checkForUpdates } from "./updateChecker";
 import { promptForContext, resetContextPrompt } from "./contextManager";
+import {
+  registerConnectorCommands,
+  registerAnalyticsCommands,
+  registerCrossVerifyCommands,
+  registerManifestCommands,
+  registerIdentityCommands,
+} from "./operations";
 
 // ---------------------------------------------------------------------------
 // Extension version — bump this when publishing
 // ---------------------------------------------------------------------------
 
-const EXTENSION_VERSION = "3.3.0";
+const EXTENSION_VERSION = "3.4.0";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -296,8 +303,10 @@ export function activate(context: vscode.ExtensionContext): void {
       // v3.1.1: Check for charter_audits/ directory (Layer 0 requirement)
       if (found) {
         const charterDir = path.dirname(found);
-        const auditDir = path.join(charterDir, "charter_audits");
-        state.auditLogActive = fs.existsSync(auditDir);
+        const localAuditDir = path.join(charterDir, "charter_audits");
+        const home = process.env.HOME || process.env.USERPROFILE || "";
+        const globalAuditDir = path.join(home, ".charter", "audits");
+        state.auditLogActive = fs.existsSync(localAuditDir) || fs.existsSync(globalAuditDir);
       } else {
         state.auditLogActive = false;
       }
@@ -609,6 +618,13 @@ export function activate(context: vscode.ExtensionContext): void {
       await promptForContext(context, state.charterPath, outputChannel);
     })
   );
+
+  // ---- Operations commands (v3.4.0) ----
+  registerConnectorCommands(context, outputChannel);
+  registerAnalyticsCommands(context, outputChannel);
+  registerCrossVerifyCommands(context, outputChannel);
+  registerManifestCommands(context, outputChannel);
+  registerIdentityCommands(context, outputChannel);
 
   // ---- File system watcher for charter.yaml ----
   // Watch across all workspace folders. The glob pattern picks up

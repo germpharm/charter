@@ -1,0 +1,98 @@
+# Charter AI Impact Assessment Template — Finance
+# Maps to NIST AI RMF MAP-1.1, MAP-2.1, MAP-5.1 and EU AI Act Article 9
+# Usage: charter impact-assessment --domain finance
+
+domain: finance
+version: "1.0"
+framework_references:
+  - NIST AI RMF 1.0 (MAP-1.1, MAP-2.1, MAP-5.1, GOVERN-1.3)
+  - EU AI Act Article 9 (Risk Management System)
+  - SOX Sections 302, 404, 802, 906
+  - SOC 2 Trust Services Criteria
+  - ISO/IEC 42001:2023
+
+system_description:
+  questions:
+    - What is the intended purpose of this AI system?
+    - What financial decisions does it support or automate?
+    - Who are the end users (analysts, accountants, executives, auditors)?
+    - What financial data does it access, process, or generate?
+    - Does it interact with client accounts or financial instruments?
+
+risk_classification:
+  eu_ai_act_category: high_risk  # Financial AI affecting creditworthiness is high-risk
+  questions:
+    - Does this system make or support financial decisions?
+    - Does it process client financial data?
+    - Could a malfunction cause financial loss to clients or the organization?
+    - Does it affect credit scoring, loan approvals, or investment decisions?
+    - Is it used in real-time trading or time-critical financial operations?
+  risk_levels:
+    critical: "System makes autonomous financial decisions (trading, approvals)"
+    high: "System supports financial decisions with human review (recommendations, scoring)"
+    medium: "System processes financial data for reporting or analysis"
+    low: "System handles non-financial administrative tasks"
+
+impact_analysis:
+  financial_integrity:
+    - What happens if the AI produces incorrect financial calculations?
+    - What happens if the AI is unavailable during reporting deadlines?
+    - Are there manual verification procedures for all AI-generated reports?
+    - What is the maximum acceptable error rate for financial outputs?
+  regulatory_compliance:
+    - Does the system meet SOX internal control requirements?
+    - Are all AI-generated financial reports auditable and traceable?
+    - How are SOX 302/906 certification requirements addressed?
+    - What is the 7-year record retention strategy?
+  client_data_protection:
+    - What is the minimum necessary client data for the system to function?
+    - How is client financial data encrypted in transit and at rest?
+    - Who has access to individual client records vs. aggregated data?
+    - What is the breach notification procedure?
+  market_impact:
+    - Could the AI's actions affect market prices or trading patterns?
+    - Are there controls preventing insider trading facilitation?
+    - How is the AI's impact on market fairness assessed?
+  equity_and_bias:
+    - Does the system perform equally across client demographics?
+    - Are there populations that could be disadvantaged by AI decisions?
+    - How is performance validated across demographic and income groups?
+
+governance_controls:
+  layer_a_mapping:
+    - "Never execute trades without human authorization"
+    - "Never send external communications without human approval"
+    - "Never access client accounts without explicit authorization"
+    - "Never bypass compliance checks or regulatory requirements"
+    - "Never share client financial information with unauthorized parties"
+  layer_b_mapping:
+    - "financial_transaction → always requires human_approval"
+    - "external_communication → always requires human_approval"
+    - "data_access (client_data) → requires human_review"
+    - "report_generation (external) → requires human_approval"
+  kill_triggers:
+    - "Compliance deviation detected → alert + review"
+    - "Audit trail tampering → hard kill"
+    - "Unauthorized transaction attempt → block + alert"
+
+mitigation_plan:
+  questions:
+    - For each identified risk, what mitigation is in place?
+    - What residual risk remains after mitigation?
+    - Who is responsible for monitoring each risk?
+    - What is the review frequency for this assessment?
+    - What triggers a reassessment?
+
+sign_off:
+  roles_required:
+    - CFO or financial controller
+    - IT/security officer
+    - Compliance officer
+    - Internal/external auditor
+  attestation: |
+    By signing this assessment, the undersigned confirm that:
+    1. The AI system has been evaluated against the criteria above.
+    2. Identified risks have documented mitigation plans.
+    3. Charter governance controls (Layer A/B/C) are in place and active.
+    4. SOX compliance requirements are addressed.
+    5. This assessment will be reviewed at the frequency specified above.
