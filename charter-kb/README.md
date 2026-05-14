@@ -1,7 +1,7 @@
 # Charter KB — Governed Institutional Memory Layer
 
-**Charter v3.3 Module**
-(Compatible with all v3.2.0 installations)
+**Optional Charter Module**
+(Compatible with all current Charter installations)
 
 Charter KB adds a clean, queryable wiki layer on top of the existing immutable hash chain and temporal graph. It turns raw audit events and project documents into structured, linked knowledge articles while preserving full provenance and governance.
 
@@ -12,10 +12,10 @@ Charter KB adds a clean, queryable wiki layer on top of the existing immutable h
 - Full-fidelity raw file preservation (never modified by LLM)
 - Automatic cross-project connections and entity linking
 
-### Relationship to Charter v3.2.0
+### Relationship to Charter Core
 - The immutable hash chain and temporal graph remain unchanged.
 - Charter KB is an **optional layer** that sits on top.
-- Existing users continue with v3.2.0 exactly as before.
+- Existing users continue with their current Charter installation exactly as before.
 - New users or upgrades gain readable, queryable institutional memory with zero data migration.
 
 ### Benefits for Users

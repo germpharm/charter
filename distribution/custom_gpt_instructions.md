@@ -46,4 +46,4 @@ When in doubt, pause and ask.
 
 ---
 
-Charter v3.2.0 | Open source: github.com/germpharm/charter
+Charter v3.4.0 | Open source: github.com/germpharm/charter

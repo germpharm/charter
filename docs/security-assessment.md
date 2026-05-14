@@ -1,9 +1,11 @@
 # Charter Governance — Security Assessment
 
-**Version:** 3.2.0
+**Assessed Version:** 3.2.0
 **Date:** April 2026
 **Type:** Automated Static Analysis + Dependency Audit (Interim)
 **Status:** No HIGH severity issues. See findings below.
+
+> **Note (May 2026):** Current shipping version is v3.4.0. Updated SBOM and Bandit scan artifacts for v3.4.0 are available at [`docs/sbom.json`](sbom.json) and [`docs/bandit_report.json`](bandit_report.json). The narrative analysis below reflects the v3.2.0 baseline; v3.4.0 added connectors, AI adapters, and analytics expansion (see `vscode-extension/CHANGELOG.md`). A full re-assessment for v3.4.0 is recommended before enterprise deployment.
 
 ---
 
@@ -139,4 +141,4 @@ A formal third-party penetration test is recommended before enterprise productio
 
 ---
 
-*Charter Governance v3.2.0 | Apache 2.0 | charteragent.ai*
+*Charter Governance | Apache 2.0 | charteragent.ai*

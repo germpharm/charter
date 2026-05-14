@@ -22,7 +22,7 @@
 - **Obsidian-native frontend**: Graph View, backlinks, and Dataview queries over governed knowledge
 - **Raw/wiki/output architecture**: Full-fidelity raw document preservation with LLM-compiled wiki articles
 - **One-command activation**: `./setup.sh` creates the knowledge vault and installs the logger
-- **Zero migration**: Existing v3.2.0 installations continue unchanged; KB is opt-in
+- **Zero migration**: Existing installations continue unchanged; KB is opt-in
 
 ## [3.2.0] - 2026-03-31
 

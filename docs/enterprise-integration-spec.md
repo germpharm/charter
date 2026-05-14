@@ -1,8 +1,8 @@
 # Enterprise Integration Specification
 
-**Charter v3.2.0 — Codename: Analytics**
-**Revision:** 1.0
-**Date:** 2026-03-01
+**Charter v3.4.0 — Codename: Connectors**
+**Revision:** 1.1
+**Date:** 2026-05-14
 **Status:** Definitive
 **License:** Apache 2.0
 
@@ -37,7 +37,7 @@ Charter is an AI governance layer for autonomous agent teams. It enforces ethica
 
 ## 2. API Surface
 
-### 2.1 MCP Tools (33 tools as of v3.0.0)
+### 2.1 MCP Tools (46 tools as of v3.4.0)
 
 Charter exposes its full governance surface through the Model Context Protocol (MCP), enabling any MCP-compatible AI system to interact with governance state.
 
@@ -728,7 +728,9 @@ The private seed that signs chain entries (stored at `.charter/identity/private_
 | 3.0 | Federation | 2026-03 | Federated dashboard, enterprise integration specification, 50+ Python modules, local inference routing |
 | 3.1 | Compliance | 2026-03 | 8 compliance frameworks (SOC 2, GDPR, EU AI Act, NIST AI RMF, ISO 27001), scheduled audits, chain retention, runtime alerting |
 | 3.2 | Analytics | 2026-03 | DuckDB analytical store, behavioral profiling, sequence mining (PrefixSpan), anomaly detection, causal discovery, Wolfram Engine bridge, 13 analytics MCP tools, data export (Parquet/CSV/JSON) |
+| 3.3 | Charter KB | 2026-04 | Governed institutional memory layer, 7 wiki templates, Obsidian-native frontend, raw/wiki/output architecture, chain-logged operations |
+| 3.4 | Connectors | 2026-05 | 9 built-in connectors (Gmail, Shopify, Google Calendar, Instagram, TikTok, YouTube, Stripe, Apple Messages, JSON Ingestion), 4 AI adapters (Claude/OpenAI/xAI/RAG), bias-detection-by-absence, cross-verification (Merkle attestations), DSCSA pharma compliance template, 3 impact assessment templates, multi-tenant chokepoint with chain-write locking |
 
 ---
 
-Charter v3.2.0 — 51 Python modules, 55 MCP tools, 46 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.
+Charter v3.4.0 — 73 Python modules, 46 MCP tools, 30 TS/JS files, Apache 2.0. Zero external dependencies beyond PyYAML.

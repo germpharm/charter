@@ -157,11 +157,34 @@ charter mcp-serve --transport stdio
 charter mcp-serve --transport sse --port 8375
 ```
 
-55 tools exposed including governance, identity, chain operations, graph queries, compliance mapping, federation, always-on attribution, and analytics. Key analytics tools: `charter_analytics_summary`, `charter_analytics_profile`, `charter_analytics_compare`, `charter_analytics_timeline`, `charter_analytics_flow`, `charter_analytics_sequences`, `charter_analytics_anomalies`, `charter_analytics_causes`, `charter_analytics_export`.
+46 tools exposed including governance, identity, chain operations, graph queries, compliance mapping, federation, always-on attribution, and analytics. Key analytics tools: `charter_analytics_summary`, `charter_analytics_profile`, `charter_analytics_compare`, `charter_analytics_timeline`, `charter_analytics_flow`, `charter_analytics_sequences`, `charter_analytics_anomalies`, `charter_analytics_causes`, `charter_analytics_export`.
 
 Every action logged to an immutable hash chain. Same governance, any model.
 
-## Analytics Engine (v3.2.0)
+## Connectors
+
+Pipe data from the tools you already use directly into the Charter chain. Every event is hashed, attributed, and timestamped — no middleware, no cloud.
+
+```bash
+charter connectors run --connector gmail
+charter connectors run --connector shopify
+charter connectors run --connector stripe
+```
+
+Built-in connectors: Gmail, Shopify, Google Calendar, Instagram (Meta Graph API v21.0), TikTok (Display API v2), YouTube (Data API v3), Stripe, Apple Messages (macOS chat.db, zero auth), JSON Ingestion (HTTP/MCP endpoint). Custom connectors implement the published v1.0 contract; pipe from any source through the JSON endpoint to use Charter as a destination for Airbyte, Fivetran, n8n, Zapier, Make.com, or Pipedream.
+
+## AI Adapters
+
+Export your identity, governance profile, decision log, and pattern declarations as a structured manifest tailored to each platform. Section 1 is binding constraints; Section 2 is informational predecessor patterns and absence declarations.
+
+```bash
+charter manifest export --adapter claude
+charter manifest export --adapter openai
+charter manifest export --adapter xai
+charter manifest export --adapter rag
+```
+
+## Analytics Engine
 
 Turn your governance chain into an analytical data warehouse. DuckDB-backed, millisecond queries, zero cloud dependency.
 
@@ -195,7 +218,7 @@ For publication-grade statistical analysis, Charter bridges to Wolfram Language 
 
 All analytics work without Wolfram. Wolfram adds depth when available.
 
-## Charter KB — Governed Institutional Memory (v3.3)
+## Charter KB — Governed Institutional Memory
 
 Charter KB adds a queryable wiki layer on top of the immutable hash chain. Turn raw audit events and project documents into structured, linked knowledge articles with full provenance. Obsidian-native frontend with Graph View and backlinks.
 
@@ -205,7 +228,7 @@ cd charter-kb && ./setup.sh    # One-command activation
 
 - Dedicated wikis per project/domain (raw → wiki → output)
 - Every index, compile, and lint is automatically logged to the chain
-- Zero migration — existing v3.2 installations are unaffected
+- Zero migration — existing installations are unaffected
 - Hospital systems and auditors get clean answers instead of raw logs
 
 See [`charter-kb/README.md`](charter-kb/README.md) for full details.

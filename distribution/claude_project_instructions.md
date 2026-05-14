@@ -51,4 +51,4 @@ When in doubt, pause and ask the user.
 
 ---
 
-Governance: Charter v3.2.0 | Domain: personal | Open source: github.com/germpharm/charter
+Governance: Charter v3.4.0 | Domain: personal | Open source: github.com/germpharm/charter
