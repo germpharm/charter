@@ -77,7 +77,13 @@ from charter.connectors import ConnectorBase, ConnectorResult
 
 GRAPH_API_VERSION = "v21.0"
 GRAPH_API_BASE = "https://graph.facebook.com/{}".format(GRAPH_API_VERSION)
-ACCOUNTS_FILE = Path.home() / ".charter" / "instagram_accounts.json"
+
+
+def _get_accounts_file():
+    """Resolve <charter_home>/instagram_accounts.json at call time so
+    multi-tenant deployments see the per-request charter home."""
+    from charter.paths import get_charter_home
+    return Path(get_charter_home()) / "instagram_accounts.json"
 
 # Insight metrics that work for IG Business media in v21.0.
 # Note: 'impressions' was deprecated for some media types after Apr 2024;
@@ -194,13 +200,14 @@ class InstagramConnector(ConnectorBase):
             return token, user_id, None
 
         # 4. Accounts file
-        if ACCOUNTS_FILE.exists():
+        accounts_file = _get_accounts_file()
+        if accounts_file.exists():
             try:
-                with open(ACCOUNTS_FILE) as f:
+                with open(accounts_file) as f:
                     accounts = json.load(f)
             except json.JSONDecodeError as e:
                 return None, None, (
-                    "{} is not valid JSON: {}".format(ACCOUNTS_FILE, e)
+                    "{} is not valid JSON: {}".format(accounts_file, e)
                 )
             entry = accounts.get(account)
             if isinstance(entry, dict):
@@ -222,7 +229,7 @@ class InstagramConnector(ConnectorBase):
             "with instagram_basic, instagram_manage_insights, and "
             "pages_read_engagement scopes.".format(
                 account, ", ".join(missing), env_key, env_key,
-                ACCOUNTS_FILE,
+                accounts_file,
             )
         )
 

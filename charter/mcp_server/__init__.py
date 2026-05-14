@@ -1368,8 +1368,9 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[TextConten
     elif name == "charter_role_status":
         team_hash = arguments.get("team_hash", "")
         from charter.roles import LAYER_0_INVARIANTS, VALID_ROLES, get_member_role
+        from charter.paths import get_charter_home
         # Gather roles for known members
-        team_dir = os.path.join(os.path.expanduser("~"), ".charter", "teams", team_hash)
+        team_dir = os.path.join(get_charter_home(), "teams", team_hash)
         members_path = os.path.join(team_dir, "members.jsonl")
         member_roles = {}
         if os.path.isfile(members_path):

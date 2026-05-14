@@ -99,7 +99,8 @@ def get_global_hooks_dir():
         return result.stdout.strip()
 
     # Default location
-    hooks_dir = os.path.expanduser("~/.charter/git-hooks")
+    from charter.paths import get_charter_home
+    hooks_dir = os.path.join(get_charter_home(), "git-hooks")
     return hooks_dir
 
 

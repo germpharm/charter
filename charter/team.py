@@ -29,13 +29,13 @@ import secrets
 import time
 
 
-CHARTER_DIR = ".charter"
+from charter.paths import get_charter_home
+
 TEAMS_DIR = "teams"
 
 
 def get_charter_dir():
-    home = os.path.expanduser("~")
-    return os.path.join(home, CHARTER_DIR)
+    return get_charter_home()
 
 
 def get_teams_dir():

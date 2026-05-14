@@ -41,7 +41,6 @@ from charter.identity import append_to_chain
 # Constants
 # ---------------------------------------------------------------------------
 
-CHARTER_DIR = ".charter"
 FEDERATION_FILE = "federation.yaml"
 DEFAULT_TIMEOUT = 10  # seconds for HTTP requests
 
@@ -51,9 +50,9 @@ DEFAULT_TIMEOUT = 10  # seconds for HTTP requests
 # ---------------------------------------------------------------------------
 
 def _default_config_path():
-    """Return the default federation config path: ~/.charter/federation.yaml."""
-    home = os.path.expanduser("~")
-    return os.path.join(home, CHARTER_DIR, FEDERATION_FILE)
+    """Return the default federation config path: <charter_home>/federation.yaml."""
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), FEDERATION_FILE)
 
 
 def _base_url_from_sse(sse_url):

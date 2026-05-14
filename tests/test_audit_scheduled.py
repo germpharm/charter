@@ -78,9 +78,9 @@ class TestGenerateAuditReport:
 
     def test_default_audit_dir(self, charter_home, sample_config, monkeypatch):
         create_identity()
-        # Patch DEFAULT_AUDIT_DIR to temp
+        # Patch get_default_audit_dir() to temp
         fake_dir = str(charter_home / "audits")
-        monkeypatch.setattr("charter.audit.DEFAULT_AUDIT_DIR", fake_dir)
+        monkeypatch.setattr("charter.audit.get_default_audit_dir", lambda: fake_dir)
         result = generate_audit_report(config=sample_config)
         assert fake_dir in result["report_path"]
 

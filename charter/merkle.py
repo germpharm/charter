@@ -197,8 +197,8 @@ MERKLE_DIR = "merkle_trees"
 
 def get_merkle_dir() -> str:
     """Get the directory for stored Merkle trees."""
-    home = os.path.expanduser("~")
-    d = os.path.join(home, ".charter", MERKLE_DIR)
+    from charter.paths import get_charter_home
+    d = os.path.join(get_charter_home(), MERKLE_DIR)
     os.makedirs(d, exist_ok=True)
     return d
 

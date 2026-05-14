@@ -33,7 +33,10 @@ from charter.merkle import load_batch_index, get_merkle_dir
 _DEFAULTS = {
     "max_live_entries": 10000,
     "archive_after_batch": True,
-    "archive_dir": os.path.join(os.path.expanduser("~"), ".charter", "archive"),
+    # archive_dir is resolved dynamically in load_policy() so multi-tenant
+    # deployments see the per-request charter_home; this sentinel is replaced
+    # at policy-load time.
+    "archive_dir": None,
     "delete_archives_after_days": 2555,  # ~7 years
 }
 
@@ -64,8 +67,14 @@ def get_retention_config(config=None):
     result = dict(_DEFAULTS)
     result.update(retention)
 
-    # Expand ~ in archive_dir
-    result["archive_dir"] = os.path.expanduser(result["archive_dir"])
+    # archive_dir defaults to <charter_home>/archive, resolved at call time
+    # so multi-tenant deployments scope archives per tenant. User-specified
+    # archive_dir paths still get ~ expansion.
+    if result["archive_dir"] is None:
+        from charter.paths import get_charter_home
+        result["archive_dir"] = os.path.join(get_charter_home(), "archive")
+    else:
+        result["archive_dir"] = os.path.expanduser(result["archive_dir"])
     return result
 
 

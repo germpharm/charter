@@ -29,9 +29,9 @@ class TestRunAudit:
         with open(config_path, "w") as f:
             yaml.dump(sample_config, f)
 
-        # Patch DEFAULT_AUDIT_DIR to a temp directory
+        # Patch get_default_audit_dir() to a temp directory
         audit_dir = tmp_path / "charter_audits"
-        monkeypatch.setattr("charter.audit.DEFAULT_AUDIT_DIR", str(audit_dir))
+        monkeypatch.setattr("charter.audit.get_default_audit_dir", lambda: str(audit_dir))
 
         captured = StringIO()
         with patch("sys.stdout", captured):

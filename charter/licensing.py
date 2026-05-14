@@ -140,9 +140,9 @@ class LicenseError(Exception):
 # --- License file ---
 
 def _get_license_path():
-    """Path to ~/.charter/license.json"""
-    home = os.path.expanduser("~")
-    return os.path.join(home, ".charter", "license.json")
+    """Path to <charter_home>/license.json"""
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), "license.json")
 
 
 def get_license():
@@ -562,9 +562,9 @@ def run_upgrade(args):
 # --- Prospect provisioning ---
 
 def _get_prospects_path():
-    """Path to ~/.charter/prospects.jsonl"""
-    home = os.path.expanduser("~")
-    return os.path.join(home, ".charter", "prospects.jsonl")
+    """Path to <charter_home>/prospects.jsonl"""
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), "prospects.jsonl")
 
 
 def provision_trial(email, name=None, company=None, trial_days=30,

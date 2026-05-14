@@ -171,10 +171,14 @@ def _has_permission(role, permission):
 def get_teams_dir():
     """Get the path to the Charter teams directory.
 
+    Resolves through `charter.paths.get_charter_home()` so multi-tenant
+    deployments can scope each request to its own teams subtree.
+
     Returns:
-        str: Absolute path to ~/.charter/teams
+        str: Absolute path to <charter_home>/teams
     """
-    return os.path.join(os.path.expanduser("~"), ".charter", "teams")
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), "teams")
 
 
 def get_team_dir(team_hash):

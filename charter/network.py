@@ -16,14 +16,11 @@ import os
 import time
 
 from charter.identity import load_identity, append_to_chain
-
-
-NETWORK_DIR = ".charter/network"
+from charter.paths import get_charter_home
 
 
 def get_network_dir():
-    home = os.path.expanduser("~")
-    return os.path.join(home, NETWORK_DIR)
+    return os.path.join(get_charter_home(), "network")
 
 
 def get_node_manifest_path():

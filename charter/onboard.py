@@ -63,9 +63,9 @@ ONBOARD_STEPS = [
 
 
 def _get_onboard_state_path():
-    """Path to ~/.charter/onboard_state.json"""
-    home = os.path.expanduser("~")
-    return os.path.join(home, ".charter", "onboard_state.json")
+    """Path to <charter_home>/onboard_state.json"""
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), "onboard_state.json")
 
 
 def _load_onboard_state():

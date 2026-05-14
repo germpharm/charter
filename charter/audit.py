@@ -11,6 +11,7 @@ import time
 
 from charter.config import load_config
 from charter.identity import load_identity, get_chain_path, append_to_chain
+from charter.paths import get_charter_home
 
 
 # ---------------------------------------------------------------------------
@@ -24,7 +25,14 @@ FREQUENCY_SECONDS = {
     "monthly": 2592000,
 }
 
-DEFAULT_AUDIT_DIR = os.path.join(os.path.expanduser("~"), ".charter", "audits")
+
+def get_default_audit_dir():
+    """Return the audit directory for the active Charter home.
+
+    Resolved at call time so multi-tenant deployments see the per-request
+    tenant directory via the ContextVar in charter.paths.
+    """
+    return os.path.join(get_charter_home(), "audits")
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +86,7 @@ def generate_audit_report(config=None, period="week", output_dir=None):
     intact = _check_chain_integrity(entries)
 
     # Save the report
-    audit_dir = output_dir or DEFAULT_AUDIT_DIR
+    audit_dir = output_dir or get_default_audit_dir()
     os.makedirs(audit_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S", time.gmtime())
     report_path = os.path.join(audit_dir, f"audit_{timestamp}.md")

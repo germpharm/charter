@@ -32,8 +32,8 @@ VERIFY_CONFIG_FILE = "verify_config.json"
 
 
 def get_verify_config_path():
-    home = os.path.expanduser("~")
-    return os.path.join(home, ".charter", VERIFY_CONFIG_FILE)
+    from charter.paths import get_charter_home
+    return os.path.join(get_charter_home(), VERIFY_CONFIG_FILE)
 
 
 def load_verify_config():

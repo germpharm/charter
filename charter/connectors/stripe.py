@@ -90,7 +90,13 @@ from charter.connectors import ConnectorBase, ConnectorResult
 
 STRIPE_API_BASE = "https://api.stripe.com/v1"
 STRIPE_API_VERSION = "2024-06-20"
-ACCOUNTS_FILE = Path.home() / ".charter" / "stripe_accounts.json"
+
+
+def _get_accounts_file():
+    """Resolve <charter_home>/stripe_accounts.json at call time so multi-tenant
+    deployments see the per-request charter home."""
+    from charter.paths import get_charter_home
+    return Path(get_charter_home()) / "stripe_accounts.json"
 
 VALID_RESOURCES = ("customers", "charges", "subscriptions", "invoices", "all")
 
@@ -185,13 +191,14 @@ class StripeConnector(ConnectorBase):
             return api_key, None
 
         # 4. Accounts file
-        if ACCOUNTS_FILE.exists():
+        accounts_file = _get_accounts_file()
+        if accounts_file.exists():
             try:
-                with open(ACCOUNTS_FILE) as f:
+                with open(accounts_file) as f:
                     accounts = json.load(f)
             except json.JSONDecodeError as e:
                 return None, (
-                    "{} is not valid JSON: {}".format(ACCOUNTS_FILE, e)
+                    "{} is not valid JSON: {}".format(accounts_file, e)
                 )
             entry = accounts.get(account)
             if isinstance(entry, dict):
@@ -205,7 +212,7 @@ class StripeConnector(ConnectorBase):
             "STRIPE_API_KEY), or add an entry to {}. Use a "
             "restricted key (rk_live_... or rk_test_...) with "
             "read-only scopes on customers, charges, subscriptions, "
-            "and invoices.".format(account, env_key, ACCOUNTS_FILE)
+            "and invoices.".format(account, env_key, accounts_file)
         )
 
     # ── HTTP helpers ──────────────────────────────────────────

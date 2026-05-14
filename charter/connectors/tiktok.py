@@ -119,7 +119,13 @@ from charter.connectors import ConnectorBase, ConnectorResult
 
 
 TIKTOK_API_BASE = "https://open.tiktokapis.com/v2"
-ACCOUNTS_FILE = Path.home() / ".charter" / "tiktok_accounts.json"
+
+
+def _get_accounts_file():
+    """Resolve <charter_home>/tiktok_accounts.json at call time so multi-tenant
+    deployments see the per-request charter home."""
+    from charter.paths import get_charter_home
+    return Path(get_charter_home()) / "tiktok_accounts.json"
 
 # Fields supported on /v2/user/info/. These are what the Display API
 # returns when the corresponding scopes have been approved.
@@ -242,13 +248,14 @@ class TikTokConnector(ConnectorBase):
             return token, open_id, None
 
         # 4. Accounts file
-        if ACCOUNTS_FILE.exists():
+        accounts_file = _get_accounts_file()
+        if accounts_file.exists():
             try:
-                with open(ACCOUNTS_FILE) as f:
+                with open(accounts_file) as f:
                     accounts = json.load(f)
             except json.JSONDecodeError as e:
                 return None, None, (
-                    "{} is not valid JSON: {}".format(ACCOUNTS_FILE, e)
+                    "{} is not valid JSON: {}".format(accounts_file, e)
                 )
             entry = accounts.get(account)
             if isinstance(entry, dict):
@@ -264,7 +271,7 @@ class TikTokConnector(ConnectorBase):
             "API access token with user.info.basic, user.info.stats, "
             "and video.list scopes. Tokens are short-lived (24h); "
             "refresh via the TikTok Login Kit OAuth flow.".format(
-                account, env_key, ACCOUNTS_FILE,
+                account, env_key, accounts_file,
             )
         )
 

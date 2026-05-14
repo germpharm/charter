@@ -19,14 +19,11 @@ import time
 
 from charter.config import load_config, save_config
 from charter.identity import load_identity, append_to_chain
-
-
-CONTEXTS_DIR = ".charter/contexts"
+from charter.paths import get_charter_home
 
 
 def get_contexts_dir():
-    home = os.path.expanduser("~")
-    return os.path.join(home, CONTEXTS_DIR)
+    return os.path.join(get_charter_home(), "contexts")
 
 
 def list_contexts():
