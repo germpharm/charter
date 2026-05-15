@@ -13,6 +13,8 @@ import hmac
 import json
 import os
 import time
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 
 # --- Tiers ---
@@ -22,6 +24,28 @@ TIER_PRO = "pro"
 TIER_ENTERPRISE = "enterprise"
 
 TIER_ORDER = {TIER_FREE: 0, TIER_PRO: 1, TIER_ENTERPRISE: 2}
+
+# Per-request tier override. Hosted/SaaS deployments derive tier from an
+# OAuth token at request time and push it onto this ContextVar; local CLI
+# users leave it unset and tier comes from license.json on disk. Mirrors
+# the pattern in charter.paths.charter_home_scope().
+_tier_override: ContextVar = ContextVar("charter_tier_override", default=None)
+
+
+@contextmanager
+def tier_scope(tier):
+    """Override the active tier for the duration of the context.
+
+    Yields nothing; the override is read by get_current_tier(). Nested
+    scopes nest naturally via ContextVar token reset.
+    """
+    if tier not in TIER_ORDER:
+        raise ValueError(f"Unknown tier: {tier!r}")
+    token = _tier_override.set(tier)
+    try:
+        yield
+    finally:
+        _tier_override.reset(token)
 
 TIER_LABELS = {
     TIER_FREE: "Free",
@@ -100,6 +124,9 @@ MCP_FEATURE_TIERS = {
     "charter_merkle_status": TIER_ENTERPRISE,
     "charter_merkle_audit": TIER_ENTERPRISE,
     "charter_timestamp_batch": TIER_ENTERPRISE,
+    "charter_local_inference": TIER_ENTERPRISE,
+    "charter_project_register": TIER_ENTERPRISE,
+    "charter_connector_json_ingest": TIER_ENTERPRISE,
 }
 
 # --- License key format ---
@@ -160,6 +187,9 @@ def get_license():
 
 def get_current_tier():
     """Return the current license tier string."""
+    override = _tier_override.get()
+    if override is not None:
+        return override
     lic = get_license()
     if lic is None:
         return TIER_FREE

@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.5.0] - 2026-05-14
+
+### Added — Tier-Aware Tool Gating & Hosted MCP Hardening
+
+- **`tier_scope()` context manager** in `charter.licensing`: hosted/SaaS deployments now push per-request tier from an OAuth token onto a `ContextVar`; `get_current_tier()` reads the override first and falls back to `license.json` for local CLI users. Local behavior is unchanged.
+- **`tools/list` filters by tier**: the MCP server's list response now hides tools the caller's tier can't invoke. Free tier sees 42 tools, Pro sees 50, Enterprise sees all 59. Previous behavior exposed every tool regardless of license.
+- **Three additional tools gated to Enterprise**: `charter_local_inference`, `charter_project_register`, `charter_connector_json_ingest` joined the existing `MCP_FEATURE_TIERS` map.
+- **Tool count clarification**: the actual MCP tool count is 59 at Enterprise tier (not 46 or 60+ as previously claimed). README, CHANGELOG, and memory aligned to this.
+
+### Internal
+
+- 778/778 unit tests pass. New `tier_scope` API verified for override/scope-unwind/invalid-tier behavior.
+- Backward compatible: callers that don't push a `tier_scope` see identical behavior to v3.4.0.
+
 ## [3.4.0] - 2026-04-12
 
 ### Added — Connectors, Self-Audit, Cross-Verification

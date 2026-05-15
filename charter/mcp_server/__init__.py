@@ -1046,7 +1046,11 @@ except ImportError:
 
 @server.list_tools()
 async def handle_list_tools() -> list[Tool]:
-    return TOOLS
+    from charter.licensing import check_tier, MCP_FEATURE_TIERS
+    # Hide tools the caller's tier can't invoke. Free-tier tokens see only
+    # free tools; Pro adds the analytics suite; Enterprise sees everything.
+    # check_tier returns True for any tool not in MCP_FEATURE_TIERS (free).
+    return [t for t in TOOLS if check_tier(t.name, feature_map=MCP_FEATURE_TIERS)]
 
 
 @server.call_tool()
